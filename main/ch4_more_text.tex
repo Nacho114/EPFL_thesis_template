@@ -1,15 +1,176 @@
 \chapter{Causal Discovery}
 
-I also want to do my own citation! \cite{Peters2017}
+\section{Causal algo}
 
-And what about this \cite{Mooij2016jmlr}
+blup di blue
 
-\lipsum[7]
+\section{Proof of consistency: A tale of two bounds}
 
-\section{One section}
+The setup was the linear \textbf{ANM}:
 
-\lipsum[3]
+\[ \begin{cases} 
+    & Y = aX + E_Y  \\
+    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
+ \end{cases}
+\]
 
-\subsection{One subsection}
+From $n$ samples $(X_i, Y_i)$ we estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
+$\hat{f}_X$ for the reverse model. We then comput the residuals
 
-\lipsum[3]
+\begin{align}
+    &  \hat{e}_Y = Y - \hat{f}_Y(X)\\
+    &  \hat{e}_X = X - \hat{f}_X(Y)
+\end{align}
+
+We note that for the ease of analysis, it would first be wise to use some fraction 
+of the data to first estimate the regression, and then use the remanining for the test.
+
+For $n$ large enough we have that 
+
+$$
+    \hat{e}_Y \approx E_Y \thicksim P_{E_Y}
+$$
+
+The idea is then to first discretise\footnote{We do so in a naive manner we split
+it uniformly into $m$ bins.} $P_{E_Y}$ into $m$ bins, call this discrete distribution
+$Q$. We apply the same discretization to obtain $B = (b_1, ..., b_m)$ from $\hat{e}_Y$
+and $\tilde{B} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{e}_X$.
+
+We then decide the causal direction as follows
+
+\[ \begin{cases} 
+    & X \rightarrow Y \quad \text{if} \quad C \leq W  \\
+    & Y \rightarrow X \quad \text{if} \quad C > W  
+ \end{cases}
+\]
+
+Where 
+
+$$
+    C = \norm{B - U}_{L_1} 
+$$
+$$
+    W = \norm{\tilde{B} - U}_{L_1}
+$$
+
+
+s.t. $U = (\frac{1}{m}, ..., \frac{1}{m})$.
+
+Given our assumption about the \textbf{ANM}, the probability to outpout the correct causal direction is:
+
+$$
+   P_{\text{correct}} = \mathbb{P}\left[C \leq W\right] 
+$$
+
+We next upper bound thise quantity in order to show consistency
+
+\begin{align}
+    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[ \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right] \\
+    &\geq \mathbb{P}\left[C \leq \tau \cap W > \tau \right] \\
+    &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right]
+\end{align}
+
+The first inequality is due to the fact that we are only taking the union in the rationals\footnote{We note that
+we can only take unions over countable sets; recall also that the rationals are dense in the irrationals, so the
+inequality is very close to equality (and in practice and among friends it would be).}. The second inequality is done by 
+looking at the probability of a fixed $\tau$; and the final one follows by:
+
+$$
+    1 \geq \mathbb{P}\left[ C \leq \tau \cup W > \tau \right] = 
+    \mathbb{P}\left[ C \leq \tau \right] + \mathbb{P}\left[ W > \tau \right] - \mathbb{P}\left[ C \leq \tau \cap W > \tau \right]
+$$
+
+We will next find appropriate bounds for $\mathbb{P}\left[ C \leq \tau \right]$ and $\mathbb{P}\left[W \leq \tau \right]$.
+
+\subsection{Bounding the false false postive}
+
+We will first lower bound $\mathbb{P}\left[ C \leq \tau \right]$ by upper bounding the complement event.
+
+\begin{align}
+    \mathbb{P}\left[ C \geq \tau \right] &= \mathbb{P}\left[ \sum_{i = 1}^{m} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
+    &\leq \mathbb{P}\left[ m \operatorname{max}_{i} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
+    &= \mathbb{P}\left[ \bigcup_{i} \; \abs{b_i - \frac{1}{m}} \geq \frac{\tau}{m} \right]  \\
+    &\leq m \; \mathbb{P}\left[ \abs{b_0 - \frac{1}{m}} \geq \frac{\tau}{m} \right] \\
+    &\leq m2\exp \left( -2n \frac{\tau^2}{m^2} \right)
+\end{align}
+
+The second to last inequality follows by the union bound and by noting that all $b_i$s are the same since they
+are discretized empirical distribution coming from a uniform source. For the final inequality we use Hoeffding's
+inequality.
+
+\subsection{Bounding the false negatives}
+
+Recall that what is left to bound is the following quanity, $\mathbb{P}\left[W \leq \tau \right]$; 
+for this we first define the following set of probability distributions:
+
+$$
+    \Gamma_\tau = \{ \pi \in  \Delta_m : \norm{\pi - U}_{L_1} \leq \tau \}
+$$
+
+Where the $\Delta_m$ is the $m$ dimensional simple and $U$ the uniform vector as before.
+
+Observe that: 
+
+$$
+    \{ W \leq \tau \} = \{ \tilde{B} \in \Gamma_\tau \}
+$$
+
+In essence, we are asking: "what is the chance that the realisation of $\tilde{B}$ – which is the 
+empricial distribution of some distribution $Q$ – lies inside some set of distribtions $\Gamma_\tau$.
+
+We note that bounding this kind of event is exactly what Sanov's theorem\footnote{See the section on Information Theory and statistics in 
+\cite{cover1999elements}} gives us, an important
+result from large deviation theory that also exploits concentration of measure.
+
+
+
+Let $\mathbf{x} = (x_1, ..., x_n)$ be a sequence of $n$ each drawn independently from 
+a finite universe $U$ with $|U| = m$. Denote by $P_\mathbf{x}$ the empirical distribution – 
+or type – for a given sequence $\mathbf{x}$. Let $Q^{n}$ be the product distribution $n$
+independent samples of $Q$. 
+
+\begin{theorem}[Sanov’s theorem]\label{sanov}
+
+    Let $\Pi$ be a set of distributions on $U,$ and $m=|U| .$ Let
+
+    \[
+        P^{*}=\operatorname{argmin}_{P \in \Pi} D(P \| Q)
+    \]
+    
+    Then
+    \[
+        \underset{Q^{n}}{\mathbb{P}}\left[P_{\mathbf{x}} \in \Pi\right] \leq(n+1)^{m} 2^{-nD\left(P^{*} \| Q\right)}
+    \]
+    
+\end{theorem}
+
+Applying the above theorem, and noting that $\Gamma_\tau$ takes the place of $\Pi$, $\tilde{B}$ that of $P_{\mathbf{x}}$
+and the discretized distribution $\hat{e}_X = X - \hat{f}_X(Y)$ that of $Q$ we get:
+
+\begin{equation}
+    \mathbb{P}\left[W \leq \tau \right] = \mathbb{P}\left[ \tilde{B} \in \Gamma_\tau \right] 
+    \leq (n+1)^{m} 2^{-nD\left( \tau \right)}
+\end{equation}
+
+Where $D\left( \tau \right) := D\left(P^{*} \| Q\right)$, we make the $\tau$ relation excplicit to 
+keep in mind that the minimisation is contrainred to the set $\Gamma_\tau$ which depends on $\tau$.
+
+We remark that the only place of concern is if $D\left(P^{*} \| Q\right) = 0$; assuming however that $Q \neq U$, then 
+there will be some $\tau$ s.t. $Q \notin \Gamma_\tau$ and thus $D\left(P^{*} \| Q\right) \neq 0$.
+
+We can now conclude by putting everything together; recall that we had shown that we could bound the success probability 
+as follows:
+
+
+
+\begin{align}
+    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right] \\
+    &\geq 1 - 2m\exp \left( -2n \frac{\tau^2}{m^2} \right) - (n+1)^{m} 2^{-nD\left( \tau \right)}
+\end{align}
+
+This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) > 0$ then we get consistency
+by letting $n \rightarrow \infty$.
+
+We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
+
+
