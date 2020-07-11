@@ -180,30 +180,3 @@
    \gdef\partlabel{}
   } % code before the title body
 \titlespacing*{\part}{11.06cm}{26.4pt-\parskip-\parskip}{0pt}
-
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{mathtools}
-
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
-\newtheorem{scolium}{Scolium}   %% And a not so common one.
-\newtheorem{definition}{Definition}
-% for indep symbol
-\newcommand{\bigCI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
-
-% Fix the problem with delimiter size caused by fourier and amsmath packages.
-\makeatletter
-\def\resetMathstrut@{%
-  \setbox\z@\hbox{%
-    \mathchardef\@tempa\mathcode`\(\relax
-      \def\@tempb##1"##2##3{\the\textfont"##3\char"}%
-      \expandafter\@tempb\meaning\@tempa \relax
-  }%
-  \ht\Mathstrutbox@1.2\ht\z@ \dp\Mathstrutbox@1.2\dp\z@
-}
-\makeatother

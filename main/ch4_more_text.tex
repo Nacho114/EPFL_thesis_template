@@ -173,4 +173,85 @@ by letting $n \rightarrow \infty$.
 
 We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
 
+\chapter{K-means}
+
+Intro
+
+\section{Intuition}
+yes
+
+
+\chapter{The twin test}
+    
+Suppose that we have our typical \textbf{ANM} 
+
+$$
+    Y = f(X) + N
+$$ 
+
+The key observation is that if we partition the
+data in some intervals (e.g. uniform intervals), then if we look at two of these intervals we note that, while
+the distribution of y will differ -- due to either $X$ not being uniform and or the non-linearities due to $f$ -- 
+the residuals will in fact be the same for both intervals due to the i.i.d. assumption. 
+
+In fact, if we a large enough number of samples, then -- assuming that we find good models -- we can be source
+that the difference between the empirical distribution of the residuals between these subets of $X$ goes to $0$.
+By the LLN the empriical CDFs will in fact converge a.s. to the CDF of $N$.
+
+If on the other hand, we wrongly assume that Y -> X, we can be nearly certain that the additive noise that we 
+find when fitting the reverse model will depend on Y. These observations motivate the following algorithm:
+
+
+
+\section{Algorithm}
+
+% Note to self: algo 2 name is due to the example
+\begin{algorithm}[H]
+\caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
+    \label{alg:twinscore}}
+\begin{algorithmic}[1]
+    \Require{$x$ and $y$ are vectors of the same length}
+    \Statex
+    \Function{twinscore}{$x, y$}
+    \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
+    \For{$i \gets 1 \textrm{ to } k$}
+        \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
+        \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
+        
+    \EndFor
+
+    \Let{$\mathcal{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
+
+    \State \Return{$\mathcal{C}$}
+    \EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
+    \label{alg:twintest}}
+\begin{algorithmic}[1]
+    \Require{$x$ and $y$ are vectors of the same length}
+    \Statex
+    \Function{twintest}{$x, y$}
+    \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
+    \For{$i \gets 1 \textrm{ to } k$}
+        \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
+        \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
+        
+    \EndFor
+
+    \Let{$\mathcal{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
+
+    \State \Return{$\mathcal{C}$}
+    \EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Theory}
+
+prooooff
+
 

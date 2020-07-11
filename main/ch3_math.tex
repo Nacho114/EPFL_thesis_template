@@ -32,3 +32,24 @@ P_{\textit{T}}
 \end{equation}
 
 \lipsum[3]
+
+\section{algo}
+
+\begin{algorithm}[H]
+    \caption{Counting mismatches between two packed  strings
+      \label{alg:packed-dna-hamming}}
+    \begin{algorithmic}[1]
+      \Require{$x$ and $y$ are packed strings of equal length $n$}
+      \Statex
+      \Function{Distance}{$x, y$}
+        \Let{$z$}{$x \oplus y$} \Comment{$\oplus$: bitwise exclusive-or}
+        \Let{$\delta$}{$0$}
+        \For{$i \gets 1 \textrm{ to } n$}
+          \If{$z_i \neq 0$}
+            \Let{$\delta$}{$\delta + 1$}
+          \EndIf
+        \EndFor
+        \State \Return{$\delta$}
+      \EndFunction
+    \end{algorithmic}
+  \end{algorithm}
