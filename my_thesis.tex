@@ -25,8 +25,14 @@
 \include{head/acknowledgements}
 \include{head/abstracts}
 
-\cleardoublepage
+% \cleardoublepage
 \pdfbookmark{\contentsname}{toc}
+
+% \begingroup
+% \let\cleardoublepage\clearpage
+% \tableofcontents
+% \endgroup
+
 \tableofcontents
 
 % % Following content is OPTIONAL (List of figures + tables)
@@ -51,17 +57,22 @@
 %%%%% MAIN: The chapters of the thesis
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \mainmatter
+
 \include{main/ch1_introduction}
 
-\include{main/ch2_figures_tables}
-% \cleardoublepage
+\include{main/ch2_methods}
 
-\include{main/ch3_math}
-\include{main/ch4_more_text}
+\include{main/ch3_theory}
+
+\include{main/ch4_proposed}
+
+\include{main/ch5_experiments}
+
+\include{main/ch6_conclusion}
 
 % use to end the last part if the thesis is composed of parts
 \addtocontents{toc}{\vspace{\normalbaselineskip}}
-\cleardoublepage
+% \cleardoublepage
 \bookmarksetup{startatroot}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

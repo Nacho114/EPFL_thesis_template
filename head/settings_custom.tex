@@ -66,3 +66,9 @@
 \algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
 
 \DeclareMathOperator{\E}{\mathbb{E}}
+
+% Avoid blank page from \mainmatter
+
+\makeatletter
+\renewcommand\mainmatter{\clearpage\@mainmattertrue\pagenumbering{arabic}}
+\makeatother
