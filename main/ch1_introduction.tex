@@ -3,6 +3,8 @@
 \markboth{Introduction}{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
+\section{Problem and Motivation}
+
 The endevour of science is in some sense the uncovering of causal structures: does the mass
 of an object influence its acceleration in free fall? What genomes influence height (etc)? 
 The ability to do experiments in Physics is what has allowed to confirm or uncover relations
@@ -62,3 +64,117 @@ https://stats.stackexchange.com/questions/9171/aic-or-p-value-which-one-to-choos
 Note that problem is similar to change detection
 but it should be easier? -> we don't need to known
 when it changes
+
+\section{SNR and causality}
+
+In virtually most of the predictive fields, noise is the enemey; Indeed, in the absence of noise, finding the
+best linear fit to a linear model is trivial. Emre Telatar, a powerful information theorist, liked to jest
+in his digital communication course that "without noise, we communication engineers would be without a job".
+
+Indeed, for most of the early 20th century\footnote{quote comm book} noise was keeping engineers busy as they 
+devised clever schemes to fight noise. At the time the whole business was very experimental as
+no one had come close to understanding noise in the context of transmission; questions such 
+as "Is it possible to send a message with arbitrary reliability?" and "What is the theoretical maximum amount
+of information that can be reliably sent?", were questions that no one had come close to solving.
+
+Then Shannon came along, in his Magnum Opus, \cite{shannon}, he not only formalised the foundations of information
+Theory, but he also proved\footnote{Shannon had a very deep...} most of the main results in it. In particular, he
+showed that for the AWGN (Additive white nois gaussian channel), it is possible to realiably transmit at most $C$
+bits per time unit:
+
+$$
+C \propto log(1 + SNR)
+$$
+
+Where $SNR$ is the celebrated signal to noise ratio -- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
+would expect, if $SNR \rightarrow \infty$ then we can send an arbitrary amount of information 
+per time unit (the only limit is the physical one, i.e. the speed of light). Conversely if $SNR = 0$
+then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
+understand us.
+
+A somehwhat trivial observation is that if the mechanism is injective\footnote{If it is not injective, then the function is
+not invertible, and thus only one causal direction is possible.}, in the absence of noise, it is 
+not possible to say anything about the causal direction of the mechanism. Here too noise is the
+benelovent giver of jobs, albeit not for the same reasons. Interestingly, we can use noise to 
+help us deduce the causal nature of a process. 
+
+We will now see what perhaps could be considered the most simple causal set up, and describe a method
+for causal inference. We will then see that $SNR$ also plays an important role.
+
+Consider the linear additive noise model -- our first causal model!
+
+\[ \begin{cases} 
+    & Y = aX + E_Y  \\
+    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
+ \end{cases}
+\]
+
+Suppose we are given $n$ samples of the above process:
+
+$$
+    y_i = ax_i + z_i, i \in \left[n\right]
+$$
+
+We collect these into vectors say $y$, $x$ and $z$; note that we do not have
+access to the latter, but it will come in handy for the derivation that follows.
+
+One common idea is to first compute the residuals for both possible regression models,
+and the to check which residual is less dependent on $x$ and $y$ respectively -- we are
+testing for the noise / data independence hypothesis.
+
+We first regress $y$ on $x$. i.e.
+
+$$
+    \hat{a} = \operatorname{argmax}_{\alpha} \norm{y - \alpha x}_{2}^2
+$$
+
+We differentiate w.r.t to $\alpha$:
+
+$$
+    -2y^\intercal x + 2\alpha \norm{x}_2^2 = 0 \qquad \Rightarrow \qquad 
+    \alpha = \frac{y^\intercal x}{\norm{x}_2^2} = 
+    \frac{a\norm{x}_2^2 + z^\intercal x}{\norm{x}_2^2}
+$$
+
+Note that by symmetry, we find that if we regress x on y we get
+
+$$
+    \tilde{a} = \frac{x^\intercal y}{\norm{y}_2^2} = 
+    \frac{a\norm{x}_2^2 + z^\intercal x}{a^2 \norm{x}_2^2 + 2a x^\intercal z + \norm{z}^2_2}
+$$
+
+As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are iid, 
+and we note that convergance in probability is preserved when taking products and 
+continuous mappings.} and we thus -- given that $E(z) = \E(N) = 0$ -- find:
+
+$$
+    \E(\hat{a}) = \frac{a\E(\norm{x}_2^2) + 0}{\E(\norm{x}_2^2)} \xrightarrow{p} a 
+$$
+
+$$
+    \E(\tilde{a}) = \frac{a\E(\norm{x}_2^2) + 0}{
+        a^2 \E(\norm{x}_2^2) + 0 + \E(\norm{z}^2_2)} \xrightarrow{p}
+        \frac{a SNR}{a^2 SNR + 1}
+$$
+
+Thus for large $n$ we have that:
+
+$$
+    r_{x \rightarrow y} \approx y - ax = z
+$$
+
+and
+
+$$
+    r_{y \rightarrow x} = x - \tilde{a}y \approx x - \frac{a SNR}{a^2 SNR + 1} (ax + z) 
+$$
+
+Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case it is trivial
+to see which is the causal direction. 
+
+If however $SNR \rightarrow \infty$, then $r_{y \rightarrow x} \approx -\frac{1}{a}z \approx \frac{1}{a}z$, thus 
+the residuals carry no information about causality.
+
+We note that this somewhat formalises the intuition that we had about the role of noise in 
+causality; it also shows that indeed, $SNR$ plays an inverted role vis-a-vis that of communication
+theory. 

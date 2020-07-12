@@ -1,10 +1,15 @@
-\chapter{Causal Discovery}
 
-\section{Causal algo}
+\chapter{Causal Inference}
 
-blup di blue
 
-\section{Proof of consistency: A tale of two bounds}
+\section{The residual method}
+
+\subsection{Introduction}
+
+The residual method is very simple...
+
+
+\subsection{Proof of consistency: A tale of two bounds}
 
 The setup was the linear \textbf{ANM}:
 
@@ -173,15 +178,9 @@ by letting $n \rightarrow \infty$.
 
 We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
 
-\chapter{K-means}
+\section{The twin test}
 
-Intro
-
-\section{Intuition}
-yes
-
-
-\chapter{The twin test}
+\subsection{Intuition}
     
 Suppose that we have our typical \textbf{ANM} 
 
@@ -203,7 +202,7 @@ find when fitting the reverse model will depend on Y. These observations motivat
 
 
 
-\section{Algorithm}
+\subsection{Algorithm}
 
 % Note to self: algo 2 name is due to the example
 \begin{algorithm}[H]
@@ -220,9 +219,9 @@ find when fitting the reverse model will depend on Y. These observations motivat
         
     \EndFor
 
-    \Let{$\mathcal{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
+    \Let{$\hat{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
 
-    \State \Return{$\mathcal{C}$}
+    \State \Return{$\hat{C}$}
     \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -235,22 +234,16 @@ find when fitting the reverse model will depend on Y. These observations motivat
     \Require{$x$ and $y$ are vectors of the same length}
     \Statex
     \Function{twintest}{$x, y$}
-    \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
-    \For{$i \gets 1 \textrm{ to } k$}
-        \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
-        \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
-        
-    \EndFor
+    \Let{$\hat{C}_{X \rightarrow Y }$}{$\textit{twinscore}(x, y)$} 
+    \Let{$\hat{C}_{Y \rightarrow X }$}{$\textit{twinscore}(y, x)$} 
 
-    \Let{$\mathcal{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
-
-    \State \Return{$\mathcal{C}$}
+    \State \Return{$\hat{C}_{X \rightarrow Y } > \hat{C}_{Y \rightarrow X }$}
     \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
 
-\section{Theory}
+\subsection{Theory}
 
 prooooff
 
