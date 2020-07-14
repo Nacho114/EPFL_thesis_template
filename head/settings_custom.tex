@@ -33,6 +33,9 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 
+% For the nice bold Ex symbol // dosent work
+% \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{proposition}{Proposition}
@@ -65,10 +68,20 @@
 \algrenewcommand\algorithmicrequire{\textbf{Precondition:}}
 \algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
 
-\DeclareMathOperator{\E}{\mathbb{E}}
-
+\usepackage{dsfont}
+\DeclareMathOperator{\E}{\mathds{E}}
+\newcommand{\R}{\mathds{R}}
+\newcommand{\N}{\mathds{N}}
 % Avoid blank page from \mainmatter
 
 \makeatletter
 \renewcommand\mainmatter{\clearpage\@mainmattertrue\pagenumbering{arabic}}
 \makeatother
+
+% Change font
+% \renewcommand{\familydefault}{\sfdefault}
+
+% Nice math cal
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+\DeclarePairedDelimiterX{\inp}[2]{\langle}{\rangle}{#1, #2}

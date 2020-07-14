@@ -74,8 +74,9 @@ per time unit (the only limit is the physical one, i.e. the speed of light). Con
 then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
 understand us.
 
-A somehwhat trivial observation is that if the mechanism is injective\footnote{If it is not injective, then the function is
-not invertible, and thus only one causal direction is possible.}, in the absence of noise, it is 
+If we return to the question of causality; a somehwhat trivial observation is that if the mechanism 
+is injective\footnote{If it is not injective, then the function is not invertible, and thus only one 
+causal direction is possible.}, in the absence of noise, it is 
 not possible to say anything about the causal direction of the mechanism. Here too noise is the
 benelovent giver of jobs, albeit not for the same reasons. Interestingly, we can use noise to 
 help us deduce the causal nature of a process. 
@@ -151,8 +152,7 @@ $$
     r_{y \rightarrow x} = x - \tilde{a}y \approx x - \frac{a SNR}{a^2 SNR + 1} (ax + z) 
 $$
 
-Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case it is trivial
-to see which is the causal direction. 
+Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case whaat??
 
 If however $SNR \rightarrow \infty$, then $r_{y \rightarrow x} \approx -\frac{1}{a}z \approx \frac{1}{a}z$, thus 
 the residuals carry no information about causality.
@@ -161,5 +161,17 @@ We note that this somewhat formalises the intuition that we had about the role o
 causality; it also shows that indeed, $SNR$ plays an inverted role vis-a-vis that of communication
 theory. 
 
+If we are interested in finite sample results if we demand a certain accuracy for a given
+sample size, then we conjecture that $SNR$ will play a key role in determining this.
+
 \section{Proposed Methods}
+
+We propose two methods to deal with the ANM -- one less practical, but with a nice theoretical
+analysis; and another more practical, but perhaps with a less pleasing analysis. However both
+are based on a first principle approach with known asymptotics in mind.
+
+We note that in the analysis / procedure we split the data in 2, first to train the model, and
+then to perform the score computation - Need to expand on this
+
+
 \section{Outline}
