@@ -1,5 +1,5 @@
 
-\chapter{Causal Inference}
+\chapter{First principle methods}
 
 
 \section{The residual method}
@@ -204,43 +204,45 @@ find when fitting the reverse model will depend on Y. These observations motivat
 
 \subsection{Algorithm}
 
+TODO bellow is old
+
 % Note to self: algo 2 name is due to the example
-\begin{algorithm}[H]
-\caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
-    \label{alg:twinscore}}
-\begin{algorithmic}[1]
-    \Require{$x$ and $y$ are vectors of the same length}
-    \Statex
-    \Function{twinscore}{$x, y$}
-    \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
-    \For{$i \gets 1 \textrm{ to } k$}
-        \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
-        \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
+% \begin{algorithm}[H]
+% \caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
+%     \label{alg:twinscore}}
+% \begin{algorithmic}[1]
+%     \Require{$x$ and $y$ are vectors of the same length}
+%     \Statex
+%     \Function{twinscore}{$x, y$}
+%     \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
+%     \For{$i \gets 1 \textrm{ to } k$}
+%         \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
+%         \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
         
-    \EndFor
+%     \EndFor
 
-    \Let{$\hat{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
+%     \Let{$\hat{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
 
-    \State \Return{$\hat{C}$}
-    \EndFunction
-\end{algorithmic}
-\end{algorithm}
+%     \State \Return{$\hat{C}$}
+%     \EndFunction
+% \end{algorithmic}
+% \end{algorithm}
 
 
-\begin{algorithm}[H]
-\caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
-    \label{alg:twintest}}
-\begin{algorithmic}[1]
-    \Require{$x$ and $y$ are vectors of the same length}
-    \Statex
-    \Function{twintest}{$x, y$}
-    \Let{$\hat{C}_{X \rightarrow Y }$}{$\textit{twinscore}(x, y)$} 
-    \Let{$\hat{C}_{Y \rightarrow X }$}{$\textit{twinscore}(y, x)$} 
+% \begin{algorithm}[H]
+% \caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
+%     \label{alg:twintest}}
+% \begin{algorithmic}[1]
+%     \Require{$x$ and $y$ are vectors of the same length}
+%     \Statex
+%     \Function{twintest}{$x, y$}
+%     \Let{$\hat{C}_{X \rightarrow Y }$}{$\textit{twinscore}(x, y)$} 
+%     \Let{$\hat{C}_{Y \rightarrow X }$}{$\textit{twinscore}(y, x)$} 
 
-    \State \Return{$\hat{C}_{X \rightarrow Y } > \hat{C}_{Y \rightarrow X }$}
-    \EndFunction
-\end{algorithmic}
-\end{algorithm}
+%     \State \Return{$\hat{C}_{X \rightarrow Y } > \hat{C}_{Y \rightarrow X }$}
+%     \EndFunction
+% \end{algorithmic}
+% \end{algorithm}
 
 
 \subsection{Theory}

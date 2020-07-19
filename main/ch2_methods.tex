@@ -2,14 +2,251 @@
 
 \section{Bivariate causal model}
 
-\subsection{Introduction}
-
 \subsection{ANM}
 
-\subsection{Identifiability}
+We will now introduce\footnote{Note that this introduction follows closely that of \cite{Mooij2016jmlr}, and 
+we encourage the reader to have a look to fill in details that have been omitted here.} 
+the bivariate causal model and define the particular class of such models that 
+we will work on. To avoid any sort of technical complications, hen we talk about functions, 
+they will always be Borel measurable -- which in any case consists of most functions of interest.
+
+For the bivariate case, if we have $Y \in \R$ as a direct cause of $X \in \R$, then we can model 
+the relationship as follows:
+
+\begin{equation}
+    \begin{cases} 
+        & Y = f(X, Z) \\
+        & X \bigCI Z,\quad X \thicksim p_x,\quad Z \thicksim p_{Z}  
+     \end{cases}
+     \label{causal_model}
+\end{equation}
+
+If we assume that there is no confounder, that there is no sampling bias\footnote{If you consider the 
+example given in the introduction, then if Bob always sampled when Alice was excercising, then this 
+would have lead to sampling bias, as during excercise both heart rate and blood pressure tend to increase.} 
+and no cycles then it is natural to assume that $X \bigCI Z$.
+
+While we can model $Z$ as either a scalar of a vector, we can without loss of generality assume it to be a scalar.
+It can be shown that if $Z$ is a vector, then one can construct a simpler model with scalar noise, which has the 
+same observational and interventional distribution \cite{Mooij2016jmlr}.
+
+An important remark is that given the direct model in equation \ref{causal_model}, we can find some 
+$\tilde{f}$ and $\tilde{Z}$ such that
+
+\begin{equation}
+    \begin{cases} 
+        & X = \tilde{f}(Y, \tilde{Z}) \\
+        & Y \bigCI \tilde{Z},\quad Y \thicksim p_y,\quad \tilde{Z} \thicksim p_{\tilde{Z}}  
+     \end{cases}
+\end{equation}
+
+with the important property that it induces an equivalent observational distribution $p_{X, Y}$ as that of 
+equation \ref{causal_model}. However in general the interventional distribution will differ. In particular 
+this means that with observational data alone we are not able identify the right causal direction.
+
+We must therefore make further assumptions on $f$ that break this symmetry and allow us to make causal inference.
+In particular we will consider the following subset of models from the ones introduced in equation \ref{causal_model};
+where we restric the noise to be additive.
+
+\begin{definition} Given a triplet $(p_X, p_Z, f)$, consisting of two finite mean densities and a function
+$f: \R \rightarrow \R$, we can define a \textbf{bivariate Additive Noise Model (ANM)} $X \rightarrow Y$
+\[
+    \begin{cases} 
+        & Y = f(X) + Z \\
+        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
+     \end{cases}  
+\]
+If the induced density $p_{x, y}$ has a density with respect to Lebesgue measure, we say that $p_{x, y}$
+satisfies the ANM $X \rightarrow Y$.
+\end{definition}
+
+Given such a model, we are interested in the cases when the observational distribution $p_{x, y}$ can only
+lead to one causal explenation; this motivates the following definition:
+
+\begin{definition} If the joint density $p_{x, y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
+ANM $Y \rightarrow X$, then we call the ANM $X \rightarrow Y$ \textbf{identifiable}. 
+\end{definition}
+
+Intuitively non-linearities due to $f$ will break the symmetry needed to find a reverse ANM. This is what
+\cite{hoyer2009nonlinear} and friends explore; they show that for the 
+a triplet $(p_X, p_Z, f)$ to generate a non-identifiable can happen only if they satisfy a particular 
+differential equation that loosely speaking cannot happen in the generic case: in other words the forward 
+model $X \rightarrow Y$ cannot be inverted. 
+
+If $f$ is linear, then one can give a much more precise statement about Identifiability:
+
+\begin{theorem} Let $X$ and $Y$ be random variables, such that
+$$
+    Y = aX + Z, \quad X \bigCI Z, \; a \neq 0
+$$
+Then we can reverse the process, i.e. there exists $\tilde{a} \in \R$ and a noise $\tilde{Z}$ such that
+$$
+    X = \tilde{a}Y + \tilde{Z}, \quad Y \bigCI \tilde{Z}
+$$
+if and only if $X, Y, Z, \tilde{Z}$ are Gaussian distributed. 
+\label{linear_indentifiability}
+\end{theorem}
+
+The proof is a simple appilcation of the Darmois-Skitovich Theorem. The theorem also plays an imporant role
+in ICA; it states the following:
+
+\begin{theorem}[Darmois-Skitovich] Let $X_i$, $i \in [n]$ be independent random variables, and let
+    $\alpha_i$, $\beta_j$ be non zero constants. Then, if the random variables
+    $$ 
+        L_1 = \sum_{i \in [n]} \alpha_i X_i
+    $$
+    $$ 
+        L_2 = \sum_{i \in [n]} \beta_i X_i
+    $$
+    are independent, i.e. $L_1 \bigCI L_2$; then all the random variables $X_i$ are gaussian. 
+\end{theorem}
+
+We now prove Theorem \ref{linear_indentifiability} using the Darmois-Skitovich Theorem.
+
+\begin{proof} 
+    ~
+For the "only if" part, note that by simple manipulation, we have the following:
+
+\[
+    \begin{bmatrix}
+        Y \\
+        \tilde{Z}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    a & 1 \\
+    1 - \tilde{a}a & -\tilde{a}
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+        X \\
+        Z
+    \end{bmatrix}
+\]
+
+If $\tilde{a} \neq 0$ and $1 - \tilde{a}a \neq 0$ then by Darmois-Skitovich, the result follows.
+
+We will next show that both of these conditions must be true for the process to be reversible:
+
+\begin{enumerate}
+    \item If $\tilde{a} = 0$ then $\tilde{Z} = X$, but then $X \bigCI Y$, a contradiction\footnote{
+        Note that $X \bigCI aX + Z$ is trivially false 
+        in the discrete case, but if both are continuous then we need to be a bit more careful as is the 
+        case with degenerate random variables; but essentially the same holds (see \cite{Peters2008diploma}).
+    }.
+    \item Finally, if $1 - \tilde{a}a \neq 0$ then $\tilde{Z} = -\tilde{a}Z$, and thus 
+    $-\tilde{a}Z \bigCI Y$, a contradiction.
+\end{enumerate}
+
+We have thus show the "only if" part. 
+
+We next show the "if" part; first assume that $X$ and $Z$ are Gaussian random variables. 
+It is easy to verify that:
+$\operatorname{Cov}(Y, \tilde{Z}) = a(1 - a\tilde{a})\operatorname{Var}(X) - \tilde{a}\operatorname{Var}(Z)$.
+Thus if we set $\tilde{a} = \frac{a \operatorname{Var}(X)}{a^2 \operatorname{Var}(X) + \operatorname{Var}(Z)}$ 
+we get that $\operatorname{Cov}(Y, \tilde{Z}) = 0$, and since they are gaussian random variables we get 
+that they are also independent.
+
+
+\end{proof}
 
 
 \section{Methods}
+
+\subsection{Introduction}
+
+The following lemma\footnote{A simple proof can be found here \cite{Mooij2016jmlr}} motivates the 
+first class of methods that we will present:
+
+\begin{lemma}
+    Given a joint density $p_{x, y}$ of two random variables $X$, $Y$ s.t. the conditional expectation
+    $\E(Y |X = x)$ is well-defined for all x and measurable. Then, $p_{x, y}$ satisfies a bivariate 
+    Additive Noise Model $X \rightarrow Y$ if and only if $E_Y := Y - \E(Y|X)$ has 
+    finite mean and is independent of $X$.
+\end{lemma}
+
+In practice we get some data from $p_{x, y}$ ; say 
+$\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$. We can then either split it into a test/train in order to 
+first fit a regression which we then evaluate using the test set. If the data is scarce we may alternatively 
+recycle the data -- i.e. reuse it for both training and evaluation.
+
+First we estimate through regression the function $x \mapsto \E(Y | X=x)$, say $\hat{f}$; then compute the estimated residual 
+$\hat{e} = \hat{f}(X) - Y$. We then compute some score function $C(X, \hat{e})$, the idea being that 
+the score function will capute the level of independence between $X$ and $e \approx Z$; e.g. we the score
+could be the empirical mutual information, in which case a 0 distance would asymptotically mean that they 
+are indepent (assuming our estimate $\hat{f}$ is arbitrarily accurate).
+Thus a low score would be evidance for an ANM in that direction; note that we can do the same by reversing 
+the roles of $X$ and $Y$, and we can compute the score for the reverse model. We can then compare the scores
+and use this as a criteria for inference. We write down this idea more explictly 
+here Algorithm \ref{alg:anm_general}.
+
+In order to show that such a procedure is consistent we need 3 things:
+
+\begin{enumerate}
+    \item $p_{x, y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
+    \item The regression method should be \textbf{suitable} for regressing $Y$ on $X$.
+    \item If $X \rightarrow Y$, then asymptotically $\hat{C}_{X \rightarrow Y} < \hat{C}_{Y \rightarrow X}$
+\end{enumerate}
+
+As for the first point, additive can be checked blah blach
+
+
+as for the second one
+
+
+\begin{algorithm}[tbp]
+
+    \caption{General procedure to decide whether $p_{x, y}$ satisfies and ANM $X \rightarrow Y$
+        or $Y \rightarrow X$}
+  
+    \textbf{Input}:
+
+    \begin{enumerate}
+        \item I.i.d samples $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
+        \item Regression method
+        \item Score estimator $\hat{C}: \R^n \times \R^n \rightarrow \R$
+    \end{enumerate}
+    
+    \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
+
+    \begin{enumerate}
+
+        \item Split the $\mathcal{D}_N$ in half randomly to obtain  $\mathcal{D}_{train}$ 
+        and $\mathcal{D}_{test}$
+
+        \item Use the regression method on the training data $\mathcal{D}_{train}$:
+        \begin{itemize}
+            \item[--] $\hat{f}_X$ of the regression function $x \mapsto \E(Y | X=x)$
+            \item[--] $\hat{f}_Y$ of the regression function $y \mapsto \E(X | Y=y)$
+        \end{itemize}
+
+        \item Estimate residuals using the predicted regressions on the test data $\mathcal{D}_{test}$:
+        \begin{itemize}
+            \item[--] $ \mathbf{\hat{e}_Y} := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
+            \item[--] $ \mathbf{\hat{e}_X} := \mathbf{x} - \hat{f}_X(\mathbf{y})$
+        \end{itemize}
+
+        \item Compute scores to measure dependence between inputs and estimated residuals based on the
+        test data $\mathcal{D}_{test}$
+        \begin{itemize}
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}(\mathbf{x}, \mathbf{\hat{e}_Y})$ 
+            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}(\mathbf{y}, \mathbf{\hat{e}_X})$
+        \end{itemize}        
+
+        \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
+        
+        \[ 
+        \text{dir} :=  
+         \begin{cases} 
+            & X \rightarrow Y \quad \text{if} \; \hat{C}_{X \rightarrow Y} \leq \hat{C}_{Y \rightarrow X}\\
+            & X \rightarrow Y \quad \text{otherwise}
+         \end{cases}
+        \]
+        
+    \end{enumerate}
+
+  \label{alg:anm_general}
+  \end{algorithm}
 
 \subsection{LinGam}
 
@@ -27,9 +264,16 @@ To test whether two random variables are independent $X, Y$
 
 related to what we did, note that it would work if everything was discrete!
 
+\subsection{Other methods}
+briefly mention
+ICGC
+CGNN
+Bayesian paper?
 
 
 \section{SNR and causality}
+
+In this section we give a brief commentary about causality from the perspective of communication theory.
 
 In virtually most of the predictive fields, noise is the enemey; Indeed, in the absence of noise, finding the
 best linear fit to a linear model is trivial. Emre Telatar, a powerful information theorist, liked to jest

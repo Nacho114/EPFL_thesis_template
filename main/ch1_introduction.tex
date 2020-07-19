@@ -30,8 +30,8 @@ Bob then observes the following trend:
 Bob, having studied data science, is well aware of the fallacy of the law of small numbers\footnote{
     The law of small numbers is the error of concluding too much from too few data. 
 }. He therefore checks again the data the next day at a slightly different time. He again observes 
-a similar trend, and is now more confident in the existance of a causal relation -- having neglected biology as 
-being beneath him -- and makes the conjecture that either blood pressure causes heart rate, or 
+a similar trend, and is now more confident in the existance of a causal relation and -- having neglected biology as 
+being beneath him -- makes the conjecture that either blood pressure causes heart rate, or 
 perhaps the other way around. 
 
 Given this strong correlation, Bob asserts that he may either model $X$ as a function of $Y$ or the other way 
@@ -68,14 +68,16 @@ So what did Bob learn\footnote{
     it may very useful. 
 \end{enumerate}
 
-If Bob was able to incorporate these notions into his machine learning models, then he might have been more
+If Bob was able to incorporate these notions into his machine learning models, then it might have been more
 robust to the covariate-shift. To give a more concrete example, there is a "neural net tank urban legend"\footnote{
     More about this story here: https://www.gwern.net/Tanks.
 }
 , where a neural network accuratly predicts if there is a tank or not in an image, but it turns out it uses the 
 weather as a predictor. From this it is clear that the model will preform badly under covariate shift, and indeed
-it makes the case that incorporating causality to a model should make it more robust as Scholkopf 
-argues (\cite{scholkopf2019causality}).
+it makes the case that incorporating causality to a model should make it more robust as
+\cite{scholkopf2019causality} argues. Note that this is in effect the issue with generalisation in machine learning:
+how can we ensure that we learn \textit{meaningful} representations (features about the tanks) rather than just
+correlations (the weather) useful for train accuracy. 
 
 As for confounders, it is impossible to say anything in general\footnote{
     For most of the 20th century, a huge debate took place to determine the question of whether or not 
@@ -94,15 +96,15 @@ simple questions we can ask -- and the one that we will explore -- is, given tha
 can we predict the direction of causality? If yes, how? 
 
 In the figure bellow (figure \ref{fig:simple_bivariate_example}) can you tell if $X$ causes $Y$? Or perhaps
-it is the other way around? In fact\footnote{ We model $y = f(x) + n$,  where x is exponential distribution, and n 
-normaly, both independent from each other; $f$ is a non-linear function. This kind of set up is known as an 
-additive model and it will be a central object of study.} $X$ causes $Y$, and we will show algorithms that 
+it is the other way around? The right answer is that $X$ causes $Y$, and we will show algorithms that 
 can accuretly predict causality in such settings with as few as 75 samples. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{bivariate_causal_example.png}
-    \caption{75 samples of data $X$, $Y$.  }
+    \caption{75 samples of data $X$, $Y$.  The samples are generated independently as follows:
+    $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an expoential distribution and $n_i$ is drawn 
+    independently from a gaussian one and $f(x) = 10 \tanh(x) + 4\sin(x) + x + x^2$}
     \label{fig:simple_bivariate_example}
 \end{figure}
 
@@ -112,12 +114,12 @@ We have seen in the introduction that determining and understanding causality ma
 but what exactly is causality? When we say $X$ causes $Y$ i.e. $X \rightarrow Y$, we have an intuitive
 idea of what it means; but how should we formalise it?
 
-Suppose that we are given two random variable $X$, $Y$ with joint distribution $\Prob (x, y)$. Intuitively we 
+Suppose that we are given two random variable $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
 would say that $X \rightarrow Y$, if we intervene in $X$ and then see an effect $Y$. In particular
 we will denote $\operatorname{do}(x)$ -- short for $\operatorname{do}(X = x)$ -- as an intervention
 that forces the variable $X$ to have the value $x$, and leaves the rest of the system untouched. 
 Following the convention inspired by \cite{pearl2000causality}, 
-we define the resulting distribution as $\Prob_{Y|do(x)}$.
+we define the resulting distribution as $p_{Y|do(x)}$.
 
 In supervised learning the goal is often to estimate $p_{y|x}$; while it is tempting to say that this is the 
 same as $p_{y|do(x)}$, they may in fact be very different. Suppose $x$ is 1 if a person smokes and 0 otherwise, 
@@ -125,25 +127,43 @@ similarly let $y$ be 1 if a person has cancer and 0 otherwise. If we then ran im
 \textbf{randmoized trials}\footnote{The power of randmoized trials is that they average out potential confounder 
 -- e.g. a gene that causes both an inclination to smoke and cancer. This is also knowm as A/B testing and is 
 essential to determine if a new medicine has the desired effect and that a new UI might maximise user addicton 
-to an app.} and forced a subset of the population at random to smoke, then we could estimate $p_{y|do(x)}$. 
-If it turned out that $p_{y|do(x)} \approxeq p_{y|x}$ then this would be very strong evidence that indeed 
-smoking caused cancer.
+to an app.} and forced a subset of the population at random to smoke, then we could estimate\footnote{
+Note that to estimate $p_{y|x}$ we simply need to sample people at random to determine $p_{y, x}$, we can 
+then use bayes' formula to determine $p_{y|x} = \frac{p_{y, x}}{p_x}$
+} $p_{y|do(x)}$. 
+If as some people believed, there existed a gene that made people both smoke and prone to cancer, then 
+$p_{y|do(x)} = p_{y|x}$; however, 
 
-This motivates the following definition
+This motivates the following definition:
 
 \begin{definition}
     We say that $X$ \textbf{causes} $Y$ if $p_{y|do(x)} \neq p_{y|do(x^\prime)}$ for some
     $x, x^\prime$
 \end{definition}
 
+Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
+$X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
+for simplicty not look at such setting.
 
-Borrowing from probability, it might be tempting to say something like 
+If we have the random variables $X$, $Y$, and $Z$, then depending on how they are causaly linked, then 
+we will have different relationships between the marginals and the Pearl's "do" conditional. For example,
+if $X \rightarrow Z \rightarrow Y$, then we will have that $p_X = p_{X|do(y)}$, but $p_Y \neq p_{Y|do(x)}$. 
 
-$$
-    p_{y|x}
-$$
+Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
+possible structure the data corresponds to (at least in theory). However, if we are interested in using only 
+observational data, then we will need to make conessions; in particular, we will make some assumptions about 
+the causal structure, and then if we can show that we can infer the causal structure in such a setting, we 
+shall call it \textbf{identifiable}.
 
-From our own lives, we know that it is by intervening in systems that we infere causal directions. 
+If we have a 3 or more varuables, one can use conditional independence tests to check whether two random 
+variables are directly linked (to check for direct causality -- the case when there is an edge from X to Y).
+One can extend the notion of conditional independence to consider sets of edges instead of single edges, 
+see for example graphical models.
+
+In some sense the 2d case is hard because we cannot use conditional independence tests. 
+
+The underlying structure behind a causal model is what is known as Strucutual Equation Models (SEM). Essentially 
+it is a model specification; and the key insight is that it should not be reversible. 
 
 
 \section{Proposed Methods}

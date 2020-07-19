@@ -61,12 +61,25 @@
 \makeatother
 
 % algo
-\usepackage[noend]{algpseudocode}
-\usepackage{algorithm,algorithmicx}
+% \usepackage[noend]{algpseudocode}
+% \usepackage{algorithm,algorithmicx}
 
-\newcommand*\Let[2]{\State #1 $\gets$ #2}
-\algrenewcommand\algorithmicrequire{\textbf{Precondition:}}
-\algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
+% \newcommand*\Let[2]{\State #1 $\gets$ #2}
+% \algrenewcommand\algorithmicrequire{\textbf{Precondition:}}
+% \algrenewcommand\algorithmicensure{\textbf{Postcondition:}}
+
+\usepackage{algorithm,algpseudocode}
+
+\newcounter{algsubstate}
+\renewcommand{\thealgsubstate}{\alph{algsubstate}}
+\newenvironment{algsubstates}
+  {\setcounter{algsubstate}{0}%
+   \renewcommand{\State}{%
+     \stepcounter{algsubstate}%
+     \Statex {\footnotesize\thealgsubstate:}\space}}
+  {}
+
+% 
 
 \usepackage{dsfont}
 \DeclareMathOperator{\E}{\mathds{E}}
@@ -86,3 +99,4 @@
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 
 \DeclarePairedDelimiterX{\inp}[2]{\langle}{\rangle}{#1, #2}
+
