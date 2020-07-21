@@ -110,29 +110,69 @@ can accuretly predict causality in such settings with as few as 75 samples.
 
 \section{Causality}
 
-We have seen in the introduction that determining and understanding causality may indeed be useful; 
-but what exactly is causality? When we say $X$ causes $Y$ i.e. $X \rightarrow Y$, we have an intuitive
-idea of what it means; but how should we formalise it?
+\subsection{Causal models: FCM}
 
-Suppose that we are given two random variable $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
-would say that $X \rightarrow Y$, if we intervene in $X$ and then see an effect $Y$. In particular
+We can model any causal model by using a \textbf{Function Causal Model (FCM)} which can be constructed as follows:
+
+We \textit{generate} a random vector $X = (X_1, ..., X_d)$ by using a graph $\mathcal{G}$ (encoding the relationships),
+a set of functions $f = (f_1, ..., f_d)$ (encoding the type of relationship) and a noise distribution $\mathcal{E}$.
+
+For each $i = 1, ..., d$
+
+$$
+    X_i \leftarrow f_i(X_{\text{Pa}(i)}, E_i), \quad E_i \thicksim \mathcal{E}
+$$
+
+where $\text{Pa}(i)$ is the set of parents of $i$; and so $X_{\text{Pa}(i)}$ is the set of random parent
+random variables of $X_i$. For example in Figure \ref{fig:fcm_1}, $\text{Pa}(4) = \{1, 2\}$, 
+and so $X_{\text{Pa}(4)} = X_1, X_2$.
+
+\begin{figure}[!h]
+    \centering
+
+    \begin{tikzpicture}[
+        > = stealth, % arrow head style
+        shorten > = 1pt, % don't touch arrow head to node
+        auto,
+        node distance = 2.5cm, % distance between nodes
+        thick % line style
+    ]
+    
+    \tikzstyle{every state}=[
+        draw = black,
+        thick,
+        fill = white,
+        minimum size = 4mm
+    ]
+    
+    \node[state] (a) {$X_1$};
+    \node[state] (b) [right of=a] {$X_2$};
+    \node[state] (c) [below left of=a] {$X_3$};
+    \node[state] (d) [below right of=a] {$X_4$};
+    
+    \path[->] (a) edge node {} (c);
+    \path[->] (a) edge node {} (d);
+    \path[->] (b) edge node {} (d);
+    
+    \end{tikzpicture}
+    \caption{ Example for FCM with $X = X_1, ... X4$, with $E_i \thicksim \mathcal{E}$, 
+    with $X_1 = f_1(E_1)$, $X_2 = f_2(E_2)$, $X_3 = f_3(X_1, E_3)$ and 
+    $X_4 = f_4(X_1, X_2, E_4)$}
+    \label{fig:fcm_1}
+
+\end{figure}
+
+
+
+\subsection{Interventions}
+
+To make precise the meaning of causality, suppose that we are given 
+two random variable $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
+would say that $X$ causes $Y$, $X \rightarrow Y$, if we intervene on $X$ and then see an effect on $Y$. In particular
 we will denote $\operatorname{do}(x)$ -- short for $\operatorname{do}(X = x)$ -- as an intervention
 that forces the variable $X$ to have the value $x$, and leaves the rest of the system untouched. 
 Following the convention inspired by \cite{pearl2000causality}, 
-we define the resulting distribution as $p_{Y|do(x)}$.
-
-In supervised learning the goal is often to estimate $p_{y|x}$; while it is tempting to say that this is the 
-same as $p_{y|do(x)}$, they may in fact be very different. Suppose $x$ is 1 if a person smokes and 0 otherwise, 
-similarly let $y$ be 1 if a person has cancer and 0 otherwise. If we then ran immoral 
-\textbf{randmoized trials}\footnote{The power of randmoized trials is that they average out potential confounder 
--- e.g. a gene that causes both an inclination to smoke and cancer. This is also knowm as A/B testing and is 
-essential to determine if a new medicine has the desired effect and that a new UI might maximise user addicton 
-to an app.} and forced a subset of the population at random to smoke, then we could estimate\footnote{
-Note that to estimate $p_{y|x}$ we simply need to sample people at random to determine $p_{y, x}$, we can 
-then use bayes' formula to determine $p_{y|x} = \frac{p_{y, x}}{p_x}$
-} $p_{y|do(x)}$. 
-If as some people believed, there existed a gene that made people both smoke and prone to cancer, then 
-$p_{y|do(x)} = p_{y|x}$; however, 
+we define the resulting distribution as $p_{y|do(x)}$.
 
 This motivates the following definition:
 
@@ -140,6 +180,20 @@ This motivates the following definition:
     We say that $X$ \textbf{causes} $Y$ if $p_{y|do(x)} \neq p_{y|do(x^\prime)}$ for some
     $x, x^\prime$
 \end{definition}
+
+It is tempting to say that $p_{y|do(x)}$ is equal to $p_{y|x}$, i.e. what is the chance of $y$ given that $x$ happened.
+Whem i8n doubt, it is always best to look at examples; suppose
+$x$ is 1 if a person smokes and 0 otherwise, similarly let $y$ be 1 if a person 
+has cancer and 0 otherwise. Note that if the was a confounding gene that caused both certain people to smoke 
+and get cancer, then $p_{y|x}$ would not be the same as $p_{y|do(x)}$ -- by forcing someone to smoke we would 
+break the confounding link; however in the absence of a confounder they are the same. This also illustrates 
+one of the limitations of causality: some interventions are not possbile due to ethical issues.
+
+You might have heard about randmoized trials or A/B testing, these are both ways to estimate $p_{y|do(x)}$.
+For example, when developing cures, the idea of a random trial is to give experimental drugs to participants
+at random. When designing new UIs to maximise user participation in apps, developers implement A/B testing, 
+they assing new versions to people at random to estimate engagement. Note that in both of these, we are able 
+to avoid a potential confounder by using picking $x$'s at random, and "forcing" them to "do$(x)$".
 
 Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
 $X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
@@ -149,45 +203,66 @@ If we have the random variables $X$, $Y$, and $Z$, then depending on how they ar
 we will have different relationships between the marginals and the Pearl's "do" conditional. For example,
 if $X \rightarrow Z \rightarrow Y$, then we will have that $p_X = p_{X|do(y)}$, but $p_Y \neq p_{Y|do(x)}$. 
 
-Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
+Indeed, for all 6 different relations of $X$, $Y$, and $Z$ we get a different set of relationships between 
+the interventional and observational conditions. Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
 possible structure the data corresponds to (at least in theory). However, if we are interested in using only 
-observational data, then we will need to make conessions; in particular, we will make some assumptions about 
+observational data, then we will need to make concessions; in particular, we will make some assumptions about 
 the causal structure, and then if we can show that we can infer the causal structure in such a setting, we 
 shall call it \textbf{identifiable}.
 
-If we have a 3 or more varuables, one can use conditional independence tests to check whether two random 
-variables are directly linked (to check for direct causality -- the case when there is an edge from X to Y).
-One can extend the notion of conditional independence to consider sets of edges instead of single edges, 
-see for example graphical models.
+If we have 3 or more variables then observe the following: if $X \bigCI Y | Z$, then it must follow that
+all the information from $X$ to $Y$ must flow though $Z$. Thus if we have 3 or more random variables, we
+can through the observational distribution determine all conditional independences to find which variables
+are not directly linked. 
 
-In some sense the 2d case is hard because we cannot use conditional independence tests. 
+\begin{figure}[!h]
+    \centering
 
-The underlying structure behind a causal model is what is known as Strucutual Equation Models (SEM). Essentially 
+    \begin{tikzpicture}[
+        > = stealth, % arrow head style
+        shorten > = 1pt, % don't touch arrow head to node
+        auto,
+        node distance = 2.5cm, % distance between nodes
+        thick % line style
+    ]
+    
+    \tikzstyle{every state}=[
+        draw = black,
+        thick,
+        fill = white,
+        minimum size = 4mm
+    ]
+    
+    \node[state] (a) {$Z$};
+    \node[state] (b) [below left of=a] {$X$};
+    \node[state] (c) [below right of=a] {$Y$};
+    
+    \path[-] (a) edge node {} (b);
+    \path[-] (a) edge node {} (c);
+    
+    \end{tikzpicture}
+    \caption{An example of FCM with random variables $X$, $Z$ and $Y$; we leave it undirected}
+    \label{fig:conditionalIndep}
+
+\end{figure}
+
+In some sense the two variable case is hard because we cannot use conditional independence. As we will see, 
+it is not possible to distinguish causality in the general bivariate setting when only observing 
+observational data; we will thus need to restrict 
+the class of such models. The underlying structure behind such causal models is what is known as 
+Strucutual Equation Models (SEM). Essentially 
 it is a model specification; and the key insight is that it should not be reversible. 
 
 
 \section{Proposed Methods}
 
 We propose two methods to deal with the ANM -- one less practical, but with a nice theoretical
-analysis; and another more practical, but perhaps with a less pleasing analysis. However both
+analysis; and another more practical, but perhaps with a less beutiful analysis. However both
 are based on a first principle approach with known asymptotics in mind.
 
-We note that in the analysis / procedure we split the data in 2, first to train the model, and
-then to perform the score computation - Need to expand on this
-
-Will be easier to do once they are finished.
 
 
 \section{Outline}
 
-The thesis is divided in two parts, 
-
-background etc blup blue die blah blu
-
-Do once finished, but main idea
-
-Theory and background material
-
-Methods
-
-Experiments
+The first part is dedicated to covering background material. The scond part will cover the 
+proposed methods in more details as well as showing experimental results

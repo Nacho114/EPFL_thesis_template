@@ -170,14 +170,12 @@ $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$. We can then either split it into
 first fit a regression which we then evaluate using the test set. If the data is scarce we may alternatively 
 recycle the data -- i.e. reuse it for both training and evaluation.
 
-First we estimate through regression the function $x \mapsto \E(Y | X=x)$, say $\hat{f}$; then compute the estimated residual 
-$\hat{e} = \hat{f}(X) - Y$. We then compute some score function $C(X, \hat{e})$, the idea being that 
-the score function will capute the level of independence between $X$ and $e \approx Z$; e.g. we the score
-could be the empirical mutual information, in which case a 0 distance would asymptotically mean that they 
-are indepent (assuming our estimate $\hat{f}$ is arbitrarily accurate).
-Thus a low score would be evidance for an ANM in that direction; note that we can do the same by reversing 
-the roles of $X$ and $Y$, and we can compute the score for the reverse model. We can then compare the scores
-and use this as a criteria for inference. We write down this idea more explictly 
+First we estimate through regression the function $x \mapsto \E(Y | X=x)$, say $\hat{f}$; we 
+then compute the estimated residual $\hat{e} = \hat{f}(X) - Y$. 
+Next, we estimate the dependence between $\hat{e}$ and $X$ using a score function $C$; i.e. $C$ could be 
+the empirical mutural information betheen them. Thus a low score would be evidance for an ANM in that direction; 
+we can compute the score for the reverse model by switching the roles of $X$ and $Y$. We can then compare 
+the scores and use this as a criteria for inference. We write down this idea more explictly 
 here Algorithm \ref{alg:anm_general}.
 
 In order to show that such a procedure is consistent we need 3 things:
@@ -188,13 +186,15 @@ In order to show that such a procedure is consistent we need 3 things:
     \item If $X \rightarrow Y$, then asymptotically $\hat{C}_{X \rightarrow Y} < \hat{C}_{Y \rightarrow X}$
 \end{enumerate}
 
-As for the first point, additive can be checked blah blach
 
+We will take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
+test to check if $p_{x. y}$ satisfies an ANM $X \rightarrow Y$. 
 
-as for the second one
+In point 2, by we \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}} - \mathbf{e}} \rightarrow 0$.
+Essentially we require the regression used on the data to have 0 mean square error in expectation\footnote{A 
+more precise statement can be found in \cite{Mooij2016jmlr}}. 
 
-
-\begin{algorithm}[tbp]
+\begin{algorithm}[H]%[tbp]
 
     \caption{General procedure to decide whether $p_{x, y}$ satisfies and ANM $X \rightarrow Y$
         or $Y \rightarrow X$}
@@ -248,27 +248,72 @@ as for the second one
   \label{alg:anm_general}
   \end{algorithm}
 
-\subsection{LinGam}
-
-blah
-
-NOTE talk about the regression -> residual decompo (with indep test at the end)
 
 \subsection{HSIC}
 
-Talk about IPM vs $f-$divergence. 
+First considered by \cite{hoyer2009nonlinear}, is the Hilbert-Schmidt independence Criterion (HSIC) for
+testing the independence between the residuals and the inpurts. 
 
-To test whether two random variables are independent $X, Y$
+definition of HSIC here
 
-\subsection{MAX entropy}
+By choosing an appropriate kernel, the HSIC becomes a metric, and so theoretically it is gauranteed to 
+be 0 iff $X \bigCI Y$. We note that in Chapter 3 we give an overview of the reproducing kernel hilbert 
+space which will allow us to get a better intuition for the HSIC. 
 
-related to what we did, note that it would work if everything was discrete!
+\subsection{Entropy based}
+
+Another type of score function looks at differential entropies instead of directly testing for independence.
+These ideas stem from A and B; The following lemma shows how this might be used in practice:
+
+\begin{lemma} Consider random variables $X$ and $Y$, with joint density $p_{x, y}$. For any functions 
+$f, g : \R \rightarrow \R$ we have:
+
+$$
+    H(X) + H(Y - f(X)) = H(Y) + H(X - g(X)) - I(X - g(X), Y) + I(Y - f(X), X)
+$$
+
+where $H(.)$ denotes the differential entropy and $I(.,.)$ denotes the differential mutual information 
+(\cite{cover1999elements}).
+\end{lemma}
+
+The proof is a simple application of the chain rule. Note that if $X \rightarrow Y$ then $I(Y - f(X), X) = 0$; 
+since $I(X, Y) \geq 0$ for any $X$, $Y$ it follows
+that:
+
+$$
+    H(X) + H(Y - f(X)) \leq  H(Y) + H(X - g(X))
+$$
+
+Which motivates the score function
+
+$$
+    C(U, V) = H(U) + H(V)
+$$
+
+This approach to estimate the direction of the ANM is consistent under certain assumptions as is shown by 
+\cite{kpotufe2014consistency} and \cite{nowzohour2016score}. One of the main drawbacks of using differential
+entropy is that we need to go through discretization, which can lead to undesired effects.
+
+\subsection{CGNN: Causal Generative NNets}
+
+In the work of \cite{goudet2017causal}, they estimate a \textit{generative} model by approximating
+the FCM structure using neural networks given some data from $p_{x, y}$. Using the same notation
+as in the introduction on FCM, the idea is to estimate each $f_i$ by a neural network, and the 
+search through the DAG space. Since the DAG space is super exponetial in the number of variables,
+they apply a greedy procedure to decide whether or not to include an edge $X_i \rightarrow X_j$.
+In some sense this is similar to greedy methods used in model selection. The caveat here is that
+using the generative model they can backpropagate to learn all the $f_i$ simulatneously. 
+
+More specifically, given the current graph estimate $\mathcal{G}$, they can generate some $\hat{P}$
+from the current $f_i$ and some noise $\mathcal{E}$. Then they can train the model by using 
+the MMD\footnote{We present and give some background on the MMD in the next chapter} 
+as a loss function between $\hat{P}$ and $P$ (the data distribution).
+
+So far the CGNN appears to have the best performance on the various benchmarks. 
 
 \subsection{Other methods}
-briefly mention
-ICGC
-CGNN
-Bayesian paper?
+
+There are other methods such as the  ICGC
 
 
 \section{SNR and causality}
