@@ -178,74 +178,288 @@ by letting $n \rightarrow \infty$.
 
 We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
 
+\newpage
 \section{The twin test}
 
-\subsection{Intuition}
-    
-Suppose that we have our typical \textbf{ANM} 
+
+Suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which recall has the form
+
+\[
+    \begin{cases} 
+        & Y = f(X) + Z \\
+        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
+     \end{cases}  
+\]
+
+The main strategy of most causal inference methods has been to estimate $f$, and then compute the estimated
+residual $\hat{e} = \hat{f}(x) - y$ and then to test the independence between $\hat{e} and X$. This exploits 
+the assumption that $X \bigCI Z$; in practice we often have that the noise is \textit{independent}, 
+i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$.
+
+
+In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
+will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
+X to Y, and viceversa. 
+In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
+will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
+X to Y, and viceversa. 
+
+
+\begin{figure}[H]
+    \captionsetup[subfigure]{labelformat=empty}
+    \centering
+    \subfloat{{\includegraphics[width=6.5cm]{algo_direct.png} }}%
+    % \quad
+    \subfloat{{\includegraphics[width=6.5cm]{algo_reverse.png} }}%
+
+    \caption{75 samples of data $X$, $Y$.  The samples are generated independently as follows:
+    $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an expoential distribution and $n_i$ is drawn 
+    independently from a gaussian one and $f(x) = \tanh(x) + 2\sin(2x) + x^3$}
+    \label{fig:algo_data}
+\end{figure}
+
+In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
+will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
+X to Y, and viceversa. 
+
+For simplicty assume $X \thicksim \mathcal{U}_{[-a, a]}$ (i.e. $X$ is uniformly disributed), then we can split 
+the data in two, say $D_1$ and $D_2$, where we place all samples with $x_i < 0$ into $D_1$, and the rest into 
+$D_2$. To be more precise, $\mathcal{D}_1 = \{(x_i, y_i) : x_i < 0\}$ and $\mathcal{D}_2 = \mathcal{D} 
+\backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. 
+$\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure obtaining $\mathcal{\tilde{D}}_1$
+and $\mathcal{\tilde{D}}_2$. Color coding the different subets, we then have the following:
+ 
+\begin{figure}[H]
+    \captionsetup[subfigure]{labelformat=empty}
+    \centering
+    \subfloat{{\includegraphics[width=6.5cm]{algo_part.png} }}%
+    % \quad
+    \subfloat{{\includegraphics[width=6.5cm]{algo_part_reverse.png} }}%
+    \caption{Samples from two different sources, $X$ and $Y$, how can we tell if 
+    they come from the same distribution?}
+\end{figure}
+
+If we estimate a fit $\hat{f}_1$ for $\mathcal{D}_1$ and similarly $\hat{f}_2$ for $\mathcal{D}_2$, then we can 
+compute residuals for each sets, say $\hat{e}_1$ for $\mathcal{D}_1$  and $\hat{e}_2$ for $\mathcal{D}_2$.
+Since the noise is -- not only independent from $X$ but also -- iid, it follows that $\hat{e}_1$ and $\hat{e}_2$
+follow the same distribution -- assuming a perfect fit $f$. We can viualize this by looking at the 
+histograms from the residuals.
+
+\begin{figure}[H]
+    \captionsetup[subfigure]{labelformat=empty}
+    \centering
+    \subfloat{{\includegraphics[width=6.5cm]{algo_fit_direct.png} }}%
+    % \quad
+    \subfloat{{\includegraphics[width=6.5cm]{algo_fit_reverse.png} }}%
+    % \caption{Samples from two different sources, $X$ and $Y$, how can we tell if 
+    % they come from the same distribution?}
+    \\
+
+    \subfloat{{\includegraphics[width=6.5cm]{algo_res_direct.png} }}%
+    % \quad
+    \subfloat{{\includegraphics[width=6.5cm]{algo_res_reverse.png} }}%
+
+    \caption{Example}
+
+\end{figure}
+
+Note that for the reverse model, the noise in $\mathcal{\tilde{D}}_1$ appears to be very different from 
+that of $\mathcal{\tilde{D}}_2$; this is not a coincidence -- intuitvely, it seems very unlikely that 
+regressing in the other direction will also result in independence noise. Further, as we briefly 
+mentioned in the early chapters, as \cite{hoyer2009nonlinear} show, it is unlikely that for a non-linear 
+we might not have identifiability. 
+
+One simple idea is then to quantify these observations; from $\mathcal{D}_1$ and $\mathcal{D}_2$ we 
+compute $\hat{e}_1$, $\hat{e}_1$, and so we can define as a score for these sets:
 
 $$
-    Y = f(X) + N
-$$ 
+     \mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) = \norm{p_1 - p_2}_1
+$$
 
-The key observation is that if we partition the
-data in some intervals (e.g. uniform intervals), then if we look at two of these intervals we note that, while
-the distribution of y will differ -- due to either $X$ not being uniform and or the non-linearities due to $f$ -- 
-the residuals will in fact be the same for both intervals due to the i.i.d. assumption. 
+Where $p_1$ is the empirical distribution of $\hat{e}_1$, and similarly for $p_2$ and $\hat{e}_2$. We 
+can then apply the score function to $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ and 
+infer causality as follows:
 
-In fact, if we a large enough number of samples, then -- assuming that we find good models -- we can be source
-that the difference between the empirical distribution of the residuals between these subets of $X$ goes to $0$.
-By the LLN the empriical CDFs will in fact converge a.s. to the CDF of $N$.
+\[ 
+     \begin{cases} 
+        & X \rightarrow Y \quad  \mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) 
+        \leq \mathcal{C}(\mathcal{\tilde{D}}_1, \mathcal{\tilde{D}}_2) \\
+        & Y \rightarrow X \quad \text{otherwise}
+     \end{cases}
+\]
 
-If on the other hand, we wrongly assume that Y -> X, we can be nearly certain that the additive noise that we 
-find when fitting the reverse model will depend on Y. These observations motivate the following algorithm:
+Assuming the regressions are \textbf{faithfull}, then as $n \rightarrow \infty$ we know that both 
+$p_1$ and $p_2$ will converge to the same $p_Z$ and so $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) \rightarrow 0$.
+On the other hand, it is unlikely that the residuals of $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ 
+follow the same distribution (due to the non-linearlities introduced by f and the additivy of the noise) and 
+so we can be pretty confident that asympotically the procedure will correct. In fact, assuming that \textbf{ANM}
+$X \rightarrow Y$ is identifiabile will be enough to show that this procedure is consistent.
+
+In essence the algorithm consists of the parts:
+
+\begin{enumerate}
+    \item Partition the data
+    \item Estimate regressions and residuals
+    \item Compute scores
+\end{enumerate}
+
+Before giving the general description of the algorithm we will comment on each of these parts.
 
 
+\subsection{Partition}
+
+Requirements:
+
+dense
+disjoint partition
+ordering
+
+Disjoint ok
+
+When we partition $\mathcal{D}$ into $\mathcal{D}_1$ and $\mathcal{D}_2$, it is only a good idea to partition
+in the center of the mean of $x_i$ if the underlying measure is uniform. However this is rarely the case -- 
+not to mention that $Y$ is unlikely to be uniform.
+
+In effect what we require are dense subsets $\mathcal{D}_1$ and $\mathcal{D}_2$ w.r.t. $\mathcal{D}$. This 
+will guarantee that if $n \rightarrow \infty$ then so do the sizes of $\mathcal{D}_1$ and $\mathcal{D}_2$.
+Since this is in essence a clustering problem, we turn to K-means, perhaps the most popular clustering 
+algorithm. 
+
+Show example with more partitions; show example with expoential distrib, partition there. 
+
+If $X$ is indeed unfirom, then the cluster found by K-means will essentially be what our first heuristic method
+did (splitting it in the middle). For general distributions, when can we guarantee that the clusters are dense???
+It is crucial that the subsets be dense. How to argue?
+
+NEEDS TO BE ADJACENT PARTITIONS
+
+Q: Sai
+
+\subsection{Regression}
+
+A benefit of partitioning the is that we are also partitioning the function we are trying to estimate; in 
+particular one would expect that the regression will be easier, e.g. a low order polynomial might be enough.
+
+Show example of many partitions
+
+\subsection{Score functions}
+
+We have seen in previous chapters various ways to measure the distances between two distribtions say 
+$p_1$ and $p_2$, via some score function $\mathcal{D}(p_1, p_2)$; for example $\mathcal{D}$ could be the 
+MMD metric, or the $l_1$ distance.
+
+Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous
+$P_k$ is compared to some other set $\tilde{P}_j$ -- recall that we wish to see in which of the two, 
+the sets, the distribtions are more likely to be the same, i.e. we are testing the iid assumption. 
+
+There are several simple ways to go about this:
+
+$$
+    C(P_k) = \operatorname{max}_{i, j} \mathcal{D}(p_i, p_j)
+$$
+
+Another option is to take an average of the pairwise score:
+
+$$
+    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} \mathcal{D}(p_i, p_j)
+$$
+
+or even 
+
+$$
+    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} \mathcal{D}(p_i, p_\mu)
+    , \quad p_\mu = \frac{1}{k} \sum_i p_i
+$$
+
+
+Thus if $C(P_k) < C(\tilde{P}_j)$, we can say that the distributions in $P_k$ are
+more homogenous; e.g. they more likely to produce similar looking noise. 
 
 \subsection{Algorithm}
 
-TODO bellow is old
+We note that the algorithm is a general framework as we are free to choose the partition, regression method
+and score function. We would like to point out that we recycle the data, i.e. we use the same data for 
+estimating the regression and subsequent score function; obviously if one wishes one can easily split the 
+data in the paritions to use a different portion of the data for estimation and for evaluating the score function.
 
-% Note to self: algo 2 name is due to the example
-% \begin{algorithm}[H]
-% \caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
-%     \label{alg:twinscore}}
-% \begin{algorithmic}[1]
-%     \Require{$x$ and $y$ are vectors of the same length}
-%     \Statex
-%     \Function{twinscore}{$x, y$}
-%     \Let{$X, Y, k$}{$\textit{partition}(x, y)$} 
-%     \For{$i \gets 1 \textrm{ to } k$}
-%         \Let{$\hat{f}_i$}{$\textit{fit}(X_i, Y_i)$}
-%         \Let{$e_i$ }{$Y_i - \hat{f}_i(X_i)$}
+\begin{algorithm}[H]
+
+    \caption{\textbf{Twin method}: General procedure to decide whether $p_{x, y}$ satisfies and ANM $X \rightarrow Y$
+        or $Y \rightarrow X$}
+  
+    \textbf{Input}:
+
+    \begin{enumerate}
+        \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
+        \item Partition procedure
+        \item Regression method
+        \item Score estimator $\hat{C}: E \rightarrow \R$, where E is a set of vectors. 
+    \end{enumerate}
+    
+    \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
+
+    \begin{enumerate}
+
+        \item $\tilde{\mathcal{D}} := \{ ( y_i, x_i )\}_{i \in [N]}$
+
+        \item \textbf{Partition} the data into subsets\footnote{The subsets are disjoint and their union equals the data}:
+        \begin{itemize}
+            \item[--] $\{ \mathcal{D}_i \}_{i \in [k]} \quad \text{s.t.} \quad \mathcal{D}_i \subset \mathcal{D}, 
+            \forall i \in [k]$
+            \item[--] $\{ \tilde{\mathcal{D}}_i \}_{i \in [j]} \quad \text{s.t.} \quad \tilde{\mathcal{D}}_i 
+            \subset \tilde{\mathcal{D}}, \forall i \in [j]$
+            \item[--] Where integers $j, k > 1$ are determined by the partition procedure.
+        \end{itemize}
+
+        \item \textbf{Estimate regressions} and residuals for each subset
         
-%     \EndFor
+        for $i \in [k]:$
 
-%     \Let{$\hat{C}$}{$\operatorname{max}_{i,j} \norm{\hat{p}_{e_i} - \hat{p}_{e_j}}_{L_1}$}
+        \begin{itemize}
+            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\mathcal{D}_i$
+            \item[--] $\hat{f}_Y$ of the regression function $x \mapsto \E(Y | X=x)$
+            \item[--] $ \mathbf{\hat{e}_{Y}}(i) := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
+        \end{itemize}
 
-%     \State \Return{$\hat{C}$}
-%     \EndFunction
-% \end{algorithmic}
-% \end{algorithm}
+        end for
+
+        $\mathbf{E_Y} := \{ \mathbf{\hat{e}_{Y}}(i) \}_{i \in [k]} $
+
+        for $i \in [j]:$
+
+        \begin{itemize}
+            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\tilde{\mathcal{D}}_i$
+            \item[--] $\hat{f}_X$ of the regression function $x \mapsto \E(X | Y=y)$
+            \item[--] $ \mathbf{\hat{e}_{X}}(i) := \mathbf{x} - \hat{f}_X(\mathbf{y})$
+        \end{itemize}
+
+        end for
+
+        $\mathbf{E_X} := \{ \mathbf{\hat{e}_{X}}(i) \}_{i \in [j]} $
+
+        \item \textbf{Compute scores} to measure the difference between the residuals
+        \begin{itemize}
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( \mathbf{E_Y} )$ 
+            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \mathbf{E_X} )$
+        \end{itemize}        
+
+        \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
+        
+        \[ 
+        \text{dir} :=  
+         \begin{cases} 
+            & X \rightarrow Y \quad \text{if} \; \hat{C}_{X \rightarrow Y} \leq \hat{C}_{Y \rightarrow X}\\
+            & Y \rightarrow X \quad \text{otherwise}
+         \end{cases}
+        \]
+        
+    \end{enumerate}
+
+  \label{alg:twin_test}
+  \end{algorithm}
 
 
-% \begin{algorithm}[H]
-% \caption{Given data $x$, $y$, the algorithm returns the predicted causal direction.
-%     \label{alg:twintest}}
-% \begin{algorithmic}[1]
-%     \Require{$x$ and $y$ are vectors of the same length}
-%     \Statex
-%     \Function{twintest}{$x, y$}
-%     \Let{$\hat{C}_{X \rightarrow Y }$}{$\textit{twinscore}(x, y)$} 
-%     \Let{$\hat{C}_{Y \rightarrow X }$}{$\textit{twinscore}(y, x)$} 
-
-%     \State \Return{$\hat{C}_{X \rightarrow Y } > \hat{C}_{Y \rightarrow X }$}
-%     \EndFunction
-% \end{algorithmic}
-% \end{algorithm}
-
-
-\subsection{Theory}
+\subsection{Consistency}
 
 prooooff
 

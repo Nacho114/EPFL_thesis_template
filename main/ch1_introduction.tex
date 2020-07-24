@@ -168,7 +168,7 @@ and so $X_{\text{Pa}(4)} = X_1, X_2$.
 
 To make precise the meaning of causality, suppose that we are given 
 two random variable $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
-would say that $X$ causes $Y$, $X \rightarrow Y$, if we intervene on $X$ and then see an effect on $Y$. In particular
+would say that $X$ causes $Y$, or $X \rightarrow Y$, if we intervene on $X$ and then see an effect on $Y$. In particular
 we will denote $\operatorname{do}(x)$ -- short for $\operatorname{do}(X = x)$ -- as an intervention
 that forces the variable $X$ to have the value $x$, and leaves the rest of the system untouched. 
 Following the convention inspired by \cite{pearl2000causality}, 
@@ -182,7 +182,7 @@ This motivates the following definition:
 \end{definition}
 
 It is tempting to say that $p_{y|do(x)}$ is equal to $p_{y|x}$, i.e. what is the chance of $y$ given that $x$ happened.
-Whem i8n doubt, it is always best to look at examples; suppose
+Whem in doubt, it is always best to look at examples; suppose
 $x$ is 1 if a person smokes and 0 otherwise, similarly let $y$ be 1 if a person 
 has cancer and 0 otherwise. Note that if the was a confounding gene that caused both certain people to smoke 
 and get cancer, then $p_{y|x}$ would not be the same as $p_{y|do(x)}$ -- by forcing someone to smoke we would 

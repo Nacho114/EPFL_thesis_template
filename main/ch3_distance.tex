@@ -1,15 +1,29 @@
 \chapter{Statistical distance}
 
 
-Suppose that we are given samples from two unkown distributions $P$ and $Q$, an 
-important question to ask is: are $P$ and $Q$ equal?
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=.45\textwidth]{scatter_dist_question.png}
+%     % \caption{A comic}
+%     \label{fig:scatter_dist_questions} 
+% \end{figure}
+
 
 \begin{figure}[H]
+    \captionsetup[subfigure]{labelformat=empty}
     \centering
-    \includegraphics[width=.45\textwidth]{scatter_dist_question.png}
-    % \caption{A comic}
-    \label{fig:scatter_dist_questions} 
+    \subfloat[$X \thicksim P$]{{\includegraphics[width=5cm]{red_scatter.png} }}%
+    \qquad
+    \subfloat[$Y \thicksim Q$]{{\includegraphics[width=5cm]{other_scatter.png} }}%
+    \caption{Samples from two different sources, $X$ and $Y$, how can we tell if 
+    they come from the same distribution?}
+    \label{fig:scatter_dist_questions}%
 \end{figure}
+
+
+Suppose that we are given samples from two unkown distributions $P$ and $Q$, an 
+important question to ask is: are $P$ and $Q$ equal?
 
 
 The Integral Probability Metric (IPM) and f-divergence are two very rich and well studied
