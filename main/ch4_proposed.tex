@@ -487,6 +487,57 @@ data in the paritions to use a different portion of the data for estimation and 
 
 \subsection{Consistency}
 
-prooooff
+\begin{lemma} Given random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
+$X \thicksim P_X$, $N \thicksim P_N$, $\alpha X + N \thicksim  P_{\alpha X + N}$, there is some $C > 0$ s.t.
+
+$$
+\left\|P_{N} -  P_{\alpha X + N} \right\|_{1} \leqslant \alpha C 
+$$
+\end{lemma}
+
+\begin{proof}
+    ~
+
+First note that $\alpha X \thicksim \frac{1}{\alpha}P_{X} \left( \frac{\tau}{\alpha} \right)$ by applying the 
+change of variable rule. 
+
+Next, since $X \bigCI N$, we may write $P_{\alpha X + N}$ as a convolution:
+
+$$
+    P_{\alpha X + N} (t) = \int P_{N}(t-\tau) \frac{1}{\alpha}P_{X} \left( \frac{\tau}{\alpha} \right) d \tau =
+     \int P_{N}(t-\alpha \tau) P_{X}(\tau) d \tau
+$$
+
+Hence we may write (with $P_X$ as the underlying measure):
+
+$$
+    P_{\alpha X + N} (t) = \E\left[P_{N}(t-\alpha \Tau ) \right]
+$$
+
+
+We proceed as follows:
+
+$$
+\begin{aligned}
+\norm{P_{N}- P_{\alpha X + N}}_{1} &=\int\abs{ P_{N}(t)-\E\left[P_{N}(t-\alpha \Tau ) \right]} d t \\
+&\leq \int \E \abs{ P_{N}(t)-P_{N}(t-\alpha\Tau )} d t \\
+&=\E \int\abs{ P_{N}(t)-P_{N}(t-\alpha\Tau ) } d t \\
+&= \E \norm{P_{N}- P_{\alpha X + N}}_{1} \\
+&= \E \norm{P_{N}- P_{\alpha X + N} | \abs{\Tau} \leq k}_{1} \\
+&\leq \E \int\abs{ P_{N}(t)-P_{N}(t-\alpha\Tau ) } d t + 2 P(\abs{ \Tau} > C^*) \\ 
+&\leq \int\abs{ P_{N}(t)-P_{N}(t-\alpha C ) } d t + 2 P(\abs{ \Tau} > C^*) \\
+&\approx \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ \Tau} > C^*)\\
+&\leq \alpha C \int P_{N}^{\prime}(t) d t + 2 P(\abs{ \Tau} > C^*)\\
+&\leq \alpha C^\prime 
+\end{aligned}
+$$
+
+The first equality follows by the aforementioned observation. The first inequality follows from the triangle 
+inequality; 
+the equality that comes after is due to Fubini's theorem, we can swap the expectation (which is also an 
+integration) since all measures are measurable. The second inequality follows by truncating 
+
+Assuming we can everything is integrable so that we pay sawp, Expectation, taylor, ...
+\end{proof}
 
 

@@ -105,3 +105,8 @@
 \usepackage{pgf}
 \usetikzlibrary{arrows, automata}
 
+\newcommand{\Tau}{\mathrm{T}}
+
+\makeatletter
+\let\oldabs\abs
+\def\abs{\@ifstar{\oldabs}{\oldabs*}}

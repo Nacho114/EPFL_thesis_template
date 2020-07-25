@@ -91,8 +91,8 @@ Note that if we pick some $x \in \mathcal{X}$, then $k(x, .)$ is a function from
     $\mathcal{H}$ is called a Reproducing Kernel Hilbert Space (RKHS) if there is a kernel k such that
 
     \begin{enumerate}
-        \item $ k(x, .) \in \mathcal{H} \quad \forall x \in \mathcal{X}$
-        \item $ \inp*{f}{k(x, .)} = f(x) \quad \forall f \in \mathcal{H}$
+        \item $ k(x, \cdot) \in \mathcal{H} \quad \forall x \in \mathcal{X}$
+        \item $ \inp*{f}{k(x, \cdot)} = f(x) \quad \forall f \in \mathcal{H}$
     \end{enumerate}
 
 \end{definition}
@@ -100,7 +100,7 @@ Note that if we pick some $x \in \mathcal{X}$, then $k(x, .)$ is a function from
 Given the kernel $k$ it is convinient to define the feature map $\phi: \mathcal{X} \rightarrow \mathcal{H}$ as:
 
 $$
-    \phi(x) = k(x, .)
+    \phi(x) = k(x, \cdot)
 $$
 
 The intuition is that in this space, we can view functions as linear combinations\footnote{
@@ -109,7 +109,7 @@ The intuition is that in this space, we can view functions as linear combination
 } of features:
 
 $$
-    f(x) =  \inp*{f}{k(x, .)} = \inp*{f}{\phi(x)}
+    f(x) =  \inp*{f}{k(x, \cdot)} = \inp*{f}{\phi(x)}
 $$
 
 
@@ -118,7 +118,7 @@ features (which can live in infinite spaces) are simple function evaluations;
 indeed by letting $f(x) = k(x, x\prime)$ we get
 
 $$
-    \inp*{k(x^\prime, .)}{k(x, .)} = k(x, x^\prime)
+    \inp*{k(x^\prime, \cdot)}{k(x, \cdot)} = k(x, x^\prime)
 $$
 
 Observe that both conditions imply that $k$ spans $\mathcal{H}$, i.e.
