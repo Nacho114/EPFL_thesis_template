@@ -447,8 +447,8 @@ gemoetry of the space, we draw it solely to gain intuition about the problem.} f
         \draw[semithick, fill=black] (.5, -.5) circle (0.02) node[above, color=red] {$P_{Z + \Delta_2 X}$};;
         \draw[semithick, fill=black] (-.58, .114) circle (0.02) node[above, color=blue] {$P_{Z + \Delta_1 X}$};;
       \end{tikzpicture}
-      \caption{The $l_1$ around $P_Z$, for brevity we denote 
-      $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$}.
+      \caption{The $l_1$ ball around $P_Z$, for brevity we denote 
+      $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$}
       \label{fig:dist}
 \end{figure}
 
@@ -464,12 +464,12 @@ estimate, which we can get arbitrarily small with enough samples.
 
 We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
-\begin{lemma} Given $\alpha, \delta > 0$, random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
-$X \thicksim P_X$, $N \thicksim P_N$, with $\int P_{N}^{\prime}(t) d t < \infty$.
-$\alpha X + N \thicksim  P_{\alpha X + N}$, there is some $C > 0$ s.t.
+\begin{lemma} Given $\alpha, \delta > 0$, random variables $Z$ and $X$ s.t. $\alpha X + Z$, where $X \bigCI Z$, 
+$X \thicksim P_X$, $Z \thicksim P_Z$, with $\int P_{Z}^{\prime}(t) d t < \infty$.
+$\alpha X + Z \thicksim  P_{\alpha X + Z}$, there is some $C > 0$ s.t.
 
 $$
-\left\|P_{N} -  P_{\alpha X + N} \right\|_{1} \leqslant \alpha C + \delta
+\left\|P_{Z} -  P_{\alpha X + Z} \right\|_{1} \leqslant \alpha C + \delta
 $$
 \label{lemma:conv_bound}
 \end{lemma}
@@ -480,17 +480,17 @@ $$
 First note that $\alpha X \thicksim \frac{1}{\alpha}P_{X} \left( \frac{\tau}{\alpha} \right)$ by applying the 
 change of variable rule. 
 
-Next, since $X \bigCI N$, we may write $P_{\alpha X + N}$ as a convolution:
+Next, since $X \bigCI Z$, we may write $P_{\alpha X + Z}$ as a convolution:
 
 $$
-    P_{\alpha X + N} (t) = \int P_{N}(t-x) \frac{1}{\alpha}P_{X} \left( \frac{x}{\alpha} \right) d x =
-     \int P_{N}(t-\alpha x) P_{X}(x) d x
+    P_{\alpha X + Z} (t) = \int P_{Z}(t-x) \frac{1}{\alpha}P_{X} \left( \frac{x}{\alpha} \right) d x =
+     \int P_{Z}(t-\alpha x) P_{X}(x) d x
 $$
 
 Hence we may write (with $P_X$ as the underlying measure):
 
 $$
-    P_{\alpha X + N} (t) = \E\left[P_{N}(t-\alpha X ) \right]
+    P_{\alpha X + Z} (t) = \E\left[P_{Z}(t-\alpha X ) \right]
 $$
 
 
@@ -498,17 +498,17 @@ We proceed as follows:
 
 $$
 \begin{aligned}
-\norm{P_{N}- P_{\alpha X + N}}_{1} &=\int\abs{ P_{N}(t)-\E\left[P_{N}(t-\alpha X ) \right]} d t \\
-&\leq \int \E \abs{ P_{N}(t)-P_{N}(t-\alpha X )} d t \\
-&=\E \int\abs{ P_{N}(t)-P_{N}(t-\alpha X ) } d t \\
-&= \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right] 
-P\left( \abs{X} \leq k \right) + \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} > k \right] 
+\norm{P_{Z}- P_{\alpha X + Z}}_{1} &=\int\abs{ P_{Z}(t)-\E\left[P_{Z}(t-\alpha X ) \right]} d t \\
+&\leq \int \E \abs{ P_{Z}(t)-P_{Z}(t-\alpha X )} d t \\
+&=\E \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha X ) } d t \\
+&= \E \left[ \norm{P_{Z}- P_{\alpha X + Z} }_{1} \, | \, \abs{X} \leq k \right] 
+P\left( \abs{X} \leq k \right) + \E \left[ \norm{P_{Z}- P_{\alpha X + Z} }_{1} \, | \, \abs{X} > k \right] 
 P\left( \abs{X} > k \right) \\
-&\leq \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right] 
+&\leq \E \left[ \norm{P_{Z}- P_{\alpha X + Z} }_{1} \, | \, \abs{X} \leq k \right] 
  + 2 P(\abs{ X} > k) \\ 
-&\leq \int\abs{ P_{N}(t)-P_{N}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
-&\leq \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C^* P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
-&\leq \alpha C^* \int P_{N}^{\prime}(t) d t + 2 P(\abs{ X} > k)\\
+&\leq \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
+&\leq \int\abs{ P_{Z}(t)- (P_{Z}(t) + \alpha C^* P_{Z}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
+&\leq \alpha C^* \int P_{Z}^{\prime}(t) d t + 2 P(\abs{ X} > k)\\
 &\leq \alpha C + \delta
 \end{aligned}
 $$
@@ -521,22 +521,24 @@ the expectation w.r.t some $k$ to be chosen later.
 
 The following upper bounds follows by noting that
 $\norm{p - q}_1 \leq 2$ for any distribtions $p$ and $q$. Next observe that 
-$\E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right]$ is the average $l_1$ distance
-between $\norm{P_{N}}$ and random shifts of itself. Hence if we choose the shift as follows:
+$\E \left[ \norm{P_{Z}- P_{\alpha X + Z} }_{1} \, | \, \abs{X} \leq k \right]$ is the average $l_1$ distance
+between $\norm{P_{Z}}$ and random shifts of itself. Hence if we choose the shift as follows:
 
 $$
-    C^* = \operatorname{argmax}_{s \in [-k, k]} = \int\abs{ P_{N}(t)-P_{N}(t-\alpha s ) } d t 
+    C^* = \operatorname{argmax}_{s \in [-k, k]} = \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha s ) } d t 
 $$
 
 we can upper bound the average distance; note that there is at least one maximiser since we are 
 optimising over a compact set. 
 
-We next approximate $P_{N}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
+We next approximate $P_{Z}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
 that we will pick $\alpha \approx 0$, using Taylor's theorem we can upper bound HOW? TODO - should be doable
 . Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
-$C = C^* \int P_{N}^{\prime}(t) d t$ and we are done.
+$C = C^* \int P_{Z}^{\prime}(t) d t$ and we are done.
 
-We note that while $C^*$ will depend on $\delta$, this is not important for our application.
+We note that while $C^*$ will depend on $\delta$, this is not a problem. We will first pick $\delta$ to be 
+some small constant, this will then determine $C*$ to be some other constant; after this we will be choose 
+$\alpha$. 
 \end{proof}
 
 The next lemma will also be important 
@@ -548,6 +550,7 @@ The next lemma will also be important
     $$
         \norm{P^* - Q^*}_1 \leq \delta
     $$
+    \label{lemma:quantisation}
 \end{lemma}
 
 \begin{proof}
@@ -562,8 +565,8 @@ We can now conclude by proving consistency
 
 \begin{align*}
         P\left( \norm{ \hat{p}_1 - \hat{p}_2 }_1 \geq \epsilon \right) &\leq 
-        P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_n}_1 \geq \epsilon \right) \\
-        &\leq P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_N}_1 \geq \epsilon 
+        P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_n}_1 \geq \epsilon \right) \\
+        &\leq P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right) \\
                         &\qquad + P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 \end{align*}
@@ -582,13 +585,27 @@ Both of which go to zero assuming that we have a suitable regression.
 It remains to bound 
 
 \begin{equation}
-    P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_N}_1 \geq \epsilon 
+    P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
 \end{equation}
 
-We will do so by using lemma \ref{lemma:conv_bound}, note that as 
+Note that $\hat{p}_1 \rightarrow P_{Z + \Delta_1 X}$ as $n \rightarrow \infty$, thus, 
+if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C}$. 
+We do the same for $\hat{p}_2$, which implies by lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation}
+that: 
 
-TODO
+$$
+   \norm{\hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+$$
+
+And so as $n \rightarrow \infty$
+
+$$
+    P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
+        \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
+        \rightarrow 0 
+$$
+
 
 \end{proof}
 
