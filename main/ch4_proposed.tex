@@ -431,28 +431,38 @@ $$
     \hat{Z}_2 = Z + (a_2 - \hat{a}_2)X \quad \implies \quad Z - \alpha X \leq \hat{Z}_2 \leq Z + \alpha X 
 $$
 
-Note that $\hat{Z}_1 \thicksim P_{Z + \Delta X}$
+Note that $\hat{Z}_1 \thicksim P_{Z + \Delta_1 X}$ and $\hat{Z}_2 \thicksim P_{Z + \Delta_2 X}$ , where for 
+brevity we denote $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$. We can visualise the distance
+between these distribtions as follows: (see\footnote{Note that the illustration does not follow the actual
+gemoetry of the space, we draw it solely to gain intuition about the problem.} figure \ref{fig:dist})
 
 \begin{figure}[!h]
     \centering
-    \begin{tikzpicture}[scale=3]
-        \node[left] (O) at (0,0) {$P_Z$};
-        \draw[semithick, fill=black] (0,0) circle (0.02);
-        %Draw the Circle around it all
+    \begin{tikzpicture}[scale=2]
         \draw[thick] (0,0) circle (1);
-        %Draw lines to the top
-        % \foreach \x in {-4,...,4}
-        %   \draw[red,very thick] (\x/8,0) -- +(0,{sqrt(1-\x/8*\x/8)});
-        \path (0, 0) -- (0, 1) node[above] {$P_{Z + \alpha X}$};
+        \draw[semithick, fill=black] (0,0) circle (0.02) node[left] {$P_Z$};
         \draw[thick, <->] (0, .05) -- node[right] {$R(\alpha)$} (0, .95);
-        \draw[semithick, fill=black] (0,1) circle (0.02);
-        % p_1
-        \draw[semithick, fill=black] (.5, -.5) circle (0.02);
+        \draw[semithick, fill=black] (0,1) circle (0.02) node[above] {$P_{Z + \alpha X}$};
+        % p_1 and p_2
+        \draw[semithick, fill=black] (.5, -.5) circle (0.02) node[above, color=red] {$P_{Z + \Delta_2 X}$};;
+        \draw[semithick, fill=black] (-.58, .114) circle (0.02) node[above, color=blue] {$P_{Z + \Delta_1 X}$};;
       \end{tikzpicture}
-      \caption{Proof idea}
+      \caption{The $l_1$ around $P_Z$, for brevity we denote 
+      $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$}.
+      \label{fig:dist}
 \end{figure}
 
-We begin by proving two lemmas that we will use for the consistency proof. 
+The idea is then the following, given some $\epsilon > 0$, we want to show that asympotically
+
+$$
+    \norm{\hat{p}_1 - \hat{p}_2}_1 > \epsilon
+$$
+
+cannot happen. The game plan will be to find a bound on the $R(\alpha)$; once we have one, we are done, we 
+will simply pick an $\alpha$ s.t. $R(\alpha) < \epsilon$. Recall that $\alpha$ is the error in of our $\hat{a}$
+estimate, which we can get arbitrarily small with enough samples. 
+
+We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
 \begin{lemma} Given $\alpha, \delta > 0$, random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
 $X \thicksim P_X$, $N \thicksim P_N$, with $\int P_{N}^{\prime}(t) d t < \infty$.
