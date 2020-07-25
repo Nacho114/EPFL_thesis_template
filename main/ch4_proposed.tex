@@ -487,12 +487,17 @@ data in the paritions to use a different portion of the data for estimation and 
 
 \subsection{Consistency}
 
-\begin{lemma} Given random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
-$X \thicksim P_X$, $N \thicksim P_N$, $\alpha X + N \thicksim  P_{\alpha X + N}$, there is some $C > 0$ s.t.
+We begin by proving two lemmas that we will use for the consistency proof. 
+
+\begin{lemma} Given $\alpha, \delta > 0$, random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
+$X \thicksim P_X$, $N \thicksim P_N$, with $\int P_{N}^{\prime}(t) d t < \infty$.
+$\alpha X + N \thicksim  P_{\alpha X + N}$, there is some $C > 0$ s.t.
 
 $$
-\left\|P_{N} -  P_{\alpha X + N} \right\|_{1} \leqslant \alpha C 
+\left\|P_{N} -  P_{\alpha X + N} \right\|_{1} \leqslant \alpha C + \delta
 $$
+
+\label{lemma:conv_bound}
 \end{lemma}
 
 \begin{proof}
@@ -504,14 +509,14 @@ change of variable rule.
 Next, since $X \bigCI N$, we may write $P_{\alpha X + N}$ as a convolution:
 
 $$
-    P_{\alpha X + N} (t) = \int P_{N}(t-\tau) \frac{1}{\alpha}P_{X} \left( \frac{\tau}{\alpha} \right) d \tau =
-     \int P_{N}(t-\alpha \tau) P_{X}(\tau) d \tau
+    P_{\alpha X + N} (t) = \int P_{N}(t-x) \frac{1}{\alpha}P_{X} \left( \frac{x}{\alpha} \right) d x =
+     \int P_{N}(t-\alpha x) P_{X}(x) d x
 $$
 
 Hence we may write (with $P_X$ as the underlying measure):
 
 $$
-    P_{\alpha X + N} (t) = \E\left[P_{N}(t-\alpha \Tau ) \right]
+    P_{\alpha X + N} (t) = \E\left[P_{N}(t-\alpha X ) \right]
 $$
 
 
@@ -519,25 +524,104 @@ We proceed as follows:
 
 $$
 \begin{aligned}
-\norm{P_{N}- P_{\alpha X + N}}_{1} &=\int\abs{ P_{N}(t)-\E\left[P_{N}(t-\alpha \Tau ) \right]} d t \\
-&\leq \int \E \abs{ P_{N}(t)-P_{N}(t-\alpha\Tau )} d t \\
-&=\E \int\abs{ P_{N}(t)-P_{N}(t-\alpha\Tau ) } d t \\
-&= \E \norm{P_{N}- P_{\alpha X + N}}_{1} \\
-&= \E \norm{P_{N}- P_{\alpha X + N} | \abs{\Tau} \leq k}_{1} \\
-&\leq \E \int\abs{ P_{N}(t)-P_{N}(t-\alpha\Tau ) } d t + 2 P(\abs{ \Tau} > C^*) \\ 
-&\leq \int\abs{ P_{N}(t)-P_{N}(t-\alpha C ) } d t + 2 P(\abs{ \Tau} > C^*) \\
-&\approx \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ \Tau} > C^*)\\
-&\leq \alpha C \int P_{N}^{\prime}(t) d t + 2 P(\abs{ \Tau} > C^*)\\
-&\leq \alpha C^\prime 
+\norm{P_{N}- P_{\alpha X + N}}_{1} &=\int\abs{ P_{N}(t)-\E\left[P_{N}(t-\alpha X ) \right]} d t \\
+&\leq \int \E \abs{ P_{N}(t)-P_{N}(t-\alpha X )} d t \\
+&=\E \int\abs{ P_{N}(t)-P_{N}(t-\alpha X ) } d t \\
+&= \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right] 
+P\left( \abs{X} \leq k \right) + \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} > k \right] 
+P\left( \abs{X} > k \right) \\
+&\leq \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right] 
+ + 2 P(\abs{ X} > k) \\ 
+&\leq \int\abs{ P_{N}(t)-P_{N}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
+&\approx \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C^* P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
+&\leq \alpha C^* \int P_{N}^{\prime}(t) d t + 2 P(\abs{ X} > k)\\
+&\leq \alpha C + \delta
 \end{aligned}
 $$
 
 The first equality follows by the aforementioned observation. The first inequality follows from the triangle 
 inequality; 
 the equality that comes after is due to Fubini's theorem, we can swap the expectation (which is also an 
-integration) since all measures are measurable. The second inequality follows by truncating 
+integration) since all measures are measurable. We next use the law of total probability by splitting 
+the expectation w.r.t some $k$ to be chosen later.  
 
-Assuming we can everything is integrable so that we pay sawp, Expectation, taylor, ...
+The following upper bounds follows by noting that
+$\norm{p - q}_1 \leq 2$ for any distribtions $p$ and $q$. Next observe that 
+$\E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right]$ is the average $l_1$ distance
+between $\norm{P_{N}}$ and random shifts of itself. Hence if we choose the shift as follows:
+
+$$
+    C^* = \operatorname{argmax}_{s \in [-k, k]} = \int\abs{ P_{N}(t)-P_{N}(t-\alpha s ) } d t 
+$$
+
+we can upper bound the average distance; note that there is at least one maximiser since we are 
+optimising over a compact set. 
+
+We next approximate $P_{N}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
+that we will pick $\alpha \approx 0$
+. Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
+$C = C^* \int P_{N}^{\prime}(t) d t$ and we are done.
+
+We note that while $C^*$ will depend on $\delta$, this is not important for our application.
+\end{proof}
+
+The next lemma will also be important 
+
+\begin{lemma}
+    Let $P$ and $Q$ be two distribtions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
+    $\norm{P - Q}_1 < \delta$ for some $\delta$, then
+
+    $$
+        \norm{P^* - Q^*}_1 < \delta
+    $$
+\end{lemma}
+
+\begin{proof}
+    ~
+    Using the data processing inequality (lemma \ref{lemma:dpi}), and noting that one can express the $l_1$
+    distance as a divergence proves the claim. 
+\end{proof}
+
+We can now conclude by proving consistency
+
+\begin{proof}
+
+\begin{align*}
+        P\left( \norm{ \hat{p}_1 - \hat{p}_2 }_1 \geq \epsilon \right) &\leq 
+        P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_n}_1 \geq \epsilon \right) \\
+        &\leq P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_N}_1 \geq \epsilon 
+        \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right) \\
+                        &\qquad + P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
+\end{align*}
+
+The first inequality follows by the triangle inequality, and the second one by using the law of total probability.
+
+Divergence l1 
+
+Observe that 
+
+$$
+P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right)  =
+P\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
+$$
+
+Both of which go to zero assuming that we have a suitable regression. 
+
+It remains to bound 
+
+\begin{equation}
+    P\left( \norm{ \hat{p}_1 - p_N}_1 + \norm{ \hat{p}_2 - p_N}_1 \geq \epsilon 
+        \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
+\end{equation}
+
+We will do so by using lemma \ref{lemma:conv_bound}, note that as 
+
+also 
+
+
+
+
+
 \end{proof}
 
 

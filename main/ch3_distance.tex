@@ -150,7 +150,7 @@ We can estimate $f$ as follows
 \footnote{Note that it is not obvious how to implement the optimisation as $\mathcal{H}$ may be infinite. However,
 this setup with a gaussian kernel is in fact equivalent to a Gaussian Processes, which can be easily
 implemented in practice (see \cite{JordanNotes}).}
-, pick an RHKS $\mathcal{H}$ with a gaussian kernes:
+, pick an RHKS $\mathcal{H}$ with a gaussian kernel:
 
 \begin{equation}
     f^{*}=\arg \min _{f \in \mathcal{H}}\left(
@@ -413,6 +413,18 @@ emprical distribution. While both can be seen as a hyperparameter, the effect of
 discretisation is not as obvious as that of choosing a kernel. 
 
 \section{f-divergence}
+
+
+\begin{lemma}[Data Processing Inequality (DPI)]
+    Let $X$ and $Y$ be two random variables, and let $P_X$ and $Q_X$ be two measures on $X$. If we 
+    pass these measures through a kernel, say $P_{Y|X}$ the resulting measures $P_X$ and $Q_X$ will
+    satisfy:
+
+    $$
+        \infdiv{P_X}{Q_X} \geq \infdiv{P_Y}{Q_Y}
+    $$
+    \label{lemma:dpi}
+\end{lemma}
 
 Generalisation of the usual divergence, exploit jensen.
 
