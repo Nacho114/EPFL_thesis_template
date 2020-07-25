@@ -7,7 +7,7 @@
 We will now introduce\footnote{Note that this introduction follows closely that of \cite{Mooij2016jmlr}, and 
 we encourage the reader to have a look to fill in details that have been omitted here.} 
 the bivariate causal model and define the particular class of such models that 
-we will work on. To avoid any sort of technical complications, hen we talk about functions, 
+we will work on. To avoid any sort of technical complications, when talk about functions, 
 they will always be Borel measurable -- which in any case consists of most functions of interest.
 
 For the bivariate case, if we have $Y \in \R$ as a direct cause of $X \in \R$, then we can model 
@@ -21,7 +21,7 @@ the relationship as follows:
      \label{causal_model}
 \end{equation}
 
-If we assume that there is no confounder, that there is no sampling bias\footnote{If you consider the 
+If we assume that there is no confounder, no sampling bias\footnote{If you consider the 
 example given in the introduction, then if Bob always sampled when Alice was excercising, then this 
 would have lead to sampling bias, as during excercise both heart rate and blood pressure tend to increase.} 
 and no cycles then it is natural to assume that $X \bigCI Z$.
@@ -45,8 +45,8 @@ equation \ref{causal_model}. However in general the interventional distribution 
 this means that with observational data alone we are not able identify the right causal direction.
 
 We must therefore make further assumptions on $f$ that break this symmetry and allow us to make causal inference.
-In particular we will consider the following subset of models from the ones introduced in equation \ref{causal_model};
-where we restric the noise to be additive.
+In particular we will consider the following subset of models. Note that these models are a subset of those 
+that we just introduced (in equation \ref{causal_model}).
 
 \begin{definition} Given a triplet $(p_X, p_Z, f)$, consisting of two finite mean densities and a function
 $f: \R \rightarrow \R$, we can define a \textbf{bivariate Additive Noise Model (ANM)} $X \rightarrow Y$
@@ -147,9 +147,12 @@ Thus if we set $\tilde{a} = \frac{a \operatorname{Var}(X)}{a^2 \operatorname{Var
 we get that $\operatorname{Cov}(Y, \tilde{Z}) = 0$, and since they are gaussian random variables we get 
 that they are also independent.
 
-
 \end{proof}
 
+These results show that indeed, in most cases, we should be able to perform causal inference as most 
+additive models should be identifiable. Interestingly, the guaussian setting provides difficulty 
+to the symmetry of the gaussian (in the linear case). In general the gaussian is our friend, but not today.
+We will next explote some methods for causal inference.
 
 \section{Methods}
 
@@ -190,7 +193,7 @@ In order to show that such a procedure is consistent we need 3 things:
 We will take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
 test to check if $p_{x. y}$ satisfies an ANM $X \rightarrow Y$. 
 
-In point 2, by we \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}} - \mathbf{e}} \rightarrow 0$.
+In point 2, by \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}} - \mathbf{e}} \rightarrow 0$.
 Essentially we require the regression used on the data to have 0 mean square error in expectation\footnote{A 
 more precise statement can be found in \cite{Mooij2016jmlr}}. 
 

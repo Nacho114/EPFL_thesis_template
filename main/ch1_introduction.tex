@@ -16,7 +16,7 @@ Suppose we are given samples of data say $X$ and $Y$, s.t.
 
 For example, we may be measuring the blood pressure and heart rate of Alice at time $k$, 
 say $x_k$ and $y_k$ respectively. Further, suppose we are unaware of her context, for example,
-Bob hacked into Alice's apple watch and so can only read $X$ and $Y$ -- but he has no idea of 
+Bob hacked into Alice's apple watch and so can only read $X$ and $Y$ -- he has no idea of 
 anything she might be up to.
 
 Bob then observes the following trend:
@@ -30,8 +30,8 @@ Bob then observes the following trend:
 Bob, having studied data science, is well aware of the fallacy of the law of small numbers\footnote{
     The law of small numbers is the error of concluding too much from too few data. 
 }. He therefore checks again the data the next day at a slightly different time. He again observes 
-a similar trend, and is now more confident in the existance of a causal relation and -- having neglected biology as 
-being beneath him -- makes the conjecture that either blood pressure causes heart rate, or 
+a similar trend, and is now more confident in the existance of a causal relation and -- having neglected biology -- 
+makes the conjecture that either blood pressure causes heart rate, or 
 perhaps the other way around. 
 
 Given this strong correlation, Bob asserts that he may either model $X$ as a function of $Y$ or the other way 
@@ -55,7 +55,7 @@ won’t always rise and fall in sync.
 So what did Bob learn\footnote{
     Note that heart rate and blood pressure are intimately linked, and the story between them is more complicated.
     The plots were randomly generated using a gaussian process, however they do resemble some real examples that 
-    can be found in google images.
+    can be found in the internet.
 }?
 
 \begin{enumerate}
@@ -65,7 +65,7 @@ So what did Bob learn\footnote{
     of the heart rate and blood pressure.
     \item His degree in Data Science is worth less than he thought; \textbf{machine learning is in fact not 
     a panacea}, contrary to common culture. However, applied with domain knowledge and causal reasoning
-    it may very useful. 
+    it may be useful. 
 \end{enumerate}
 
 If Bob was able to incorporate these notions into his machine learning models, then it might have been more
@@ -115,7 +115,8 @@ can accuretly predict causality in such settings with as few as 75 samples.
 We can model any causal model by using a \textbf{Function Causal Model (FCM)} which can be constructed as follows:
 
 We \textit{generate} a random vector $X = (X_1, ..., X_d)$ by using a graph $\mathcal{G}$ (encoding the relationships),
-a set of functions $f = (f_1, ..., f_d)$ (encoding the type of relationship) and a noise distribution $\mathcal{E}$.
+a set of functions $f = (f_1, ..., f_d)$ (encoding the type of relationship) and a noise distribution $\mathcal{E}$
+(the randomness generator).
 
 For each $i = 1, ..., d$
 
@@ -163,11 +164,14 @@ and so $X_{\text{Pa}(4)} = X_1, X_2$.
 \end{figure}
 
 
+Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
+$X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
+for simplicty not look at such settings.
 
 \subsection{Interventions}
 
 To make precise the meaning of causality, suppose that we are given 
-two random variable $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
+two random variables $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
 would say that $X$ causes $Y$, or $X \rightarrow Y$, if we intervene on $X$ and then see an effect on $Y$. In particular
 we will denote $\operatorname{do}(x)$ -- short for $\operatorname{do}(X = x)$ -- as an intervention
 that forces the variable $X$ to have the value $x$, and leaves the rest of the system untouched. 
@@ -181,12 +185,11 @@ This motivates the following definition:
     $x, x^\prime$
 \end{definition}
 
-It is tempting to say that $p_{y|do(x)}$ is equal to $p_{y|x}$, i.e. what is the chance of $y$ given that $x$ happened.
-Whem in doubt, it is always best to look at examples; suppose
-$x$ is 1 if a person smokes and 0 otherwise, similarly let $y$ be 1 if a person 
-has cancer and 0 otherwise. Note that if the was a confounding gene that caused both certain people to smoke 
-and get cancer, then $p_{y|x}$ would not be the same as $p_{y|do(x)}$ -- by forcing someone to smoke we would 
-break the confounding link; however in the absence of a confounder they are the same. This also illustrates 
+When we talk about $p_{y|x}$, we often say, "The chance of $y$ given that $x$ happened". This sounds similar
+to $p_{y|do(x)}$; note however that "$x$ happened" and "force $X = x$" are very different. Imagine that 
+there indeed was a gene that made people both prone to smoking and cancer; then if we forced someone at 
+random to smoke, he would on average be less likely to have cancer than someone who smoked because he wanted to.
+This also illustrates 
 one of the limitations of causality: some interventions are not possbile due to ethical issues.
 
 You might have heard about randmoized trials or A/B testing, these are both ways to estimate $p_{y|do(x)}$.
@@ -195,25 +198,33 @@ at random. When designing new UIs to maximise user participation in apps, develo
 they assing new versions to people at random to estimate engagement. Note that in both of these, we are able 
 to avoid a potential confounder by using picking $x$'s at random, and "forcing" them to "do$(x)$".
 
-Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
-$X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
-for simplicty not look at such setting.
-
-If we have the random variables $X$, $Y$, and $Z$, then depending on how they are causaly linked, then 
-we will have different relationships between the marginals and the Pearl's "do" conditional. For example,
-if $X \rightarrow Z \rightarrow Y$, then we will have that $p_X = p_{X|do(y)}$, but $p_Y \neq p_{Y|do(x)}$. 
-
-Indeed, for all 6 different relations of $X$, $Y$, and $Z$ we get a different set of relationships between 
-the interventional and observational conditions. Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
-possible structure the data corresponds to (at least in theory). However, if we are interested in using only 
-observational data, then we will need to make concessions; in particular, we will make some assumptions about 
-the causal structure, and then if we can show that we can infer the causal structure in such a setting, we 
+Since we will restrict ourselves to the observational setting, we will not be able to perform any interventions,
+which would allow us to estimate $p_{y|do(x)}$. In this setting however, in order to perform any meaningful
+inference, we will need to make concessions; in particular, we will make some assumptions about 
+the causal structure. If and when we are able to that we can infer the causal structure in such a setting, we 
 shall call it \textbf{identifiable}.
 
-If we have 3 or more variables then observe the following: if $X \bigCI Y | Z$, then it must follow that
-all the information from $X$ to $Y$ must flow though $Z$. Thus if we have 3 or more random variables, we
-can through the observational distribution determine all conditional independences to find which variables
-are not directly linked. 
+% f we have the random variables $X$, $Y$, and $Z$, then depending on how they are causaly linked, then 
+% we will have different relationships between the marginals and the Pearl's "do" conditional. For example,
+% if $X \rightarrow Z \rightarrow Y$, then we will have that $p_X = p_{X|do(y)}$, but $p_Y \neq p_{Y|do(x)}$. 
+
+% Indeed, for all 6 different relations of $X$, $Y$, and $Z$ we get a different set of relationships between 
+% the interventional and observational conditions. Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
+% possible structure the data corresponds to (at least in theory). 
+
+We will restrict ourselves also to the bivariate case; one big difference worth noting is that in the
+multivariate setting we can test conditional independence. Uusing conditional independence tests 
+is a very powerful method for causal inference. Suppose 
+we have random variables $X$, $Y$ and $Z$, then if we can estimate that $X \bigCI Y | Z$ then it must be 
+that all information between $X$ and $Y$ must flow through $Z$ (See Figure \ref{fig:conditionalIndep}).
+With one test we were able to pinpoint the causal graph $\mathcal{G}$! 
+
+One can in fact generalise the conditional independence such that $X$ and the other variables are 
+a collection of random variables, which gives a lot of flexiblity to devise clever algorithms. 
+The theory comes from graphical models, which tries to understand the relationship between 
+distributions and their graphical counterparts, such as Figure \ref{fig:conditionalIndep}.
+The key difference is that in graphical models we do not care about the causal direction. 
+Since we will not be using any of this theory, we will not go into any detail. 
 
 \begin{figure}[!h]
     \centering
@@ -259,10 +270,11 @@ it is a model specification; and the key insight is that it should not be revers
 We propose two methods to deal with the ANM -- one less practical, but with a nice theoretical
 analysis; and another more practical, but perhaps with a less beutiful analysis. However both
 are based on a first principle approach with known asymptotics in mind.
-
+TODO DESCRIBE IN MORE DETAIL
 
 
 \section{Outline}
 
 The first part is dedicated to covering background material. The scond part will cover the 
 proposed methods in more details as well as showing experimental results
+TODO TALK ABOUT MY CAT

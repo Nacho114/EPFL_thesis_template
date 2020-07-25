@@ -191,19 +191,21 @@ Suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an AN
      \end{cases}  
 \]
 
-The main strategy of most causal inference methods has been to estimate $f$, and then compute the estimated
-residual $\hat{e} = \hat{f}(x) - y$ and then to test the independence between $\hat{e} and X$. This exploits 
-the assumption that $X \bigCI Z$; in practice we often have that the noise is \textit{independent}, 
+The main strategy of most causal inference methods has been to estimate $f$, and then to compute the estimated
+residual $\hat{e} = \hat{f}(x) - y$; the final step is to test the independence between $\hat{e}$ and $X$. This exploits 
+the assumption that $X \bigCI Z$. In practice we often have that the noise is \textit{independent}, 
 i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$.
 
+By directly exploiting the IID noise assumption, we will circumvent the need for an independence test. The 
+idea is to to partition the data -- for simplicty you can think about splitting it around the median; we 
+then estimate the residuals for each partition, and we then test if the IID noise assumption holds by comparing
+the residuals of each partition. We can apply this procedure to both directions and then we will call the 
+direction causal if it's residuals are more similar. 
 
-In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
-will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
-X to Y, and viceversa. 
-In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
-will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
-X to Y, and viceversa. 
-
+We will explain this idea in more detail by following an example: we are given samples 
+$\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; 
+We first visualise the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
+X to Y, and viceversa (see Figure \ref{fig:algo_data}). 
 
 \begin{figure}[H]
     \captionsetup[subfigure]{labelformat=empty}
@@ -212,31 +214,30 @@ X to Y, and viceversa.
     % \quad
     \subfloat{{\includegraphics[width=6.5cm]{algo_reverse.png} }}%
 
-    \caption{75 samples of data $X$, $Y$.  The samples are generated independently as follows:
-    $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an expoential distribution and $n_i$ is drawn 
-    independently from a gaussian one and $f(x) = \tanh(x) + 2\sin(2x) + x^3$}
+    \caption{300 samples of data $X$, $Y$. With \textbf{ANM}: \\
+    $f(x) = \tanh(x) + 2\sin(2x) + x^3$}
+    $X \thicksim \mathcal{U}_{[-a, a]}$ and $Z \thicksim \mathcal{N}(0, \sigma^2)$
     \label{fig:algo_data}
 \end{figure}
 
-In the iid setting we can do something more simple -- computationally -- than testing for independence. We 
-will illustrate the procedure by an example; We first plot the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
-X to Y, and viceversa. 
+
 
 For simplicty assume $X \thicksim \mathcal{U}_{[-a, a]}$ (i.e. $X$ is uniformly disributed), then we can split 
 the data in two, say $D_1$ and $D_2$, where we place all samples with $x_i < 0$ into $D_1$, and the rest into 
 $D_2$. To be more precise, $\mathcal{D}_1 = \{(x_i, y_i) : x_i < 0\}$ and $\mathcal{D}_2 = \mathcal{D} 
-\backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. 
-$\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure obtaining $\mathcal{\tilde{D}}_1$
-and $\mathcal{\tilde{D}}_2$. Color coding the different subets, we then have the following:
+\backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. we reverse the roles of x and y
+, $\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure we obtain $\mathcal{\tilde{D}}_1$
+and $\mathcal{\tilde{D}}_2$. We can visualise this parition bellow in Figure \ref{fig:colo_code}.
  
 \begin{figure}[H]
     \captionsetup[subfigure]{labelformat=empty}
     \centering
-    \subfloat{{\includegraphics[width=6.5cm]{algo_part.png} }}%
+    \subfloat[Partitions $D_1$ and $D_2$]{{\includegraphics[width=6.5cm]{algo_part.png} }}%
     % \quad
-    \subfloat{{\includegraphics[width=6.5cm]{algo_part_reverse.png} }}%
-    \caption{Samples from two different sources, $X$ and $Y$, how can we tell if 
-    they come from the same distribution?}
+    \subfloat[Partitions $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$]{{\includegraphics[width=6.5cm]{algo_part_reverse.png} }}%
+    \caption{ We highlight each partition in a different color. On the left we have $D_1$ and $D_2$; and on 
+    the right we have $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ }
+    \label{fig:colo_code}
 \end{figure}
 
 If we estimate a fit $\hat{f}_1$ for $\mathcal{D}_1$ and similarly $\hat{f}_2$ for $\mathcal{D}_2$, then we can 
@@ -259,8 +260,9 @@ histograms from the residuals.
     % \quad
     \subfloat{{\includegraphics[width=6.5cm]{algo_res_reverse.png} }}%
 
-    \caption{Example}
-
+    \caption{  We show the the estimated fits $\hat{f}$ for each parition in black. Bellow each 
+    partition we plot the histograms of the residuals -- in the same color. }
+    \label{fig:algo_fit}
 \end{figure}
 
 Note that for the reverse model, the noise in $\mathcal{\tilde{D}}_1$ appears to be very different from 
@@ -288,6 +290,10 @@ infer causality as follows:
      \end{cases}
 \]
 
+In the above example, we get that $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) = 0.138$ and that
+$\mathcal{C}(\mathcal{\tilde{D}}_1, \mathcal{\tilde{D}}_2) = 0.480$ where use bins of size $5$ 
+for discretization; We are able to predict the causal direction with high confidence.
+
 Assuming the regressions are \textbf{faithfull}, then as $n \rightarrow \infty$ we know that both 
 $p_1$ and $p_2$ will converge to the same $p_Z$ and so $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) \rightarrow 0$.
 On the other hand, it is unlikely that the residuals of $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ 
@@ -303,42 +309,59 @@ In essence the algorithm consists of the parts:
     \item Compute scores
 \end{enumerate}
 
-Before giving the general description of the algorithm we will comment on each of these parts.
+Before giving the general description of the algorithm we will comment on each of these parts in more detail. 
 
-
+\newpage
 \subsection{Partition}
 
-Requirements:
+Say that we partition $\mathcal{D}$ into $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
+partitions need to satisfie three requirements:
 
-dense
-disjoint partition
-ordering
+\begin{enumerate}
+    \item The partitions need to be \textbf{dense}: 
+    $|\mathcal{D}_i| \geq \rho |\mathcal{D}|, \quad \forall i \in [k]$, for some $\rho \in (0, 1)$.
+    \item The partitions need to be disjoint 
+    $$
+    \mathcal{D} = \bigcup_i \mathcal{D}_i \quad \text{and} \quad
+    \mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j
+    $$
+    \item We need to be able to order the paritions, say $\mathcal{D}_1, ..., \mathcal{D}_k$, such that
+    if $i < j$ then\footnote{The $*$ is to indicate a dummy variable, as we do not care for the value of $y$.}: 
+    $$
+    \operatorname{max} \{ x : (x, *) \in \mathcal{D}_i \} \leq 
+    \operatorname{min} \{ x : (x, *) \in \mathcal{D}_j \}
+    $$
+\end{enumerate}
 
-Disjoint ok
+The first condition -- that of dense partitions -- is to avoid getting trivial large deviations between residuals 
+in the subsets; the second reason is that if they are dense, then we can give asymptotic guarantees about each subset.
+The second and third conditions simply ensure that we are not mixing data and that it is coherent to make regression
+in each subset. 
 
-When we partition $\mathcal{D}$ into $\mathcal{D}_1$ and $\mathcal{D}_2$, it is only a good idea to partition
-in the center of the mean of $x_i$ if the underlying measure is uniform. However this is rarely the case -- 
-not to mention that $Y$ is unlikely to be uniform.
+If we use K-means (perhaps the most popular clustering algorithm), then conditions 2. and 3. are met. The only 
+questions is in regards to conditions 1. K-means starts by randomly initialisting two or n centers (depending 
+on the number of clusters that we want), and the updates the centers that they locally 
+minimizes within-cluster variances. If our data is infinite support, and we re-run K-means if there is some cluster
+$i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and for some $\rho$ we can be quite 
+certain that the algorithm will eventually terminate. 
 
-In effect what we require are dense subsets $\mathcal{D}_1$ and $\mathcal{D}_2$ w.r.t. $\mathcal{D}$. This 
-will guarantee that if $n \rightarrow \infty$ then so do the sizes of $\mathcal{D}_1$ and $\mathcal{D}_2$.
-Since this is in essence a clustering problem, we turn to K-means, perhaps the most popular clustering 
-algorithm. 
+In practice this has always been the case (for $\rho = .3$); so we conjecture that one can prove the above statement 
+rigorously. 
 
-Show example with more partitions; show example with expoential distrib, partition there. 
+The last question is, "How many clusters do we want?". Obviously for the small data regime we must be content 
+wuth only two clusers; but what if we have a lot of data? As we will see, we observe experimentally that if we 
+we choose the number of partition as an increasing function w.r.t. sample size, then we can get better accuracies.
 
-If $X$ is indeed unfirom, then the cluster found by K-means will essentially be what our first heuristic method
-did (splitting it in the middle). For general distributions, when can we guarantee that the clusters are dense???
-It is crucial that the subsets be dense. How to argue?
+One reason that more partitions are desirable is that then the regression problem becomes easier; Indeed, as we 
+zoom into a function it tends to become smoother.
 
-NEEDS TO BE ADJACENT PARTITIONS
-
-Q: Sai
 
 \subsection{Regression}
 
 A benefit of partitioning the is that we are also partitioning the function we are trying to estimate; in 
 particular one would expect that the regression will be easier, e.g. a low order polynomial might be enough.
+
+We do elementary model selection, we take the best model with BIC score for degrees 1 to 6. 
 
 Show example of many partitions
 
@@ -350,7 +373,7 @@ MMD metric, or the $l_1$ distance.
 
 Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous
 $P_k$ is compared to some other set $\tilde{P}_j$ -- recall that we wish to see in which of the two, 
-the sets, the distribtions are more likely to be the same, i.e. we are testing the iid assumption. 
+ the distribtions are more likely to be the same, i.e. we are testing the iid assumption. 
 
 There are several simple ways to go about this:
 
@@ -375,6 +398,9 @@ $$
 Thus if $C(P_k) < C(\tilde{P}_j)$, we can say that the distributions in $P_k$ are
 more homogenous; e.g. they more likely to produce similar looking noise. 
 
+We have tested all of the above and find that the first method -- using the maximum score between pairs --
+gives the best performance.
+
 \subsection{Algorithm}
 
 We note that the algorithm is a general framework as we are free to choose the partition, regression method
@@ -393,7 +419,7 @@ data in the paritions to use a different portion of the data for estimation and 
         \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
         \item Partition procedure
         \item Regression method
-        \item Score estimator $\hat{C}: E \rightarrow \R$, where E is a set of vectors. 
+        \item Score estimator $\hat{C}: R^{* \times *} \rightarrow \R$, where E is a set of vectors. 
     \end{enumerate}
     
     \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
