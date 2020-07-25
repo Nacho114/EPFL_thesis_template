@@ -2,183 +2,8 @@
 \chapter{First principle methods}
 
 
-\section{The residual method}
-
-\subsection{Introduction}
-
-The residual method is very simple...
 
 
-\subsection{Proof of consistency: A tale of two bounds}
-
-The setup was the linear \textbf{ANM}:
-
-\[ \begin{cases} 
-    & Y = aX + E_Y  \\
-    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
- \end{cases}
-\]
-
-From $n$ samples $(X_i, Y_i)$ we estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
-$\hat{f}_X$ for the reverse model. We then comput the residuals
-
-\begin{align}
-    &  \hat{e}_Y = Y - \hat{f}_Y(X)\\
-    &  \hat{e}_X = X - \hat{f}_X(Y)
-\end{align}
-
-We note that for the ease of analysis, it would first be wise to use some fraction 
-of the data to first estimate the regression, and then use the remanining for the test.
-
-For $n$ large enough we have that 
-
-$$
-    \hat{e}_Y \approx E_Y \thicksim P_{E_Y}
-$$
-
-The idea is then to first discretise\footnote{We do so in a naive manner we split
-it uniformly into $m$ bins.} $P_{E_Y}$ into $m$ bins, call this discrete distribution
-$Q$. We apply the same discretization to obtain $B = (b_1, ..., b_m)$ from $\hat{e}_Y$
-and $\tilde{B} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{e}_X$.
-
-We then decide the causal direction as follows
-
-\[ \begin{cases} 
-    & X \rightarrow Y \quad \text{if} \quad C \leq W  \\
-    & Y \rightarrow X \quad \text{if} \quad C > W  
- \end{cases}
-\]
-
-Where 
-
-$$
-    C = \norm{B - U}_{L_1} 
-$$
-$$
-    W = \norm{\tilde{B} - U}_{L_1}
-$$
-
-
-s.t. $U = (\frac{1}{m}, ..., \frac{1}{m})$.
-
-Given our assumption about the \textbf{ANM}, the probability to outpout the correct causal direction is:
-
-$$
-   P_{\text{correct}} = \mathbb{P}\left[C \leq W\right] 
-$$
-
-We next upper bound thise quantity in order to show consistency
-
-\begin{align}
-    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[ \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right] \\
-    &\geq \mathbb{P}\left[C \leq \tau \cap W > \tau \right] \\
-    &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right]
-\end{align}
-
-The first inequality is due to the fact that we are only taking the union in the rationals\footnote{We note that
-we can only take unions over countable sets; recall also that the rationals are dense in the irrationals, so the
-inequality is very close to equality (and in practice and among friends it would be).}. The second inequality is done by 
-looking at the probability of a fixed $\tau$; and the final one follows by:
-
-$$
-    1 \geq \mathbb{P}\left[ C \leq \tau \cup W > \tau \right] = 
-    \mathbb{P}\left[ C \leq \tau \right] + \mathbb{P}\left[ W > \tau \right] - \mathbb{P}\left[ C \leq \tau \cap W > \tau \right]
-$$
-
-We will next find appropriate bounds for $\mathbb{P}\left[ C \leq \tau \right]$ and $\mathbb{P}\left[W \leq \tau \right]$.
-
-\subsection{Bounding the false false postive}
-
-We will first lower bound $\mathbb{P}\left[ C \leq \tau \right]$ by upper bounding the complement event.
-
-\begin{align}
-    \mathbb{P}\left[ C \geq \tau \right] &= \mathbb{P}\left[ \sum_{i = 1}^{m} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
-    &\leq \mathbb{P}\left[ m \operatorname{max}_{i} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
-    &= \mathbb{P}\left[ \bigcup_{i} \; \abs{b_i - \frac{1}{m}} \geq \frac{\tau}{m} \right]  \\
-    &\leq m \; \mathbb{P}\left[ \abs{b_0 - \frac{1}{m}} \geq \frac{\tau}{m} \right] \\
-    &\leq m2\exp \left( -2n \frac{\tau^2}{m^2} \right)
-\end{align}
-
-The second to last inequality follows by the union bound and by noting that all $b_i$s are the same since they
-are discretized empirical distribution coming from a uniform source. For the final inequality we use Hoeffding's
-inequality.
-
-\subsection{Bounding the false negatives}
-
-Recall that what is left to bound is the following quanity, $\mathbb{P}\left[W \leq \tau \right]$; 
-for this we first define the following set of probability distributions:
-
-$$
-    \Gamma_\tau = \{ \pi \in  \Delta_m : \norm{\pi - U}_{L_1} \leq \tau \}
-$$
-
-Where the $\Delta_m$ is the $m$ dimensional simple and $U$ the uniform vector as before.
-
-Observe that: 
-
-$$
-    \{ W \leq \tau \} = \{ \tilde{B} \in \Gamma_\tau \}
-$$
-
-In essence, we are asking: "what is the chance that the realisation of $\tilde{B}$ – which is the 
-empricial distribution of some distribution $Q$ – lies inside some set of distribtions $\Gamma_\tau$.
-
-We note that bounding this kind of event is exactly what Sanov's theorem\footnote{See the section on Information Theory and statistics in 
-\cite{cover1999elements}} gives us, an important
-result from large deviation theory that also exploits concentration of measure.
-
-
-
-Let $\mathbf{x} = (x_1, ..., x_n)$ be a sequence of $n$ each drawn independently from 
-a finite universe $U$ with $|U| = m$. Denote by $P_\mathbf{x}$ the empirical distribution – 
-or type – for a given sequence $\mathbf{x}$. Let $Q^{n}$ be the product distribution $n$
-independent samples of $Q$. 
-
-\begin{theorem}[Sanov’s theorem]\label{sanov}
-
-    Let $\Pi$ be a set of distributions on $U,$ and $m=|U| .$ Let
-
-    \[
-        P^{*}=\operatorname{argmin}_{P \in \Pi} D(P \| Q)
-    \]
-    
-    Then
-    \[
-        \underset{Q^{n}}{\mathbb{P}}\left[P_{\mathbf{x}} \in \Pi\right] \leq(n+1)^{m} 2^{-nD\left(P^{*} \| Q\right)}
-    \]
-    
-\end{theorem}
-
-Applying the above theorem, and noting that $\Gamma_\tau$ takes the place of $\Pi$, $\tilde{B}$ that of $P_{\mathbf{x}}$
-and the discretized distribution $\hat{e}_X = X - \hat{f}_X(Y)$ that of $Q$ we get:
-
-\begin{equation}
-    \mathbb{P}\left[W \leq \tau \right] = \mathbb{P}\left[ \tilde{B} \in \Gamma_\tau \right] 
-    \leq (n+1)^{m} 2^{-nD\left( \tau \right)}
-\end{equation}
-
-Where $D\left( \tau \right) := D\left(P^{*} \| Q\right)$, we make the $\tau$ relation excplicit to 
-keep in mind that the minimisation is contrainred to the set $\Gamma_\tau$ which depends on $\tau$.
-
-We remark that the only place of concern is if $D\left(P^{*} \| Q\right) = 0$; assuming however that $Q \neq U$, then 
-there will be some $\tau$ s.t. $Q \notin \Gamma_\tau$ and thus $D\left(P^{*} \| Q\right) \neq 0$.
-
-We can now conclude by putting everything together; recall that we had shown that we could bound the success probability 
-as follows:
-
-
-
-\begin{align}
-    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right] \\
-    &\geq 1 - 2m\exp \left( -2n \frac{\tau^2}{m^2} \right) - (n+1)^{m} 2^{-nD\left( \tau \right)}
-\end{align}
-
-This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) > 0$ then we get consistency
-by letting $n \rightarrow \infty$.
-
-We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
-
-\newpage
 \section{The twin test}
 
 
@@ -311,7 +136,6 @@ In essence the algorithm consists of the parts:
 
 Before giving the general description of the algorithm we will comment on each of these parts in more detail. 
 
-\newpage
 \subsection{Partition}
 
 Say that we partition $\mathcal{D}$ into $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
@@ -487,6 +311,147 @@ data in the paritions to use a different portion of the data for estimation and 
 
 \subsection{Consistency}
 
+We will show consistency for a simple set up of the twin test -- but we note that generalising it to the more 
+general set up should be direct from our proof. 
+
+
+The setup was the linear \textbf{ANM}:
+
+\[ \begin{cases} 
+    & Y = f(X) + Z  \\
+    & X \bigCI Z,\; X \thicksim p_x,\; Z \thicksim p_{E_Z}  
+ \end{cases}
+\]
+
+In practice we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; next 
+the algorithm will proceed to split the data into sets $\mathcal{D}_1$ and $\mathcal{D}_2$. It then proceeds 
+to compute residuals and compute some score between them.
+
+To simplify the proof, we will \textbf{skipe the partition procedure} and assume that
+we are directly given $\mathcal{D}_1$ and $\mathcal{D}_2$, each with 
+$n$ samples (Note that, if $p_x$ is uniform, then having these sets be of equal size would happen exponentially 
+fast; indeed, in general, we will have dense partitions). 
+
+Next, we will assume that on each interval, the data is linear with slope $a_1$ and $a_2$ resp. 
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}
+        \draw[thin, dashed] (1.5, -0.5) -- (1.5, 2.6) node[above] {};
+        \path (0.75, -0.8) -- (0.75, -0.6) node[above] {$\mathcal{D}_1$};
+        \path (2.25, -0.8) -- (2.25, -0.6) node[above] {$\mathcal{D}_2$};
+        \draw[->] (-1, 0) -- (4.2, 0) node[right] {$x$};
+        \draw[->] (0, -1) -- (0, 3) node[above] {$y$};
+        \draw[scale=1, domain=0:1.5, smooth, variable=\x, blue] plot ({\x}, {0.5*\x});
+        \draw[scale=1, domain=1.5:3, smooth, variable=\y, red]  plot ({\y}, {1*\y - 0.75});
+        \draw[decoration={brace,mirror,raise=5pt},decorate] (0.1, -.5) -- node[below=8pt] {$\mathcal{D}$} (2.9, -.5) ;
+      \end{tikzpicture}
+      \caption{Slopes $a_1$ and $a_2$ in blue and red respectively.}
+\end{figure}
+
+Thus our problem can be seen as getting data from two difference \textbf{ANM}, both with identical noise, but with 
+a different truncation of $X$:
+
+$\mathcal{D}_1$ is sampled from 
+
+\[ \begin{cases} 
+    & Y_1 = a_1 X_1 + Z  \\
+    & X_1 \bigCI Z,\; X_1 \thicksim p_{X_1},\; Z \thicksim p_{Z}  
+ \end{cases}
+\]
+
+and $\mathcal{D}_2$ is sampled from 
+
+\[ \begin{cases} 
+    & Y_2 = a_2 X_2 + Z  \\
+    & X_2 \bigCI Z,\; X_2 \thicksim p_{X_2},\; Z \thicksim p_{Z}  
+ \end{cases}
+\]
+
+Note that without loss of generality we can assume $X_1 \thicksim X_2 \thicksim X \thicksim P_X$.
+
+We will call this scenario the \textbf{simplified Twin Test scenario}. 
+
+We can now describe the steps of the algorithm after partitioning:
+
+We first split $\mathcal{D}_1$ in two sets of equal size $\mathcal{D}_{1}^{train}$ and 
+$\mathcal{D}_{1}^{test}$. We first use $\mathcal{D}_{1}^{train}$ to estimate $a_1$, say $\hat{a}_1$ via 
+regression. Then, using $\mathcal{D}_{1}^{test}$, we estimate the residual:
+
+$$
+    \hat{Z}_1 = Y_1 - \hat{a}_1 X
+$$
+
+We then discretise $\hat{Z}_1$ and form a distribution say $\hat{p}_1$; we can do the same thing for 
+$\mathcal{D}_2$, and by doing the same procedure obtain $\hat{p}_2$.
+
+We discretise both with a fixed step size, say $s$; as we will see, the only requirement is that we fix 
+the size beforehand.
+
+Using the $l_1$ distance as our score, is 
+
+$$
+    \hat{C}_{X \rightarrow Y} = \norm{\hat{p}_1 - \hat{p}_2}_1
+$$
+
+As we have seen, $\hat{C}_{Y \rightarrow X} > 0$ holds in general except in very particular situations. So, 
+to prove that our algorithm is consistent, we need to show that:
+
+$$
+    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty
+$$
+
+This is precisely what we will show:
+
+\begin{theorem}
+    The \textbf{simplified Twin Test scenario}t is consistent, i.e. 
+
+$$
+    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty
+$$
+\end{theorem}
+
+The idea of the proof is to observe the following:
+
+If we have enough data, i.e. when $n$ is large enough then 
+
+$$
+    \abs{a_1 - \hat{a}_1} \leq \alpha \qquad \text{and} \qquad \abs{a_2 - \hat{a}_2} \leq \alpha
+$$
+
+This means that 
+
+$$
+    \hat{Z}_1 = Z + (a_1 - \hat{a}_1)X \quad \implies \quad Z - \alpha X \leq \hat{Z}_1 \leq Z + \alpha X 
+$$
+
+and similarly
+
+$$
+    \hat{Z}_2 = Z + (a_2 - \hat{a}_2)X \quad \implies \quad Z - \alpha X \leq \hat{Z}_2 \leq Z + \alpha X 
+$$
+
+Note that $\hat{Z}_1 \thicksim P_{Z + \Delta X}$
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}[scale=3]
+        \node[left] (O) at (0,0) {$P_Z$};
+        \draw[semithick, fill=black] (0,0) circle (0.02);
+        %Draw the Circle around it all
+        \draw[thick] (0,0) circle (1);
+        %Draw lines to the top
+        % \foreach \x in {-4,...,4}
+        %   \draw[red,very thick] (\x/8,0) -- +(0,{sqrt(1-\x/8*\x/8)});
+        \path (0, 0) -- (0, 1) node[above] {$P_{Z + \alpha X}$};
+        \draw[thick, <->] (0, .05) -- node[right] {$R(\alpha)$} (0, .95);
+        \draw[semithick, fill=black] (0,1) circle (0.02);
+        % p_1
+        \draw[semithick, fill=black] (.5, -.5) circle (0.02);
+      \end{tikzpicture}
+      \caption{Proof idea}
+\end{figure}
+
 We begin by proving two lemmas that we will use for the consistency proof. 
 
 \begin{lemma} Given $\alpha, \delta > 0$, random variables $N$ and $X$ s.t. $\alpha X + N$, where $X \bigCI N$, 
@@ -496,7 +461,6 @@ $\alpha X + N \thicksim  P_{\alpha X + N}$, there is some $C > 0$ s.t.
 $$
 \left\|P_{N} -  P_{\alpha X + N} \right\|_{1} \leqslant \alpha C + \delta
 $$
-
 \label{lemma:conv_bound}
 \end{lemma}
 
@@ -533,7 +497,7 @@ P\left( \abs{X} > k \right) \\
 &\leq \E \left[ \norm{P_{N}- P_{\alpha X + N} }_{1} \, | \, \abs{X} \leq k \right] 
  + 2 P(\abs{ X} > k) \\ 
 &\leq \int\abs{ P_{N}(t)-P_{N}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
-&\approx \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C^* P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
+&\leq \int\abs{ P_{N}(t)- (P_{N}(t) + \alpha C^* P_{N}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
 &\leq \alpha C^* \int P_{N}^{\prime}(t) d t + 2 P(\abs{ X} > k)\\
 &\leq \alpha C + \delta
 \end{aligned}
@@ -558,7 +522,7 @@ we can upper bound the average distance; note that there is at least one maximis
 optimising over a compact set. 
 
 We next approximate $P_{N}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
-that we will pick $\alpha \approx 0$
+that we will pick $\alpha \approx 0$, using Taylor's theorem we can upper bound HOW? TODO - should be doable
 . Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
 $C = C^* \int P_{N}^{\prime}(t) d t$ and we are done.
 
@@ -569,10 +533,10 @@ The next lemma will also be important
 
 \begin{lemma}
     Let $P$ and $Q$ be two distribtions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
-    $\norm{P - Q}_1 < \delta$ for some $\delta$, then
+    $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
 
     $$
-        \norm{P^* - Q^*}_1 < \delta
+        \norm{P^* - Q^*}_1 \leq \delta
     $$
 \end{lemma}
 
@@ -596,8 +560,6 @@ We can now conclude by proving consistency
 
 The first inequality follows by the triangle inequality, and the second one by using the law of total probability.
 
-Divergence l1 
-
 Observe that 
 
 $$
@@ -616,12 +578,183 @@ It remains to bound
 
 We will do so by using lemma \ref{lemma:conv_bound}, note that as 
 
-also 
-
-
-
-
+TODO
 
 \end{proof}
 
+\newpage
+\section{The residual method}
 
+\subsection{Introduction}
+
+The residual method is very simple...
+
+
+\subsection{Proof of consistency: A tale of two bounds}
+
+The setup was the linear \textbf{ANM}:
+
+\[ \begin{cases} 
+    & Y = aX + E_Y  \\
+    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
+ \end{cases}
+\]
+
+From $n$ samples $(X_i, Y_i)$ we estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
+$\hat{f}_X$ for the reverse model. We then comput the residuals
+
+\begin{align}
+    &  \hat{e}_Y = Y - \hat{f}_Y(X)\\
+    &  \hat{e}_X = X - \hat{f}_X(Y)
+\end{align}
+
+We note that for the ease of analysis, it would first be wise to use some fraction 
+of the data to first estimate the regression, and then use the remanining for the test.
+
+For $n$ large enough we have that 
+
+$$
+    \hat{e}_Y \approx E_Y \thicksim P_{E_Y}
+$$
+
+The idea is then to first discretise\footnote{We do so in a naive manner we split
+it uniformly into $m$ bins.} $P_{E_Y}$ into $m$ bins, call this discrete distribution
+$Q$. We apply the same discretization to obtain $B = (b_1, ..., b_m)$ from $\hat{e}_Y$
+and $\tilde{B} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{e}_X$.
+
+We then decide the causal direction as follows
+
+\[ \begin{cases} 
+    & X \rightarrow Y \quad \text{if} \quad C \leq W  \\
+    & Y \rightarrow X \quad \text{if} \quad C > W  
+ \end{cases}
+\]
+
+Where 
+
+$$
+    C = \norm{B - U}_{L_1} 
+$$
+$$
+    W = \norm{\tilde{B} - U}_{L_1}
+$$
+
+
+s.t. $U = (\frac{1}{m}, ..., \frac{1}{m})$.
+
+Given our assumption about the \textbf{ANM}, the probability to outpout the correct causal direction is:
+
+$$
+   P_{\text{correct}} = \mathbb{P}\left[C \leq W\right] 
+$$
+
+We next upper bound thise quantity in order to show consistency
+
+\begin{align}
+    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[ \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right] \\
+    &\geq \mathbb{P}\left[C \leq \tau \cap W > \tau \right] \\
+    &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right]
+\end{align}
+
+The first inequality is due to the fact that we are only taking the union in the rationals\footnote{We note that
+we can only take unions over countable sets; recall also that the rationals are dense in the irrationals, so the
+inequality is very close to equality (and in practice and among friends it would be).}. The second inequality is done by 
+looking at the probability of a fixed $\tau$; and the final one follows by:
+
+$$
+    1 \geq \mathbb{P}\left[ C \leq \tau \cup W > \tau \right] = 
+    \mathbb{P}\left[ C \leq \tau \right] + \mathbb{P}\left[ W > \tau \right] - \mathbb{P}\left[ C \leq \tau \cap W > \tau \right]
+$$
+
+We will next find appropriate bounds for $\mathbb{P}\left[ C \leq \tau \right]$ and $\mathbb{P}\left[W \leq \tau \right]$.
+
+\subsection{Bounding the false false postive}
+
+We will first lower bound $\mathbb{P}\left[ C \leq \tau \right]$ by upper bounding the complement event.
+
+\begin{align}
+    \mathbb{P}\left[ C \geq \tau \right] &= \mathbb{P}\left[ \sum_{i = 1}^{m} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
+    &\leq \mathbb{P}\left[ m \operatorname{max}_{i} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
+    &= \mathbb{P}\left[ \bigcup_{i} \; \abs{b_i - \frac{1}{m}} \geq \frac{\tau}{m} \right]  \\
+    &\leq m \; \mathbb{P}\left[ \abs{b_0 - \frac{1}{m}} \geq \frac{\tau}{m} \right] \\
+    &\leq m2\exp \left( -2n \frac{\tau^2}{m^2} \right)
+\end{align}
+
+The second to last inequality follows by the union bound and by noting that all $b_i$s are the same since they
+are discretized empirical distribution coming from a uniform source. For the final inequality we use Hoeffding's
+inequality.
+
+\subsection{Bounding the false negatives}
+
+Recall that what is left to bound is the following quanity, $\mathbb{P}\left[W \leq \tau \right]$; 
+for this we first define the following set of probability distributions:
+
+$$
+    \Gamma_\tau = \{ \pi \in  \Delta_m : \norm{\pi - U}_{L_1} \leq \tau \}
+$$
+
+Where the $\Delta_m$ is the $m$ dimensional simple and $U$ the uniform vector as before.
+
+Observe that: 
+
+$$
+    \{ W \leq \tau \} = \{ \tilde{B} \in \Gamma_\tau \}
+$$
+
+In essence, we are asking: "what is the chance that the realisation of $\tilde{B}$ – which is the 
+empricial distribution of some distribution $Q$ – lies inside some set of distribtions $\Gamma_\tau$.
+
+We note that bounding this kind of event is exactly what Sanov's theorem\footnote{See the section on Information Theory and statistics in 
+\cite{cover1999elements}} gives us, an important
+result from large deviation theory that also exploits concentration of measure.
+
+
+
+Let $\mathbf{x} = (x_1, ..., x_n)$ be a sequence of $n$ each drawn independently from 
+a finite universe $U$ with $|U| = m$. Denote by $P_\mathbf{x}$ the empirical distribution – 
+or type – for a given sequence $\mathbf{x}$. Let $Q^{n}$ be the product distribution $n$
+independent samples of $Q$. 
+
+\begin{theorem}[Sanov’s theorem]\label{sanov}
+
+    Let $\Pi$ be a set of distributions on $U,$ and $m=|U| .$ Let
+
+    \[
+        P^{*}=\operatorname{argmin}_{P \in \Pi} D(P \| Q)
+    \]
+    
+    Then
+    \[
+        \underset{Q^{n}}{\mathbb{P}}\left[P_{\mathbf{x}} \in \Pi\right] \leq(n+1)^{m} 2^{-nD\left(P^{*} \| Q\right)}
+    \]
+    
+\end{theorem}
+
+Applying the above theorem, and noting that $\Gamma_\tau$ takes the place of $\Pi$, $\tilde{B}$ that of $P_{\mathbf{x}}$
+and the discretized distribution $\hat{e}_X = X - \hat{f}_X(Y)$ that of $Q$ we get:
+
+\begin{equation}
+    \mathbb{P}\left[W \leq \tau \right] = \mathbb{P}\left[ \tilde{B} \in \Gamma_\tau \right] 
+    \leq (n+1)^{m} 2^{-nD\left( \tau \right)}
+\end{equation}
+
+Where $D\left( \tau \right) := D\left(P^{*} \| Q\right)$, we make the $\tau$ relation excplicit to 
+keep in mind that the minimisation is contrainred to the set $\Gamma_\tau$ which depends on $\tau$.
+
+We remark that the only place of concern is if $D\left(P^{*} \| Q\right) = 0$; assuming however that $Q \neq U$, then 
+there will be some $\tau$ s.t. $Q \notin \Gamma_\tau$ and thus $D\left(P^{*} \| Q\right) \neq 0$.
+
+We can now conclude by putting everything together; recall that we had shown that we could bound the success probability 
+as follows:
+
+
+
+\begin{align}
+    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right] \\
+    &\geq 1 - 2m\exp \left( -2n \frac{\tau^2}{m^2} \right) - (n+1)^{m} 2^{-nD\left( \tau \right)}
+\end{align}
+
+This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) > 0$ then we get consistency
+by letting $n \rightarrow \infty$.
+
+We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
