@@ -6,27 +6,27 @@
 
 We will now introduce\footnote{Note that this introduction follows closely that of \cite{Mooij2016jmlr}, and 
 we encourage the reader to have a look to fill in details that have been omitted here.} 
-the bivariate causal model and define the particular class of such models that 
-we will work on. To avoid any sort of technical complications, when talk about functions, 
-they will always be Borel measurable -- which in any case consists of most functions of interest.
-
-For the bivariate case, if we have $Y \in \R$ as a direct cause of $X \in \R$, then we can model 
+the bivariate causal model and define the particular subset of such models that 
+we will work on. For the bivariate case, if we have $Y \in \R$ as a direct cause of $X \in \R$, then we can model 
 the relationship as follows:
 
 \begin{equation}
     \begin{cases} 
         & Y = f(X, Z) \\
-        & X \bigCI Z,\quad X \thicksim p_x,\quad Z \thicksim p_{Z}  
+        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
      \end{cases}
      \label{causal_model}
 \end{equation}
+
+where $p_X$ is the density of the cause and $p_Z$ that of the latent variable; $f: \R \times \R \rightarrow \R$
+is a borel measurable function (w.r.t. to the Borel sets of $\R \times \R$ and $\R$). 
 
 If we assume that there is no confounder, no sampling bias\footnote{If you consider the 
 example given in the introduction, then if Bob always sampled when Alice was excercising, then this 
 would have lead to sampling bias, as during excercise both heart rate and blood pressure tend to increase.} 
 and no cycles then it is natural to assume that $X \bigCI Z$.
 
-While we can model $Z$ as either a scalar of a vector, we can without loss of generality assume it to be a scalar.
+While we can model $Z$ as either a scalar or a vector, we can without loss of generality assume it to be a scalar.
 It can be shown that if $Z$ is a vector, then one can construct a simpler model with scalar noise, which has the 
 same observational and interventional distribution \cite{Mooij2016jmlr}.
 
@@ -36,7 +36,7 @@ $\tilde{f}$ and $\tilde{Z}$ such that
 \begin{equation}
     \begin{cases} 
         & X = \tilde{f}(Y, \tilde{Z}) \\
-        & Y \bigCI \tilde{Z},\quad Y \thicksim p_y,\quad \tilde{Z} \thicksim p_{\tilde{Z}}  
+        & Y \bigCI \tilde{Z},\quad Y \thicksim p_Y,\quad \tilde{Z} \thicksim p_{\tilde{Z}}  
      \end{cases}
 \end{equation}
 
@@ -44,11 +44,12 @@ with the important property that it induces an equivalent observational distribu
 equation \ref{causal_model}. However in general the interventional distribution will differ. In particular 
 this means that with observational data alone we are not able identify the right causal direction.
 
-We must therefore make further assumptions on $f$ that break this symmetry and allow us to make causal inference.
-In particular we will consider the following subset of models. Note that these models are a subset of those 
-that we just introduced (in equation \ref{causal_model}).
+We must therefore make further assumptions on $f$ that break this symmetry and allow us to make causal inference
+on observational data alone.
+In particular we will consider the following class of models. Note that these models are a subset of those 
+that we just introduced (equation \ref{causal_model}).
 
-\begin{definition} Given a triplet $(p_X, p_Z, f)$, consisting of two finite mean densities and a function
+\begin{definition} Given a triplet $(p_X, p_Z, f)$, consisting of two finite mean densities and a Borel-measurable function
 $f: \R \rightarrow \R$, we can define a \textbf{bivariate Additive Noise Model (ANM)} $X \rightarrow Y$
 \[
     \begin{cases} 
@@ -56,24 +57,24 @@ $f: \R \rightarrow \R$, we can define a \textbf{bivariate Additive Noise Model (
         & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
      \end{cases}  
 \]
-If the induced density $p_{x, y}$ has a density with respect to Lebesgue measure, we say that $p_{x, y}$
-satisfies the ANM $X \rightarrow Y$.
+If the induced joint density of $X$ and $Y$, $p_{X, Y}$ has a density with respect to Lebesgue measure, 
+we say that $p_{X, Y}$ satisfies the ANM $X \rightarrow Y$.
 \end{definition}
 
-Given such a model, we are interested in the cases when the observational distribution $p_{x, y}$ can only
-lead to one causal explenation; this motivates the following definition:
+Given such a model, we are interested in the cases when the observational distribution $p_{X, Y}$ can only
+lead to omly one causal explenation; this motivates the following definition:
 
-\begin{definition} If the joint density $p_{x, y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
+\begin{definition} If the joint density $p_{X, Y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
 ANM $Y \rightarrow X$, then we call the ANM $X \rightarrow Y$ \textbf{identifiable}. 
 \end{definition}
 
-Intuitively non-linearities due to $f$ will break the symmetry needed to find a reverse ANM. This is what
+Intuitively, non-linearities due to $f$ will break the symmetry needed to make a reverse ANM. This is what
 \cite{hoyer2009nonlinear} and friends explore; they show that for the 
-a triplet $(p_X, p_Z, f)$ to generate a non-identifiable can happen only if they satisfy a particular 
-differential equation that loosely speaking cannot happen in the generic case: in other words the forward 
+a triplet $(p_X, p_Z, f)$ to generate a non-identifiable ANM, it needs to satisfy a particular 
+differential equation. Loosely speaking cannot happen in the generic case: in other words the forward 
 model $X \rightarrow Y$ cannot be inverted. 
 
-If $f$ is linear, then one can give a much more precise statement about Identifiability:
+If $f$ is linear, then one can give a much more precise statement about identifiability:
 
 \begin{theorem} Let $X$ and $Y$ be random variables, such that
 $$
@@ -87,8 +88,10 @@ if and only if $X, Y, Z, \tilde{Z}$ are Gaussian distributed.
 \label{linear_indentifiability}
 \end{theorem}
 
-The proof is a simple appilcation of the Darmois-Skitovich Theorem. The theorem also plays an imporant role
-in ICA; it states the following:
+The proof is a simple appilcation of the Darmois-Skitovich Theorem\footnote{ The theorem also plays an imporant role
+in independent component analys (ICA), in short it deals with source separation. It turns out that if we have the 
+linear multivariate causal setting, then we can cast it as a source separation problem and use ICA to solve it. 
+Note that there too gaussianty makes or breaks the method.}; it states the following:
 
 \begin{theorem}[Darmois-Skitovich] Let $X_i$, $i \in [n]$ be independent random variables, and let
     $\alpha_i$, $\beta_j$ be non zero constants. Then, if the random variables
@@ -150,7 +153,7 @@ that they are also independent.
 \end{proof}
 
 These results show that indeed, in most cases, we should be able to perform causal inference as most 
-additive models should be identifiable. Interestingly, the guaussian setting provides difficulty 
+additive models should be identifiable. Interestingly, the guaussian setting provides difficulty  due 
 to the symmetry of the gaussian (in the linear case). In general the gaussian is our friend, but not today.
 We will next explote some methods for causal inference.
 
@@ -257,25 +260,32 @@ more precise statement can be found in \cite{Mooij2016jmlr}}.
 First considered by \cite{hoyer2009nonlinear}, is the Hilbert-Schmidt independence Criterion (HSIC) for
 testing the independence between the residuals and the inpurts. 
 
-definition of HSIC here
+$$
+  \hat{C}(u, v) := \widehat{\operatorname{HSIC}}_{k, l} (u, v)
+$$
 
-By choosing an appropriate kernel, the HSIC becomes a metric, and so theoretically it is gauranteed to 
-be 0 iff $X \bigCI Y$. We note that in Chapter 3 we give an overview of the reproducing kernel hilbert 
-space which will allow us to get a better intuition for the HSIC. 
+We will give a formal description of the HSIC in the next chapter, where we will develop the necessary background 
+to get an intuition on this measure. For now, you can think of the HSIC as a metric that computes the distance 
+between the the product distribution and the joint (similar to the Mutual information); the key difference is that 
+we provide two kernels, $k$ and $l$ which will transform the distributions to a different space. For specific 
+kernel choices the HSIC indeed becomes a metric. 
+
+Note that one can approximate the distribution of $\widehat{\operatorname{HSIC}}$, and use hypothesis testing 
+for the independence test. 
 
 \subsection{Entropy based}
 
-Another type of score function looks at differential entropies instead of directly testing for independence.
+Another type of score function looks at differential en tropies instead of directly testing for independence.
 These ideas stem from A and B; The following lemma shows how this might be used in practice:
 
-\begin{lemma} Consider random variables $X$ and $Y$, with joint density $p_{x, y}$. For any functions 
+\begin{lemma} Consider random variables $X$ and $Y$, with joint density $p_{X, Y}$. For any functions 
 $f, g : \R \rightarrow \R$ we have:
 
 $$
     H(X) + H(Y - f(X)) = H(Y) + H(X - g(X)) - I(X - g(X), Y) + I(Y - f(X), X)
 $$
 
-where $H(.)$ denotes the differential entropy and $I(.,.)$ denotes the differential mutual information 
+where $H(\cdot)$ denotes the differential entropy and $I(\cdot, \cdot)$ denotes the differential mutual information 
 (\cite{cover1999elements}).
 \end{lemma}
 
@@ -319,121 +329,121 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 There are other methods such as the  ICGC
 
 
-\section{SNR and causality}
+% \section{SNR and causality}
 
-In this section we give a brief commentary about causality from the perspective of communication theory.
+% In this section we give a brief commentary about causality from the perspective of communication theory.
 
-In virtually most of the predictive fields, noise is the enemey; Indeed, in the absence of noise, finding the
-best linear fit to a linear model is trivial. Emre Telatar, a powerful information theorist, liked to jest
-in his digital communication course that "without noise, we communication engineers would be without a job".
+% In virtually most of the predictive fields, noise is the enemey; Indeed, in the absence of noise, finding the
+% best linear fit to a linear model is trivial. Emre Telatar, a powerful information theorist, liked to jest
+% in his digital communication course that "without noise, we communication engineers would be without a job".
 
-Indeed, for most of the early 20th century\footnote{quote comm book} noise was keeping engineers busy as they 
-devised clever schemes to fight noise. At the time the whole business was very experimental as
-no one had come close to understanding noise in the context of transmission; questions such 
-as "Is it possible to send a message with arbitrary reliability?" and "What is the theoretical maximum amount
-of information that can be reliably sent?", were questions that no one had come close to solving.
+% Indeed, for most of the early 20th century\footnote{quote comm book} noise was keeping engineers busy as they 
+% devised clever schemes to fight noise. At the time the whole business was very experimental as
+% no one had come close to understanding noise in the context of transmission; questions such 
+% as "Is it possible to send a message with arbitrary reliability?" and "What is the theoretical maximum amount
+% of information that can be reliably sent?", were questions that no one had come close to solving.
 
-Then Shannon came along, in his Magnum Opus, \cite{shannon}, he not only formalised the foundations of information
-Theory, but he also proved\footnote{Shannon had a very deep...} most of the main results in it. In particular, he
-showed that for the AWGN (Additive white nois gaussian channel), it is possible to realiably transmit at most $C$
-bits per time unit:
+% Then Shannon came along, in his Magnum Opus, \cite{shannon}, he not only formalised the foundations of information
+% Theory, but he also proved\footnote{Shannon had a very deep...} most of the main results in it. In particular, he
+% showed that for the AWGN (Additive white nois gaussian channel), it is possible to realiably transmit at most $C$
+% bits per time unit:
 
-$$
-C \propto log(1 + SNR)
-$$
+% $$
+% C \propto log(1 + SNR)
+% $$
 
-Where $SNR$ is the celebrated signal to noise ratio -- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
-would expect, if $SNR \rightarrow \infty$ then we can send an arbitrary amount of information 
-per time unit (the only limit is the physical one, i.e. the speed of light). Conversely if $SNR = 0$
-then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
-understand us.
+% Where $SNR$ is the celebrated signal to noise ratio -- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
+% would expect, if $SNR \rightarrow \infty$ then we can send an arbitrary amount of information 
+% per time unit (the only limit is the physical one, i.e. the speed of light). Conversely if $SNR = 0$
+% then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
+% understand us.
 
-If we return to the question of causality; a somehwhat trivial observation is that if the mechanism 
-is injective\footnote{If it is not injective, then the function is not invertible, and thus only one 
-causal direction is possible.}, in the absence of noise, it is 
-not possible to say anything about the causal direction of the mechanism. Here too noise is the
-benelovent giver of jobs, albeit not for the same reasons. Interestingly, we can use noise to 
-help us deduce the causal nature of a process. 
+% If we return to the question of causality; a somehwhat trivial observation is that if the mechanism 
+% is injective\footnote{If it is not injective, then the function is not invertible, and thus only one 
+% causal direction is possible.}, in the absence of noise, it is 
+% not possible to say anything about the causal direction of the mechanism. Here too noise is the
+% benelovent giver of jobs, albeit not for the same reasons. Interestingly, we can use noise to 
+% help us deduce the causal nature of a process. 
 
-We will now see what perhaps could be considered the most simple causal set up, and describe a method
-for causal inference. We will then see that $SNR$ also plays an important role.
+% We will now see what perhaps could be considered the most simple causal set up, and describe a method
+% for causal inference. We will then see that $SNR$ also plays an important role.
 
-Consider the linear additive noise model -- our first causal model!
+% Consider the linear additive noise model -- our first causal model!
 
-\[ \begin{cases} 
-    & Y = aX + E_Y  \\
-    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
- \end{cases}
-\]
+% \[ \begin{cases} 
+%     & Y = aX + E_Y  \\
+%     & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
+%  \end{cases}
+% \]
 
-Suppose we are given $n$ samples of the above process:
+% Suppose we are given $n$ samples of the above process:
 
-$$
-    y_i = ax_i + z_i, i \in \left[n\right]
-$$
+% $$
+%     y_i = ax_i + z_i, i \in \left[n\right]
+% $$
 
-We collect these into vectors say $y$, $x$ and $z$; note that we do not have
-access to the latter, but it will come in handy for the derivation that follows.
+% We collect these into vectors say $y$, $x$ and $z$; note that we do not have
+% access to the latter, but it will come in handy for the derivation that follows.
 
-One common idea is to first compute the residuals for both possible regression models,
-and the to check which residual is less dependent on $x$ and $y$ respectively -- we are
-testing for the noise / data independence hypothesis.
+% One common idea is to first compute the residuals for both possible regression models,
+% and the to check which residual is less dependent on $x$ and $y$ respectively -- we are
+% testing for the noise / data independence hypothesis.
 
-We first regress $y$ on $x$. i.e.
+% We first regress $y$ on $x$. i.e.
 
-$$
-    \hat{a} = \operatorname{argmax}_{\alpha} \norm{y - \alpha x}_{2}^2
-$$
+% $$
+%     \hat{a} = \operatorname{argmax}_{\alpha} \norm{y - \alpha x}_{2}^2
+% $$
 
-We differentiate w.r.t to $\alpha$:
+% We differentiate w.r.t to $\alpha$:
 
-$$
-    -2y^\intercal x + 2\alpha \norm{x}_2^2 = 0 \qquad \Rightarrow \qquad 
-    \alpha = \frac{y^\intercal x}{\norm{x}_2^2} = 
-    \frac{a\norm{x}_2^2 + z^\intercal x}{\norm{x}_2^2}
-$$
+% $$
+%     -2y^\intercal x + 2\alpha \norm{x}_2^2 = 0 \qquad \Rightarrow \qquad 
+%     \alpha = \frac{y^\intercal x}{\norm{x}_2^2} = 
+%     \frac{a\norm{x}_2^2 + z^\intercal x}{\norm{x}_2^2}
+% $$
 
-Note that by symmetry, we find that if we regress x on y we get
+% Note that by symmetry, we find that if we regress x on y we get
 
-$$
-    \tilde{a} = \frac{x^\intercal y}{\norm{y}_2^2} = 
-    \frac{a\norm{x}_2^2 + z^\intercal x}{a^2 \norm{x}_2^2 + 2a x^\intercal z + \norm{z}^2_2}
-$$
+% $$
+%     \tilde{a} = \frac{x^\intercal y}{\norm{y}_2^2} = 
+%     \frac{a\norm{x}_2^2 + z^\intercal x}{a^2 \norm{x}_2^2 + 2a x^\intercal z + \norm{z}^2_2}
+% $$
 
-As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are iid, 
-and we note that convergance in probability is preserved when taking products and 
-continuous mappings.} and we thus -- given that $E(z) = \E(N) = 0$ -- find:
+% As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are iid, 
+% and we note that convergance in probability is preserved when taking products and 
+% continuous mappings.} and we thus -- given that $E(z) = \E(N) = 0$ -- find:
 
-$$
-    \E(\hat{a}) = \frac{a\E(\norm{x}_2^2) + 0}{\E(\norm{x}_2^2)} \xrightarrow{p} a 
-$$
+% $$
+%     \E(\hat{a}) = \frac{a\E(\norm{x}_2^2) + 0}{\E(\norm{x}_2^2)} \xrightarrow{p} a 
+% $$
 
-$$
-    \E(\tilde{a}) = \frac{a\E(\norm{x}_2^2) + 0}{
-        a^2 \E(\norm{x}_2^2) + 0 + \E(\norm{z}^2_2)} \xrightarrow{p}
-        \frac{a SNR}{a^2 SNR + 1}
-$$
+% $$
+%     \E(\tilde{a}) = \frac{a\E(\norm{x}_2^2) + 0}{
+%         a^2 \E(\norm{x}_2^2) + 0 + \E(\norm{z}^2_2)} \xrightarrow{p}
+%         \frac{a SNR}{a^2 SNR + 1}
+% $$
 
-Thus for large $n$ we have that:
+% Thus for large $n$ we have that:
 
-$$
-    r_{x \rightarrow y} \approx y - ax = z
-$$
+% $$
+%     r_{x \rightarrow y} \approx y - ax = z
+% $$
 
-and
+% and
 
-$$
-    r_{y \rightarrow x} = x - \tilde{a}y \approx x - \frac{a SNR}{a^2 SNR + 1} (ax + z) 
-$$
+% $$
+%     r_{y \rightarrow x} = x - \tilde{a}y \approx x - \frac{a SNR}{a^2 SNR + 1} (ax + z) 
+% $$
 
-Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case whaat??
+% Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case whaat??
 
-If however $SNR \rightarrow \infty$, then $r_{y \rightarrow x} \approx -\frac{1}{a}z \approx \frac{1}{a}z$, thus 
-the residuals carry no information about causality.
+% If however $SNR \rightarrow \infty$, then $r_{y \rightarrow x} \approx -\frac{1}{a}z \approx \frac{1}{a}z$, thus 
+% the residuals carry no information about causality.
 
-We note that this somewhat formalises the intuition that we had about the role of noise in 
-causality; it also shows that indeed, $SNR$ plays an inverted role vis-a-vis that of communication
-theory. 
+% We note that this somewhat formalises the intuition that we had about the role of noise in 
+% causality; it also shows that indeed, $SNR$ plays an inverted role vis-a-vis that of communication
+% theory. 
 
-If we are interested in finite sample results if we demand a certain accuracy for a given
-sample size, then we conjecture that $SNR$ will play a key role in determining this.
+% If we are interested in finite sample results if we demand a certain accuracy for a given
+% sample size, then we conjecture that $SNR$ will play a key role in determining this.

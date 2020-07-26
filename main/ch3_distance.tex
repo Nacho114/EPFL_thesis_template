@@ -441,10 +441,12 @@ We first show why divergence has some desirable properties for a probability mea
     &= 0
 \end{align*}
 
-The inequality follows from the convexity of $f$, this not only tells us that 
+The inequality follows from the convexity of $f$, this tells us that 
 $\infdiv{P}{Q} \geq 0$. From the definition it is clear that $\infdiv{P}{P} = 0$;
 one can also easily show that $\infdiv{P}{Q} = 0$ for all $P \neq Q$ iff 
-$f(x) = c(x - 1)$ for some $c$. For all other we have $\infdiv{P}{Q} > 0$ if $P \neq Q$ not exactyl trrru
+$f(x) = c(x - 1)$ for some $c$. For all other we have $\infdiv{P}{Q} > 0$ if $P \neq Q$, note 
+that this is true if $P$ and $Q$ have the same support, when they are not then this statement
+requires a bit more work. 
 
 Therefore roughly speaking, all f-divergences define a way to measure similiarities between distributions. 
 
