@@ -157,21 +157,19 @@ additive models should be identifiable. Interestingly, the guaussian setting pro
 to the symmetry of the gaussian (in the linear case). In general the gaussian is our friend, but not today.
 We will next explote some methods for causal inference.
 
-\section{Methods}
+\section{ANM Methods}
 
-\subsection{Introduction}
-
-The following lemma\footnote{A simple proof can be found here \cite{Mooij2016jmlr}} motivates the 
-first class of methods that we will present:
+The additive noise model (ANM) methods are a very simple score based family of methods for causal inference.
+The following lemma\footnote{A simple proof can be found here \cite{Mooij2016jmlr}} motivates the method:
 
 \begin{lemma}
-    Given a joint density $p_{x, y}$ of two random variables $X$, $Y$ s.t. the conditional expectation
-    $\E(Y |X = x)$ is well-defined for all x and measurable. Then, $p_{x, y}$ satisfies a bivariate 
+    Given a joint density $p_{X, Y}$ of two random variables $X$, $Y$ s.t. the conditional expectation
+    $\E(Y |X = x)$ is well-defined for all x and measurable. Then, $p_{X, Y}$ satisfies a bivariate 
     Additive Noise Model $X \rightarrow Y$ if and only if $E_Y := Y - \E(Y|X)$ has 
     finite mean and is independent of $X$.
 \end{lemma}
 
-In practice we get some data from $p_{x, y}$ ; say 
+In practice we get some data from $p_{X, Y}$ ; say 
 $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$. We can then either split it into a test/train in order to 
 first fit a regression which we then evaluate using the test set. If the data is scarce we may alternatively 
 recycle the data -- i.e. reuse it for both training and evaluation.
@@ -187,22 +185,30 @@ here Algorithm \ref{alg:anm_general}.
 In order to show that such a procedure is consistent we need 3 things:
 
 \begin{enumerate}
-    \item $p_{x, y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
+    \item $p_{X, Y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
     \item The regression method should be \textbf{suitable} for regressing $Y$ on $X$.
     \item If $X \rightarrow Y$, then asymptotically $\hat{C}_{X \rightarrow Y} < \hat{C}_{Y \rightarrow X}$
 \end{enumerate}
 
 
 We will take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
-test to check if $p_{x. y}$ satisfies an ANM $X \rightarrow Y$. 
+test to check if $p_{X, Y}$ satisfies an ANM $X \rightarrow Y$. 
 
 In point 2, by \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}} - \mathbf{e}} \rightarrow 0$.
 Essentially we require the regression used on the data to have 0 mean square error in expectation\footnote{A 
 more precise statement can be found in \cite{Mooij2016jmlr}}. 
 
+\begin{definition}
+Let $X$, $Y$ 
+    
+\end{definition}
+
+
+
+
 \begin{algorithm}[H]%[tbp]
 
-    \caption{General procedure to decide whether $p_{x, y}$ satisfies and ANM $X \rightarrow Y$
+    \caption{General procedure to decide whether $p_{X, Y}$ satisfies and ANM $X \rightarrow Y$
         or $Y \rightarrow X$}
   
     \textbf{Input}:
@@ -255,16 +261,19 @@ more precise statement can be found in \cite{Mooij2016jmlr}}.
   \end{algorithm}
 
 
-\subsection{HSIC}
+  We will now overview some score functions, note that the list is far from exhaustive and other methods can be found 
+  in \cite{Mooij2016jmlr}. We will end the chapter by presenting to alternative methods. 
+
+\subsection{HSIC score}
 
 First considered by \cite{hoyer2009nonlinear}, is the Hilbert-Schmidt independence Criterion (HSIC) for
-testing the independence between the residuals and the inpurts. 
+testing the independence between the residuals and the input. 
 
 $$
   \hat{C}(u, v) := \widehat{\operatorname{HSIC}}_{k, l} (u, v)
 $$
 
-We will give a formal description of the HSIC in the next chapter, where we will develop the necessary background 
+We will give a formal description of the HSIC in the next chapter, where we will develop some of the background 
 to get an intuition on this measure. For now, you can think of the HSIC as a metric that computes the distance 
 between the the product distribution and the joint (similar to the Mutual information); the key difference is that 
 we provide two kernels, $k$ and $l$ which will transform the distributions to a different space. For specific 
@@ -273,10 +282,10 @@ kernel choices the HSIC indeed becomes a metric.
 Note that one can approximate the distribution of $\widehat{\operatorname{HSIC}}$, and use hypothesis testing 
 for the independence test. 
 
-\subsection{Entropy based}
+\subsection{Entropy score}
 
-Another type of score function looks at differential en tropies instead of directly testing for independence.
-These ideas stem from A and B; The following lemma shows how this might be used in practice:
+Another type of score function looks at differential entropies instead of directly testing for independence.
+These ideas stem from \cite{kpotufe2014consistency} and \cite{nowzohour2016score}; The following lemma shows how this might be used in practice:
 
 \begin{lemma} Consider random variables $X$ and $Y$, with joint density $p_{X, Y}$. For any functions 
 $f, g : \R \rightarrow \R$ we have:
@@ -307,10 +316,18 @@ This approach to estimate the direction of the ANM is consistent under certain a
 \cite{kpotufe2014consistency} and \cite{nowzohour2016score}. One of the main drawbacks of using differential
 entropy is that we need to go through discretization, which can lead to undesired effects.
 
-\subsection{CGNN: Causal Generative NNets}
+
+\subsection{Other methods}
+
+\subsection{IGCI}
+
+Probably will skip this?
+
+
+\subsection{CGNN: Causal Generative Neural Nets}
 
 In the work of \cite{goudet2017causal}, they estimate a \textit{generative} model by approximating
-the FCM structure using neural networks given some data from $p_{x, y}$. Using the same notation
+the FCM structure using neural networks given some data from $p_{X, Y}$. Using the same notation
 as in the introduction on FCM, the idea is to estimate each $f_i$ by a neural network, and the 
 search through the DAG space. Since the DAG space is super exponetial in the number of variables,
 they apply a greedy procedure to decide whether or not to include an edge $X_i \rightarrow X_j$.
@@ -324,9 +341,6 @@ as a loss function between $\hat{P}$ and $P$ (the data distribution).
 
 So far the CGNN appears to have the best performance on the various benchmarks. 
 
-\subsection{Other methods}
-
-There are other methods such as the  ICGC
 
 
 % \section{SNR and causality}

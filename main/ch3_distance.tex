@@ -479,6 +479,46 @@ data processing inequality which also plays a central role in many proofs in Inf
     \label{lemma:dpi}
 \end{lemma}
 
+\section{Independence tests}
+
+It is rather straightforward to come up with independence tests once we are we are able to test 
+for the distance between distributions. Say we are given two random variables $X$ and $Y$, with 
+values over the product space $\mathcal{X} \times \mathcal{Y}$. If their joint distribution is 
+$p_{X, Y}$, and their marginal distributions are $p_X$ and $p_Y$. Then to check if $X \bigCI Y$
+we need to verify if $p_{X, Y} = p_X \otimes p_Y$.
+
+If we want to create an independence test from an f-divergence, say $f(x) = xlog(x)$, then we 
+can do as follows:
+
+$$
+    I (X; Y) :=  \infdiv{p_{X, Y}}{p_X \otimes p_Y}
+$$
+
+This in fact the well known Mutual Information from Information Theory! 
+
+Recall that for the MMD we need to provide a kernel, since we are now in a product space, we need 
+to provide a product kernel on the space ($\mathcal{X}, \mathcal{Y}$):
+
+\begin{align*}
+    \mathcal{X} \times \mathcal{Y} \quad &\rightarrow \qquad \R \\
+    ( (x, y) (\tilde{x}, \tilde{y})) &\mapsto k(x, \tilde{x}) \cdot l(y, \tilde{y})
+\end{align*}
+
+where $k$ and $l$ are kernels on $\mathcal{X}$ and $\mathcal{Y}$ respectively. We can then define the 
+MMD to test independence as follows:
+
+$$
+    \operatorname{MMD}\left( p_{X, Y}, p_X \otimes p_Y  \right)
+$$
+
+Observe that 
+
+$$
+    \operatorname{MMD}\left( p_{X, Y}, p_X \otimes p_Y  \right)^2 = \operatorname{HSIC}(p_{X, Y})
+$$
+
+So the HSIC is bassically an MMD distance between the joint and product distribution. 
+
 % \section{Large deviations}
 
 % Consider making this into a chapter
