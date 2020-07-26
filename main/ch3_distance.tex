@@ -416,10 +416,55 @@ discretisation is not as obvious as that of choosing a kernel.
 
 The f-divergence is another family of probability measures, and more simple than IPM.
 
-The definition is as follows. Let $P$ and 
+\begin{definition}[f-divergence]
+    ~
+Let $P$ and $Q$ be two probability distributions over a space $\Omega$, 
+such that $P$ is absolutely continuous with respect to $Q$; and let 
+$f: \R_+ \rightarrow \R$ be a convex function satisfying $f(1) = 0$. The $f$ divergence of 
+$P$ from $Q$ is defined as
 
-nice properties DPI, ? 
+$$
+    \infdiv{P}{Q} := \int_\Omega f \left( \frac{dP}{dQ} \right) dQ
+$$
+    
+\end{definition}
 
+
+We first show why divergence has some desirable properties for a probability measure:
+
+
+\begin{align*}
+    \infdiv{P}{Q} &= \E_Q \left[ f \left( \frac{dP}{dQ} \right) \right] \\
+    &\geq f \left( \E_Q \left[  \frac{dP}{dQ} \right]  \right) \\
+    &= f \left( \int_\Omega \frac{dP}{dQ} dQ  \right) \\
+    &= f(1) \\
+    &= 0
+\end{align*}
+
+The inequality follows from the convexity of $f$, this not only tells us that 
+$\infdiv{P}{Q} \geq 0$. From the definition it is clear that $\infdiv{P}{P} = 0$;
+one can also easily show that $\infdiv{P}{Q} = 0$ for all $P \neq Q$ iff 
+$f(x) = c(x - 1)$ for some $c$. For all other we have $\infdiv{P}{Q} > 0$ if $P \neq Q$ not exactyl trrru
+
+Therefore roughly speaking, all f-divergences define a way to measure similiarities between distributions. 
+
+However, in general it is not symmetric in $P$ and $Q$, so it is not a metric.
+
+The following are some examples of f-divergences:
+
+\begin{itemize}
+    \item[--] \textbf{Kullback-Leibler (KL) divergence}: $f(x) = x \log(x)$
+    \item[--] \textbf{Total Variation (TV)}: $f(x) = \frac{1}{2} \abs{x - 1}$, note that 
+    in this case we have
+    $$
+        \infdiv{P}{Q} = \frac{1}{2} \E_Q \left[ \abs{ \frac{dP}{dQ} - 1} \right]
+        = \frac{1}{2} \int_\Omega \abs{ dP - dQ} 
+    $$
+    Note that the TV is also a metric on the space of probability distributions.
+\end{itemize}
+
+There are many very useful theoretical results about f-divergences, among them is the 
+data processing inequality which also plays a central role in many proofs in Information Theory. 
 
 \begin{lemma}[Data Processing Inequality (DPI)]
     Let $X$ and $Y$ be two random variables, and let $P_X$ and $Q_X$ be two measures on $X$. If we 
@@ -432,28 +477,12 @@ nice properties DPI, ?
     \label{lemma:dpi}
 \end{lemma}
 
-Generalisation of the usual divergence, exploit jensen.
+% \section{Large deviations}
 
-Talk about f-divergence, and give proof that D(p, q) >=0 and eq iff p == q
+% Consider making this into a chapter
 
-Talk about IPM vs $f-$divergence. 
+% \subsection{Hoeffding}
 
-To test whether two random variables are independent $X, Y$
-
-talk about L1 being f-divergence
-
-
-\section{Large deviations}
-
-Consider making this into a chapter
-
-\subsection{Hoeffding}
-
-\subsection{Sanov}
-
-\subsection{K-means}
-
-
-
+% \subsection{Sanov}
 
 
