@@ -534,9 +534,30 @@ $$
 we can upper bound the average distance by the largest $l_1$ distance between any shift; 
 note that there is at least one maximiser since we are optimising over a compact set. 
 
+TODO -- Taylor approx bound -- 
+
 We next approximate $P_{Z}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
-that we will pick $\alpha \approx 0$, using Taylor's theorem we can upper bound HOW? TODO - should be doable
-. Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
+that we will pick $\alpha \approx 0$.
+
+Using taylor expansions we get that:
+
+$$
+    P_{Z}(t-\alpha C^* ) = P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)}
+$$
+
+Note that in our original equation this means that we need to bound
+
+
+$$
+     \sum_{n \geq 1} \left( \alpha C^* \right)^n \int P_{Z}(t)^{(n)} dt
+$$
+
+Note that we can pick any $\alpha$, indeed we will later make it smaller than $\epsilon$. But I am 
+not sure how to bound the derivatives of the pdf...
+
+TODO -- Taylor approx bound end -- 
+
+Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
 $C = C^* \int P_{Z}^{\prime}(t) d t$ and we are done.
 
 We note that while $C^*$ will depend on $\delta$, this is not a problem. We will first pick $\delta$ to be 

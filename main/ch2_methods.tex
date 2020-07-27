@@ -198,13 +198,19 @@ In point 2, by \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}}
 Essentially we require the regression used on the data to have 0 mean square error in expectation\footnote{A 
 more precise statement can be found in \cite{Mooij2016jmlr}}. 
 
-\begin{definition}
-Let $X$, $Y$ 
-    
+\begin{definition} 
+Let X, Y be two real-valued random variables with joint distribution PX,Y . 
+Suppose we are given sequences of training data sets $DN = \{X1, X2, . . . , XN \}$ and test data sets 
+$DN = \{X1 , X2 , . . . , XN \}$ (in either the data splitting or the data recycling scenario). 
+We call a regression method suitable for regressing Y on X if the mean squared error between 
+true and estimated regression function, evaluated on the test data, vanishes asymptotically in expectation, i.e.,
+
+$$
+\lim _{N \rightarrow \infty} \mathbb{E}_{\mathcal{D}_{N}, \mathcal{D}_{N}^{\prime}}\left(\frac{1}{N} 
+\sum_{n=1}^{N}\left|\hat{f}_{Y}\left(X_{n}^{\prime} ; 
+\mathcal{D}_{N}\right)-\mathbb{E}\left(Y \mid X=X_{n}^{\prime}\right)\right|^{2}\right)=0
+$$
 \end{definition}
-
-
-
 
 \begin{algorithm}[H]%[tbp]
 
@@ -315,6 +321,7 @@ $$
 This approach to estimate the direction of the ANM is consistent under certain assumptions as is shown by 
 \cite{kpotufe2014consistency} and \cite{nowzohour2016score}. One of the main drawbacks of using differential
 entropy is that we need to go through discretization, which can lead to undesired effects.
+TODO give example 
 
 
 \subsection{Other methods}
