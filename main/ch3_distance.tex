@@ -242,15 +242,18 @@ higher frequecies\footnote{In the fourier space, we have the following
 basis $\psi_\omega = \exp (2\pi i x \omega)$}. Thus, a higher $\Omega$ will force a faster decay on $f_i$ and thus result in smoother functions
 -- in principle, this will reduce overfitting. 
 
+% \begin{figure}[htp]
 \begin{figure}[H]
-    \includegraphics[width=1\textwidth]{kernel_smoothness.jpg}
+
+    \centering
+    \includegraphics[width=.33\textwidth]{gp_goodfit.png} 
+    \includegraphics[width=.33\textwidth]{gp_underfit.png} 
+    \includegraphics[width=.33\textwidth]{gp_overfit.png} 
     \caption{Small RKHS norm results in smooth functions. 
-    From left to right $\Omega = .1$, $\Omega = 10$, $\gamma = 1\mathrm{e}{-7}$, 
+    From left to right $\Omega = 2$, $\Omega = 14$, $\Omega = 0.2$, 
     we fix the Gaussian kernel with $\gamma = 0.6$}
-    \label{fig:kernel_smoothness} 
+    \label{fig:kernel_smoothness}  
 \end{figure}
-
-
 
 
 \section{Integral Probability Metric}
@@ -396,7 +399,8 @@ that the inverse Fourier transform of a gaussian is supported everywhere.
  This means that the gaussian kernel satisfies the second
 condition, and it therefore generates an injective embedding $\mu_P$.
 
-We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence.
+We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence (in the 
+sense that measure the distance between the joint and product distributions to test for independence).
 
 \subsection{The case for MMD}
 
@@ -442,11 +446,8 @@ We first show why divergence has some desirable properties for a probability mea
 \end{align*}
 
 The inequality follows from the convexity of $f$, this tells us that 
-$\infdiv{P}{Q} \geq 0$. From the definition it is clear that $\infdiv{P}{P} = 0$;
-one can also easily show that $\infdiv{P}{Q} = 0$ for all $P \neq Q$ iff 
-$f(x) = c(x - 1)$ for some $c$. For all other we have $\infdiv{P}{Q} > 0$ if $P \neq Q$, note 
-that this is true if $P$ and $Q$ have the same support, when they are not then this statement
-requires a bit more work. 
+$\infdiv{P}{Q} \geq 0$. From the definition it is clear that $\infdiv{P}{P} = 0$; further,
+if $f$ is \textit{strictly} convex at $1$, then we have that $\infdiv{P}{Q} = 0$ iff $P = Q$.
 
 Therefore roughly speaking, all f-divergences define a way to measure similiarities between distributions. 
 
