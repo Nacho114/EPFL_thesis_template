@@ -402,6 +402,16 @@ condition, and it therefore generates an injective embedding $\mu_P$.
 We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence (in the 
 sense that measure the distance between the joint and product distributions to test for independence).
 
+In practice the gaussian kernel is very popular, it is used in the HSIC test when used as a
+score function by \cite{Mooij2016jmlr}; but how do we find the parameter -- sometimes referred to 
+as the bandwith -- of the kernel?
+
+One approach is the median heuristic (\cite{scholkopf2002learning}):
+
+$$
+\hat{\gamma}(u):=\operatorname{median}\left\{\left\|u_{i}-u_{j}\right\|:  i<j ,\left\|u_{i}-u_{j}\right\| \neq 0\right\}
+$$
+
 \subsection{The case for MMD}
 
 In their study, \cite{sriperumbudur2009integral}) argue that the "IPM is much
@@ -466,22 +476,25 @@ The following are some examples of f-divergences:
     Note that the TV is also a metric on the space of probability distributions.
 \end{itemize}
 
-There are many very useful theoretical results about f-divergences, among them is the 
-data processing inequality which also plays a central role in many proofs in Information Theory. 
+% While seemingly less flexible than IPM, the f-divergences have a very rich theory behind them, 
 
-\begin{lemma}[Data Processing Inequality (DPI)]
-    Let $X$ and $Y$ be two random variables, and let $P_X$ and $Q_X$ be two measures on $X$. If we 
-    pass these measures through a kernel, say $P_{Y|X}$ the resulting measures $P_X$ and $Q_X$ will
-    satisfy:
 
-    $$
-        \infdiv{P_X}{Q_X} \geq \infdiv{P_Y}{Q_Y}
-    $$
-    \label{lemma:dpi}
-\end{lemma}
+% There are many very useful theoretical results about f-divergences, among them is the 
+% data processing inequality which also plays a central role in many proofs in Information Theory. 
 
-A proof of this lemma and more ineteresting facts about f-divergences can be found in chapter
-2 of \cite{duchiEE377}. 
+% \begin{lemma}[Data Processing Inequality (DPI)]
+%     Let $X$ and $Y$ be two random variables, and let $P_X$ and $Q_X$ be two measures on $X$. If we 
+%     pass these measures through a kernel, say $P_{Y|X}$ the resulting measures $P_X$ and $Q_X$ will
+%     satisfy:
+
+%     $$
+%         \infdiv{P_X}{Q_X} \geq \infdiv{P_Y}{Q_Y}
+%     $$
+%     \label{lemma:dpi}
+% \end{lemma}
+
+% A proof of this lemma and more ineteresting facts about f-divergences can be found in chapter
+% 2 of \cite{duchiEE377}. 
 
 \section{Independence tests}
 

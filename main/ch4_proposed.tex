@@ -578,10 +578,14 @@ some small constant, this will then determine $C^*$ to be some other constant; a
 $\alpha$. 
 \end{proof}
 
-The next lemma will also be important 
+So we have found a bound on the $l_1$ distance between two continuos distributions; however in our
+application, these will be quantised versions of these distributions. The following lemma tells us 
+that this is not a problem, the $l_1$ distance between the quantised version cannot be bigger than 
+that of their continuos counter parts. The only requirement is that we fix the quantisation scheme
+beforehand and use the same one for both.
 
 \begin{lemma}
-    Let $P$ and $Q$ be two distribtions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
+    Let $P$ and $Q$ be two continuos distribtions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
     $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
 
     $$
@@ -592,11 +596,38 @@ The next lemma will also be important
 
 \begin{proof}
     ~
-    Using the data processing inequality (lemma \ref{lemma:dpi}), and noting that one can express the $l_1$
-    distance as a divergence proves the claim. 
+    We first quantize $\R$ in bins of length $w$, say $I_i = [wi, w(i + 1))$, note 
+    $\bigcup_{i \in \Z} I_i = \R$.
+
+    Given continuos distribtions $P$ and $Q$, we form their quantised counter parts as
+    follows:
+
+    $$
+        P^*(k) := \sum _{i \in \Z} \; \int_{I_i} p(t) dt \; \Ind_{k \in I_i}
+        , \quad   Q^*(k) := \sum _{i \in \Z} \; \int_{I_i} q(t) dt \; \Ind_{k \in I_i}
+    $$
+
+    We then conclude as follows by a applying the triangle inequality twice:
+
+    \begin{align*}
+        \norm{P^* - Q^*}_1^2 &= \sum _{k \in \Z} \; \left| P^*(k) - Q^*(k)\right|  \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \; \left| \int_{I_i} \left(p(t) - q(t)\right) dt \right|  \; \Ind_{k \in I_i} \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \Ind_{k \in I_i} \\
+        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \sum _{k \in \Z} \Ind_{k \in I_i} \\
+        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt \\
+        &= \int_{\R} \left|p(t) - q(t)\right| dt \\
+        &= \norm{P - Q}_1^2
+    \end{align*}
+
+    Note that $\sum _{k \in \Z} \Ind_{k \in I_i} = 1$ for any $i$ and $k$; since $I_i$ is a disjoint
+    partition $k$ will always belong to one of them, and one alone. 
 \end{proof}
 
-We can now conclude by proving consistency
+We can now conclude by proving consistency, recall that we want to show that:
+
+$$
+    P \left(\norm{\hat{p}_1 - \hat{p}_2}_1 > \epsilon \right) \rightarrow 0
+$$
 
 \begin{proof}
 
@@ -617,7 +648,7 @@ P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \
 P\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 $$
 
-Both of which go to zero assuming that we have a suitable regression. 
+Both of which go to zero for any $\alpha > 0$ assuming that we have a suitable regression. 
 
 It remains to bound 
 
@@ -626,8 +657,11 @@ It remains to bound
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
 \end{equation}
 
-Note that $\hat{p}_1 \rightarrow P_{Z + \Delta_1 X}$ as $n \rightarrow \infty$, thus, 
-if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C}$. 
+Note that $\hat{p}_1 \rightarrow P^*_{Z + \Delta_1 X}$ as $n \rightarrow \infty$; where 
+$P^*_{Z + \Delta_1 X}$ is the discretized distribution of $P_{Z + \Delta_1 X}$ -- recall that 
+we form $\hat{p}_1$ by creating a discretized histogram from the residuals.
+
+Thus if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C}$. 
 We do the same for $\hat{p}_2$, which implies by lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation}
 that: 
 
