@@ -603,24 +603,22 @@ beforehand and use the same one for both.
     follows:
 
     $$
-        P^*(k) := \sum _{i \in \Z} \; \int_{I_i} p(t) dt \; \Ind_{k \in I_i}
-        , \quad   Q^*(k) := \sum _{i \in \Z} \; \int_{I_i} q(t) dt \; \Ind_{k \in I_i}
+        P^*(k) := \sum _{i \in \Z} \; \int_{I_i} p(t) dt \; \Ind_{k  = i}
+        , \quad   Q^*(k) := \sum _{i \in \Z} \; \int_{I_i} q(t) dt \; \Ind_{k  = i}
     $$
 
     We then conclude as follows by a applying the triangle inequality twice:
 
     \begin{align*}
         \norm{P^* - Q^*}_1^2 &= \sum _{k \in \Z} \; \left| P^*(k) - Q^*(k)\right|  \\
-        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \; \left| \int_{I_i} \left(p(t) - q(t)\right) dt \right|  \; \Ind_{k \in I_i} \\
-        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \Ind_{k \in I_i} \\
-        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \sum _{k \in \Z} \Ind_{k \in I_i} \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \; \left| \int_{I_i} \left(p(t) - q(t)\right) dt \right|  \; \Ind_{k  = i} \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \Ind_{k  = i} \\
+        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \sum _{k \in \Z} \Ind_{k  = i} \\
         &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt \\
         &= \int_{\R} \left|p(t) - q(t)\right| dt \\
         &= \norm{P - Q}_1^2
     \end{align*}
 
-    Note that $\sum _{k \in \Z} \Ind_{k \in I_i} = 1$ for any $i$ and $k$; since $I_i$ is a disjoint
-    partition $k$ will always belong to one of them, and one alone. 
 \end{proof}
 
 We can now conclude by proving consistency, recall that we want to show that:
@@ -648,7 +646,8 @@ P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \
 P\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 $$
 
-Both of which go to zero for any $\alpha > 0$ assuming that we have a suitable regression. 
+Both of which go to zero for any $\alpha > 0$ assuming that our regression is \textit{faithfull}.
+
 
 It remains to bound 
 
