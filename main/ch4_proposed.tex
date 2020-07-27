@@ -555,6 +555,18 @@ $$
 Note that we can pick any $\alpha$, indeed we will later make it smaller than $\epsilon$. But I am 
 not sure how to bound the derivatives of the pdf...
 
+One easy fix is to assume 
+
+$$
+    \int P_{Z}(t)^{(n)} dt < K ,\quad \forall n \geq 1
+$$
+
+for some constant $K$. This is true for example for exponential / unfirom distribtions. 
+
+It would be nice to not have such an assumption though, but i'm not sure if we can have it?
+
+
+
 TODO -- Taylor approx bound end -- 
 
 Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
