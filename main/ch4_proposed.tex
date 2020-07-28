@@ -603,19 +603,19 @@ beforehand and use the same one for both.
     follows:
 
     $$
-        P^*(k) := \sum _{i \in \Z} \; \int_{I_i} p(t) dt \; \Ind_{k  = i}
-        , \quad   Q^*(k) := \sum _{i \in \Z} \; \int_{I_i} q(t) dt \; \Ind_{k  = i}
+        P^*(k) := \sum _{i \in \Z} \; \int_{I_i} P(t) dt \; \Ind_{k  = i}
+        , \quad   Q^*(k) := \sum _{i \in \Z} \; \int_{I_i} Q(t) dt \; \Ind_{k  = i}
     $$
 
     We then conclude as follows by a applying the triangle inequality twice:
 
     \begin{align*}
         \norm{P^* - Q^*}_1^2 &= \sum _{k \in \Z} \; \left| P^*(k) - Q^*(k)\right|  \\
-        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \; \left| \int_{I_i} \left(p(t) - q(t)\right) dt \right|  \; \Ind_{k  = i} \\
-        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \Ind_{k  = i} \\
-        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt  \; \sum _{k \in \Z} \Ind_{k  = i} \\
-        &= \sum _{i \in \Z} \;  \int_{I_i} \left|p(t) - q(t)\right| dt \\
-        &= \int_{\R} \left|p(t) - q(t)\right| dt \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \; \left| \int_{I_i} \left(P(t) - Q(t)\right) dt \right|  \; \Ind_{k  = i} \\
+        &\leq \sum _{k \in \Z} \sum _{i \in \Z} \;  \int_{I_i} \left|P(t) - Q(t)\right| dt  \; \Ind_{k  = i} \\
+        &= \sum _{i \in \Z} \;  \int_{I_i} \left|P(t) - Q(t)\right| dt  \; \sum _{k \in \Z} \Ind_{k  = i} \\
+        &= \sum _{i \in \Z} \;  \int_{I_i} \left|P(t) - Q(t)\right| dt \\
+        &= \int_{\R} \left|P(t) - Q(t)\right| dt \\
         &= \norm{P - Q}_1^2
     \end{align*}
 
