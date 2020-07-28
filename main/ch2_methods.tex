@@ -22,8 +22,8 @@ where $p_X$ is the density of the cause and $p_Z$ that of the latent variable; $
 is a borel measurable function (w.r.t. to the Borel sets of $\R \times \R$ and $\R$). 
 
 If we assume that there is no confounder, no sampling bias\footnote{If you consider the 
-example given in the introduction, then if Bob always sampled when Alice was excercising, then this 
-would have lead to sampling bias, as during excercise both heart rate and blood pressure tend to increase.} 
+example given in the introduction, then if Bob always sampled when Alice was exercising, then this 
+would have lead to sampling bias, as during exercise both heart rate and blood pressure tend to increase.} 
 and no cycles then it is natural to assume that $X \bigCI Z$.
 
 While we can model $Z$ as either a scalar or a vector, we can without loss of generality assume it to be a scalar.
@@ -62,7 +62,7 @@ we say that $p_{X, Y}$ satisfies the ANM $X \rightarrow Y$.
 \end{definition}
 
 Given such a model, we are interested in the cases when the observational distribution $p_{X, Y}$ can only
-lead to omly one causal explenation; this motivates the following definition:
+lead to only one causal explanation; this motivates the following definition:
 
 \begin{definition} If the joint density $p_{X, Y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
 ANM $Y \rightarrow X$, then we call the ANM $X \rightarrow Y$ \textbf{identifiable}. 
@@ -88,8 +88,8 @@ if and only if $X, Y, Z, \tilde{Z}$ are Gaussian distributed.
 \label{linear_indentifiability}
 \end{theorem}
 
-The proof is a simple appilcation of the Darmois-Skitovich Theorem\footnote{ The theorem also plays an imporant role
-in independent component analys (ICA), in short it deals with source separation. It turns out that if we have the 
+The proof is a simple application of the Darmois-Skitovich Theorem\footnote{ The theorem also plays an important role
+in independent component analysis (ICA), in short it deals with source separation. It turns out that if we have the 
 linear multivariate causal setting, then we can cast it as a source separation problem and use ICA to solve it. 
 Note that there too gaussianty makes or breaks the method.}; it states the following:
 
@@ -155,7 +155,7 @@ that they are also independent.
 These results show that indeed, in most cases, we should be able to perform causal inference as most 
 additive models should be identifiable. Interestingly, the guaussian setting provides difficulty  due 
 to the symmetry of the gaussian (in the linear case). In general the gaussian is our friend, but not today.
-We will next explote some methods for causal inference.
+We will next explore some methods for causal inference.
 
 \section{ANM Methods}
 
@@ -172,14 +172,14 @@ The following lemma\footnote{A simple proof can be found here \cite{Mooij2016jml
 In practice we get some data from $p_{X, Y}$ ; say 
 $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$. We can then either split it into a test/train in order to 
 first fit a regression which we then evaluate using the test set. If the data is scarce we may alternatively 
-recycle the data -- i.e. reuse it for both training and evaluation.
+recycle the data --- i.e. reuse it for both training and evaluation.
 
 First we estimate through regression the function $x \mapsto \E(Y | X=x)$, say $\hat{f}$; we 
 then compute the estimated residual $\hat{e} = \hat{f}(X) - Y$. 
 Next, we estimate the dependence between $\hat{e}$ and $X$ using a score function $C$; i.e. $C$ could be 
-the empirical mutural information betheen them. Thus a low score would be evidance for an ANM in that direction; 
+the empirical mutual information between them. Thus a low score would be evidence for an ANM in that direction; 
 we can compute the score for the reverse model by switching the roles of $X$ and $Y$. We can then compare 
-the scores and use this as a criteria for inference. We write down this idea more explictly 
+the scores and use this as a criteria for inference. We write down this idea more explicitly 
 here Algorithm \ref{alg:anm_general}.
 
 In order to show that such a procedure is consistent we need 3 things:
@@ -198,7 +198,7 @@ In point 2, by \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}}
 Essentially we require the regression used on the data to have 0 mean square error in expectation.
 
 More precisely, given two real-valued random variable $X$, $Y$, with joint distribution $p_{X, Y}$. If 
-we are given two sequences -- for training and test -- say $D_N = X_1, ..., X_N$ and 
+we are given two sequences --- for training and test --- say $D_N = X_1, ..., X_N$ and 
 $D_N^\prime = X^\prime_1, ..., X^\prime_N$. We say that a regression method is \textbf{suitable} for 
 regressing $Y$ on $X$ satisfies
 
@@ -334,10 +334,10 @@ Probably will skip this?
 In the work of \cite{goudet2017causal}, they estimate a \textit{generative} model by approximating
 the FCM structure using neural networks given some data from $p_{X, Y}$. Using the same notation
 as in the introduction on FCM, the idea is to estimate each $f_i$ by a neural network, and the 
-search through the DAG space. Since the DAG space is super exponetial in the number of variables,
+search through the DAG space. Since the DAG space is super exponential in the number of variables,
 they apply a greedy procedure to decide whether or not to include an edge $X_i \rightarrow X_j$.
 In some sense this is similar to greedy methods used in model selection. The caveat here is that
-using the generative model they can backpropagate to learn all the $f_i$ simulatneously. 
+using the generative model they can backpropagate to learn all the $f_i$ simultaneously. 
 
 More specifically, given the current graph estimate $\mathcal{G}$, they can generate some $\hat{P}$
 from the current $f_i$ and some noise $\mathcal{E}$. Then they can train the model by using 
@@ -371,7 +371,7 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 % C \propto log(1 + SNR)
 % $$
 
-% Where $SNR$ is the celebrated signal to noise ratio -- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
+% Where $SNR$ is the celebrated signal to noise ratio --- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
 % would expect, if $SNR \rightarrow \infty$ then we can send an arbitrary amount of information 
 % per time unit (the only limit is the physical one, i.e. the speed of light). Conversely if $SNR = 0$
 % then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
@@ -387,7 +387,7 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 % We will now see what perhaps could be considered the most simple causal set up, and describe a method
 % for causal inference. We will then see that $SNR$ also plays an important role.
 
-% Consider the linear additive noise model -- our first causal model!
+% Consider the linear additive noise model --- our first causal model!
 
 % \[ \begin{cases} 
 %     & Y = aX + E_Y  \\
@@ -405,7 +405,7 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 % access to the latter, but it will come in handy for the derivation that follows.
 
 % One common idea is to first compute the residuals for both possible regression models,
-% and the to check which residual is less dependent on $x$ and $y$ respectively -- we are
+% and the to check which residual is less dependent on $x$ and $y$ respectively --- we are
 % testing for the noise / data independence hypothesis.
 
 % We first regress $y$ on $x$. i.e.
@@ -429,9 +429,9 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 %     \frac{a\norm{x}_2^2 + z^\intercal x}{a^2 \norm{x}_2^2 + 2a x^\intercal z + \norm{z}^2_2}
 % $$
 
-% As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are iid, 
+% As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are i.i.d, 
 % and we note that convergance in probability is preserved when taking products and 
-% continuous mappings.} and we thus -- given that $E(z) = \E(N) = 0$ -- find:
+% continuous mappings.} and we thus --- given that $E(z) = \E(N) = 0$ --- find:
 
 % $$
 %     \E(\hat{a}) = \frac{a\E(\norm{x}_2^2) + 0}{\E(\norm{x}_2^2)} \xrightarrow{p} a 

@@ -16,7 +16,7 @@ Suppose we are given samples of data say $X$ and $Y$, s.t.
 
 For example, we may be measuring the blood pressure and heart rate of Alice at time $k$, 
 say $x_k$ and $y_k$ respectively. Further, suppose we are unaware of her context, for example,
-Bob hacked into Alice's apple watch and so can only read $X$ and $Y$ -- he has no idea of 
+Bob hacked into Alice's apple watch and so can only read $X$ and $Y$ --- he has no idea of 
 anything she might be up to.
 
 Bob then observes the following trend:
@@ -30,7 +30,7 @@ Bob then observes the following trend:
 Bob, having studied data science, is well aware of the fallacy of the law of small numbers\footnote{
     The law of small numbers is the error of concluding too much from too few data. 
 }. He therefore checks again the data the next day at a slightly different time. He again observes 
-a similar trend, and is now more confident in the existance of a causal relation and -- having neglected biology -- 
+a similar trend, and is now more confident in the existence of a causal relation and --- having neglected biology --- 
 makes the conjecture that either blood pressure causes heart rate, or 
 perhaps the other way around. 
 
@@ -59,9 +59,9 @@ So what did Bob learn\footnote{
 }?
 
 \begin{enumerate}
-    \item When we train a model with some data, when we use it on some newly aquired data, we might
-    face a \textbf{covariate-shift} -- that is, the distribution might change due to the context changing.
-    \item When we see correlation it might be spurious due to a \textbf{confounder} -- fear was the \textbf{confounder} 
+    \item When we train a model with some data, when we use it on some newly acquired data, we might
+    face a \textbf{covariate-shift} --- that is, the distribution might change due to the context changing.
+    \item When we see correlation it might be spurious due to a \textbf{confounder} --- fear was the \textbf{confounder} 
     of the heart rate and blood pressure.
     \item His degree in Data Science is worth less than he thought; \textbf{machine learning is in fact not 
     a panacea}, contrary to common culture. However, applied with domain knowledge and causal reasoning
@@ -72,10 +72,10 @@ If Bob was able to incorporate these notions into his machine learning models, t
 robust to the covariate-shift. To give a more concrete example, there is a "neural net tank urban legend"\footnote{
     More about this story here: https://www.gwern.net/Tanks.
 }
-, where a neural network accuratly predicts if there is a tank or not in an image, but it turns out it uses the 
+, where a neural network accurately predicts if there is a tank or not in an image, but it turns out it uses the 
 weather as a predictor. From this it is clear that the model will preform badly under covariate shift, and indeed
 it makes the case that incorporating causality to a model should make it more robust as
-\cite{scholkopf2019causality} argues. Note that this is in effect the issue with generalisation in machine learning:
+\cite{scholkopf2019causality} argues. Note that this is in effect the issue with generalization in machine learning:
 how can we ensure that we learn \textit{meaningful} representations (features about the tanks) rather than just
 correlations (the weather) useful for train accuracy. 
 
@@ -87,23 +87,23 @@ As for confounders, it is impossible to say anything in general\footnote{
     for wrong see the excellent book \cite{NaomiMerchants}).
     
 }. We must therefore specify a causal model, and
-then see what gurantees we can give under what assumptions. Even in the absence of confounders it is highly 
+then see what guarantees we can give under what assumptions. Even in the absence of confounders it is highly 
 non trivial to determine causality.
 
 As this simple example illustrates, causality is related to many interesting questions; perhaps, one of the most 
-simple questions we can ask -- and the one that we will explore -- is, given that either X causes Y, or Y causes X
+simple questions we can ask --- and the one that we will explore --- is, given that either X causes Y, or Y causes X
 (we assume no confounders) then, when 
 can we predict the direction of causality? If yes, how? 
 
 In the figure bellow (figure \ref{fig:simple_bivariate_example}) can you tell if $X$ causes $Y$? Or perhaps
 it is the other way around? The right answer is that $X$ causes $Y$, and we will show algorithms that 
-can accuretly predict causality in such settings with as few as 75 samples. 
+can accurately predict causality in such settings with as few as 75 samples. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{bivariate_causal_example.png}
     \caption{75 samples of data $X$, $Y$.  The samples are generated independently as follows:
-    $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an expoential distribution and $n_i$ is drawn 
+    $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an exponential distribution and $n_i$ is drawn 
     independently from a gaussian one and $f(x) = 10 \tanh(x) + 4\sin(x) + x + x^2$}
     \label{fig:simple_bivariate_example}
 \end{figure}
@@ -166,14 +166,14 @@ and so $X_{\text{Pa}(4)} = X_1, X_2$.
 
 Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
 $X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
-for simplicty not look at such settings.
+for simplicity not look at such settings.
 
 \subsection{Interventions}
 
 To make precise the meaning of causality, suppose that we are given 
 two random variables $X$, $Y$ with joint distribution $p_{x, y}$. Intuitively we 
 would say that $X$ causes $Y$, or $X \rightarrow Y$, if we intervene on $X$ and then see an effect on $Y$. In particular
-we will denote $\operatorname{do}(x)$ -- short for $\operatorname{do}(X = x)$ -- as an intervention
+we will denote $\operatorname{do}(x)$ --- short for $\operatorname{do}(X = x)$ --- as an intervention
 that forces the variable $X$ to have the value $x$, and leaves the rest of the system untouched. 
 Following the convention inspired by \cite{pearl2000causality}, 
 we define the resulting distribution as $p_{y|do(x)}$.
@@ -190,12 +190,12 @@ to $p_{y|do(x)}$; note however that "$x$ happened" and "force $X = x$" are very 
 there indeed was a gene that made people both prone to smoking and cancer; then if we forced someone at 
 random to smoke, he would on average be less likely to have cancer than someone who smoked because he wanted to.
 This also illustrates 
-one of the limitations of causality: some interventions are not possbile due to ethical issues.
+one of the limitations of causality: some interventions are not possible due to ethical issues.
 
-You might have heard about randmoized trials or A/B testing, these are both ways to estimate $p_{y|do(x)}$.
+You might have heard about randomized trials or A/B testing, these are both ways to estimate $p_{y|do(x)}$.
 For example, when developing cures, the idea of a random trial is to give experimental drugs to participants
-at random. When designing new UIs to maximise user participation in apps, developers implement A/B testing, 
-they assing new versions to people at random to estimate engagement. Note that in both of these, we are able 
+at random. When designing new UIs to maximize user participation in apps, developers implement A/B testing, 
+they assign new versions to people at random to estimate engagement. Note that in both of these, we are able 
 to avoid a potential confounder by using picking $x$'s at random, and "forcing" them to "do$(x)$".
 
 Since we will restrict ourselves to the observational setting, we will not be able to perform any interventions,
@@ -213,14 +213,14 @@ shall call it \textbf{identifiable}.
 % possible structure the data corresponds to (at least in theory). 
 
 We will restrict ourselves also to the bivariate case; one big difference worth noting is that in the
-multivariate setting we can test conditional independence. Uusing conditional independence tests 
+multivariate setting we can test conditional independence. Using conditional independence tests 
 is a very powerful method for causal inference. Suppose 
 we have random variables $X$, $Y$ and $Z$, then if we can estimate that $X \bigCI Y | Z$ then it must be 
 that all information between $X$ and $Y$ must flow through $Z$ (See Figure \ref{fig:conditionalIndep}).
 With one test we were able to pinpoint the causal graph $\mathcal{G}$! 
 
-One can in fact generalise the conditional independence such that $X$ and the other variables are 
-a collection of random variables, which gives a lot of flexiblity to devise clever algorithms. 
+One can in fact generalize the conditional independence such that $X$ and the other variables are 
+a collection of random variables, which gives a lot of flexibility to devise clever algorithms. 
 The theory comes from graphical models, which tries to understand the relationship between 
 distributions and their graphical counterparts, such as Figure \ref{fig:conditionalIndep}.
 The key difference is that in graphical models we do not care about the causal direction. 
@@ -261,20 +261,31 @@ In some sense the two variable case is hard because we cannot use conditional in
 it is not possible to distinguish causality in the general bivariate setting when only observing 
 observational data; we will thus need to restrict 
 the class of such models. The underlying structure behind such causal models is what is known as 
-Strucutual Equation Models (SEM). Essentially 
+Structural Equation Models (SEM). Essentially 
 it is a model specification; and the key insight is that it should not be reversible. 
 
 
 \section{Proposed Methods}
 
-We propose two methods to deal with the ANM -- one less practical, but with a nice theoretical
-analysis; and another more practical, but perhaps with a less beutiful analysis. However both
-are based on a first principle approach with known asymptotics in mind.
-TODO DESCRIBE IN MORE DETAIL
+We will propose a new\footnote{To the knowledge of the author no such method has been published 
+before, although given it's simplicity we imagine that its not the first of its kind.} type of inference method which exploits the i.i.d 
+noise assumption; the idea is to split the data in different intervals, and then to regress each 
+interval separately. In the right direction one would expect that the residuals of each 
+interval will be more homogenous in the causal direction --- in the ANM settings, asymmetries introduced
+by inversion will break the i.i.d assumption. We will conclude by 
+showing that this intuition is indeed correct, by proving that the method is consistent --- 
+assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We will
+also propose a second method, however while also consistent, it requires knowledge of the 
+noise distribution, which is a poor assumption. 
 
 
 \section{Outline}
 
-The first part is dedicated to covering background material. The scond part will cover the 
-proposed methods in more details as well as showing experimental results
-TODO TALK ABOUT MY
+We will begin by formalizing further the causal framework that we will explore; we will then present an overview of 
+popular methods for inference on the bivariate causal setting. Next, we will overview some notions in statistical distance 
+--- as these play a central role in causal inference --- such as maximum mean discrepancy (MMD) and f-divergences. 
+Since the MMD is a bit convolved, we will also review some background material that will help gain a better intuition on it. 
+
+We will end by going over the proposed methods, and showing both theoretical guarantees and experimental results. 
+
+

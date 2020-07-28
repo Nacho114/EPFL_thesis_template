@@ -22,7 +22,7 @@
 \end{figure}
 
 
-Suppose that we are given samples from two unkown distributions $P$ and $Q$, an 
+Suppose that we are given samples from two unknown distributions $P$ and $Q$, an 
 important question to ask is: are $P$ and $Q$ equal?
 
 
@@ -53,7 +53,7 @@ We will begin by defining the kernel,
 It is easy construct new kernels since they are preserved under addition, multiplication and other operations. 
 (See for example \cite{GrettonNotes}).
 
-One example of a kernel -- and one of the most popular ones -- is the Gaussian Kernel defined on $\R^d$:
+One example of a kernel --- and one of the most popular ones --- is the Gaussian Kernel defined on $\R^d$:
 
 $$
     k(x, y) = \exp (-\gamma^{-2}\norm{x - y}^2)
@@ -97,7 +97,7 @@ Note that if we pick some $x \in \mathcal{X}$, then $k(x, .)$ is a function from
 
 \end{definition}
 
-Given the kernel $k$ it is convinient to define the feature map $\phi: \mathcal{X} \rightarrow \mathcal{H}$ as:
+Given the kernel $k$ it is convenient to define the feature map $\phi: \mathcal{X} \rightarrow \mathcal{H}$ as:
 
 $$
     \phi(x) = k(x, \cdot)
@@ -113,7 +113,7 @@ $$
 $$
 
 
-The power of this setup -- which is known as the kernel trick -- is that inner products between
+The power of this setup --- which is known as the kernel trick --- is that inner products between
 features (which can live in infinite spaces) are simple function evaluations; 
 indeed by letting $f(x) = k(x, x\prime)$ we get
 
@@ -143,11 +143,11 @@ a Hilbert Space (at which point we will have created a RKHS).
 
 We will now show an application to illustrate both the power of the RHKS and to refine our intuition of it. 
 Suppose that we have 
-some data say $\{ x_i, y_i\}_{i \in [n]}$; we belive for example $y$ to be a smooth function of $x$ and we 
-expect some independent aditive noise.
+some data say $\{ x_i, y_i\}_{i \in [n]}$; we believe for example $y$ to be a smooth function of $x$ and we 
+expect some independent additive noise.
 
 We can estimate $f$ as follows
-\footnote{Note that it is not obvious how to implement the optimisation as $\mathcal{H}$ may be infinite. However,
+\footnote{Note that it is not obvious how to implement the optimization as $\mathcal{H}$ may be infinite. However,
 this setup with a gaussian kernel is in fact equivalent to a Gaussian Processes, which can be easily
 implemented in practice (see \cite{JordanNotes}).}
 , pick an RHKS $\mathcal{H}$ with a gaussian kernel:
@@ -159,7 +159,7 @@ implemented in practice (see \cite{JordanNotes}).}
         + \Omega \norm{f}_{\mathcal{H}}^{2}\right)
 \end{equation}
 
-An amazing result is that an optimisation of the above form will always admit a representation of the
+An amazing result is that an optimization of the above form will always admit a representation of the
 form:
 
 \[
@@ -168,7 +168,7 @@ form:
 where $\alpha_{i} \in \mathbb{R}$ for all $1 \leq i \leq n$
 
 This is known as the Representer Theorem (\cite{scholkopf2001generalized}); all it requires is that we be in the usual RHKS setup, and that
-the regularisation be a strictly increasing\footnote{In our case regularisation is linear,
+the regularization be a strictly increasing\footnote{In our case regularization is linear,
 we thus simply need to pick $\Omega \geq 0$.} real valued function.
 If we wish to approximate a prediction for some new sample $x$, we can do so as follows:
 
@@ -185,11 +185,11 @@ the solution will be a linear combination of scaled gaussians centered at the da
 \footnote{In fact this will always be the case when we can write $k\left(x_i, x\right) = \tilde{k}\left(x_i - x\right)$}. 
 
 As a final remark we will explain the role of the penalty $\Omega \norm{f}_{\mathcal{H}}^{2}$; from 
-statistical models, we now that this kind of term is known as regularisation and is supposed to help 
+statistical models, we now that this kind of term is known as regularization and is supposed to help 
 choose a "simpler" model. As we will now show, this is also the case here.
 
-To see this, we will use Mercer's Theorem -- a Generalisation of the spectral theorem for positive-semidefinite
-matrices\footnote{Recall that our Kernel $k$ is a generalisation of a positive-semidefinite Matrix}.
+To see this, we will use Mercer's Theorem --- a Generalization of the spectral theorem for positive-semidefinite
+matrices\footnote{Recall that our Kernel $k$ is a generalization of a positive-semidefinite Matrix}.
 
 \begin{theorem}[Mercer's] 
 
@@ -217,7 +217,7 @@ Where the convergence is absolute and uniform, that is,
 \end{theorem}
 
 We can now use this decomposition of the Kernel to get further insight, using Mercer's theorem we can 
-thus write -- assuming the conditions are met:
+thus write --- assuming the conditions are met:
 
 $$
     k \left(x, x^{\prime}\right)=\sum_{i=1}^{\infty} 
@@ -237,8 +237,8 @@ $$
 Note that due to the $\Omega \norm{f}_{\mathcal{H}}^{2}$ penalty, $f^{*}_i$ must decay for higher values of $i$. Note that
 for example in the Fourier Transform
 , in the basis $\{\psi_i\}$, higher values of $i$ correspond to higher 
-frequency functions; similarly, for the Gaussian Kernel, higher indicies basis functions correspond to 
-higher frequecies\footnote{In the fourier space, we have the following
+frequency functions; similarly, for the Gaussian Kernel, higher indices basis functions correspond to 
+higher frequencies\footnote{In the fourier space, we have the following
 basis $\psi_\omega = \exp (2\pi i x \omega)$}. Thus, a higher $\Omega$ will force a faster decay on $f_i$ and thus result in smoother functions
 -- in principle, this will reduce overfitting. 
 
@@ -335,7 +335,7 @@ $$
      \inp*{g}{ \mathop{\E}_{X \sim P} \phi(X)} = \inp*{g}{\mu_P}
 $$
 
-Asumming Lemma \ref{embedding_existance} -- and using Cauchy-Schwartz, 
+Assuming Lemma \ref{embedding_existance} --- and using Cauchy-Schwartz, 
 we can explicitly solve the MMD in terms of the mean embeddings:
 
 \begin{align*} 
@@ -381,8 +381,8 @@ on the Kernel $k$:
 The first condition is basically what we knew intuitively: 
 If we consider a compact metric space, say $(\mathcal{X}, d)$, then a Kernel $k$ on $\mathcal{X}$
 is called universe if the corresponding RKHS is dense 
-in the space $C(\mathcal{X})$ of all continuous functions. The drawback is that the input space $\mathcal{X}$ needs to be compact -- which excludes $\R^n$; 
-this means that we cannot use universality to check our gaussian kernel. Luckly the second condition
+in the space $C(\mathcal{X})$ of all continuous functions. The drawback is that the input space $\mathcal{X}$ needs to be compact --- which excludes $\R^n$; 
+this means that we cannot use universality to check our gaussian kernel. Luckily the second condition
 is enough.
 
 Assuming $k$ is a bounded continuous positive definite function, then if we can write
@@ -403,8 +403,8 @@ We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Le
 sense that measure the distance between the joint and product distributions to test for independence).
 
 In practice the gaussian kernel is very popular, it is used in the HSIC test when used as a
-score function by \cite{Mooij2016jmlr}; but how do we find the parameter -- sometimes referred to 
-as the bandwith -- of the kernel?
+score function by \cite{Mooij2016jmlr}; but how do we find the parameter --- sometimes referred to 
+as the bandwidth --- of the kernel?
 
 One approach is the median heuristic (\cite{scholkopf2002learning}):
 
@@ -416,14 +416,13 @@ $$
 
 In their study, \cite{sriperumbudur2009integral}) argue that the "IPM is much
 simpler than estimating f-divergences, and that the estimators
-are strongly consistent while exhibiting good rates of conver-
-gence. IPMs also account for the properties of
+are strongly consistent while exhibiting good rates of convergence. IPMs also account for the properties of
 the underlying space M through the Kernel in case of MMD. This is especially
 useful when considering disjoint supports between P and Q"
 
 Another argument for the MMD, is that we only need to choose a kernel; in contrast, 
-when applying the f-divergence in practie we need to quantize in order to get an 
-emprical distribution. While both can be seen as a hyperparameter, the effect of 
+when applying the f-divergence in practice we need to quantize in order to get an 
+empirical distribution. While both can be seen as a hyperparameter, the effect of 
 discretisation is not as obvious as that of choosing a kernel. 
 
 \section{f-divergence}
@@ -459,7 +458,7 @@ The inequality follows from the convexity of $f$, this tells us that
 $\infdiv{P}{Q} \geq 0$. From the definition it is clear that $\infdiv{P}{P} = 0$; further,
 if $f$ is \textit{strictly} convex at $1$, then we have that $\infdiv{P}{Q} = 0$ iff $P = Q$.
 
-Therefore roughly speaking, all f-divergences define a way to measure similiarities between distributions. 
+Therefore roughly speaking, all f-divergences define a way to measure similarities between distributions. 
 
 However, in general it is not symmetric in $P$ and $Q$, so it is not a metric.
 
@@ -534,7 +533,7 @@ $$
     \operatorname{MMD}\left( p_{X, Y}, p_X \otimes p_Y  \right)^2 = \operatorname{HSIC}(p_{X, Y})
 $$
 
-So the HSIC is bassically an MMD distance between the joint and product distribution. 
+So the HSIC is basically an MMD distance between the joint and product distribution. 
 
 % \section{Large deviations}
 

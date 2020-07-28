@@ -22,15 +22,15 @@ the assumption that $X \bigCI Z$. In practice we often have that the noise is \t
 i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$.
 
 By directly exploiting the IID noise assumption, we will circumvent the need for an independence test. The 
-idea is to to partition the data -- for simplicty you can think about splitting it around the median; we 
+idea is to to partition the data --  for simplicity you can think about splitting it around the median; we 
 then estimate the residuals for each partition, and we then test if the IID noise assumption holds by comparing
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
 direction causal if it's residuals are more similar. 
 
 We will explain this idea in more detail by following an example: we are given samples 
 $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; 
-We first visualise the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
-X to Y, and viceversa (see Figure \ref{fig:algo_data}). 
+We first visualize the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
+X to Y, and vice versa (see Figure \ref{fig:algo_data}). 
 
 \begin{figure}[H]
     \captionsetup[subfigure]{labelformat=empty}
@@ -47,12 +47,12 @@ X to Y, and viceversa (see Figure \ref{fig:algo_data}).
 
 
 
-For simplicty assume $X \thicksim \mathcal{U}_{[-a, a]}$ (i.e. $X$ is uniformly disributed), then we can split 
+For simplicity assume $X \thicksim \mathcal{U}_{[-a, a]}$ (i.e. $X$ is uniformly disributed), then we can split 
 the data in two, say $D_1$ and $D_2$, where we place all samples with $x_i < 0$ into $D_1$, and the rest into 
 $D_2$. To be more precise, $\mathcal{D}_1 = \{(x_i, y_i) : x_i < 0\}$ and $\mathcal{D}_2 = \mathcal{D} 
 \backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. we reverse the roles of x and y
 , $\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure we obtain $\mathcal{\tilde{D}}_1$
-and $\mathcal{\tilde{D}}_2$. We can visualise this parition bellow in Figure \ref{fig:colo_code}.
+and $\mathcal{\tilde{D}}_2$. We can visualize this parition bellow in Figure \ref{fig:colo_code}.
  
 \begin{figure}[H]
     \captionsetup[subfigure]{labelformat=empty}
@@ -67,8 +67,8 @@ and $\mathcal{\tilde{D}}_2$. We can visualise this parition bellow in Figure \re
 
 If we estimate a fit $\hat{f}_1$ for $\mathcal{D}_1$ and similarly $\hat{f}_2$ for $\mathcal{D}_2$, then we can 
 compute residuals for each sets, say $\hat{e}_1$ for $\mathcal{D}_1$  and $\hat{e}_2$ for $\mathcal{D}_2$.
-Since the noise is -- not only independent from $X$ but also -- iid, it follows that $\hat{e}_1$ and $\hat{e}_2$
-follow the same distribution -- assuming a perfect fit $f$. We can viualize this by looking at the 
+Since the noise is --  not only independent from $X$ but also --  i.i.d, it follows that $\hat{e}_1$ and $\hat{e}_2$
+follow the same distribution --  assuming a perfect fit $f$. We can visualize this by looking at the 
 histograms from the residuals.
 
 \begin{figure}[H]
@@ -86,12 +86,12 @@ histograms from the residuals.
     \subfloat{{\includegraphics[width=6.5cm]{algo_res_reverse.png} }}%
 
     \caption{  We show the the estimated fits $\hat{f}$ for each parition in black. Bellow each 
-    partition we plot the histograms of the residuals -- in the same color. }
+    partition we plot the histograms of the residuals --  in the same color. }
     \label{fig:algo_fit}
 \end{figure}
 
 Note that for the reverse model, the noise in $\mathcal{\tilde{D}}_1$ appears to be very different from 
-that of $\mathcal{\tilde{D}}_2$; this is not a coincidence -- intuitvely, it seems very unlikely that 
+that of $\mathcal{\tilde{D}}_2$; this is not a coincidence --  intuitively, it seems very unlikely that 
 regressing in the other direction will also result in independence noise. Further, as we briefly 
 mentioned in the early chapters, as \cite{hoyer2009nonlinear} show, it is unlikely that for a non-linear 
 we might not have identifiability. 
@@ -122,9 +122,9 @@ for discretization; We are able to predict the causal direction with high confid
 Assuming the regressions are \textbf{faithfull}, then as $n \rightarrow \infty$ we know that both 
 $p_1$ and $p_2$ will converge to the same $p_Z$ and so $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) \rightarrow 0$.
 On the other hand, it is unlikely that the residuals of $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ 
-follow the same distribution (due to the non-linearlities introduced by f and the additivy of the noise) and 
-so we can be pretty confident that asympotically the procedure will correct. In fact, assuming that \textbf{ANM}
-$X \rightarrow Y$ is identifiabile will be enough to show that this procedure is consistent.
+follow the same distribution (due to the non-linearlities introduced by f and the additivity of the noise) and 
+so we can be pretty confident that asymptotically the procedure will correct. In fact, assuming that \textbf{ANM}
+$X \rightarrow Y$ is identifiable will be enough to show that this procedure is consistent.
 
 In essence the algorithm consists of the parts:
 
@@ -139,7 +139,7 @@ Before giving the general description of the algorithm we will comment on each o
 \subsection{Partition}
 
 Say that we partition $\mathcal{D}$ into $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
-partitions need to satisfie three requirements:
+partitions need to satisfy three requirements:
 
 \begin{enumerate}
     \item The partitions need to be \textbf{dense}: 
@@ -149,7 +149,7 @@ partitions need to satisfie three requirements:
     \mathcal{D} = \bigcup_i \mathcal{D}_i \quad \text{and} \quad
     \mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j
     $$
-    \item We need to be able to order the paritions, say $\mathcal{D}_1, ..., \mathcal{D}_k$, such that
+    \item We need to be able to order the partitions, say $\mathcal{D}_1, ..., \mathcal{D}_k$, such that
     if $i < j$ then\footnote{The $*$ is to indicate a dummy variable, as we do not care for the value of $y$.}: 
     $$
     \operatorname{max} \{ x : (x, *) \in \mathcal{D}_i \} \leq 
@@ -157,13 +157,13 @@ partitions need to satisfie three requirements:
     $$
 \end{enumerate}
 
-The first condition -- that of dense partitions -- is to avoid getting trivial large deviations between residuals 
+The first condition --  that of dense partitions --  is to avoid getting trivial large deviations between residuals 
 in the subsets; the second reason is that if they are dense, then we can give asymptotic guarantees about each subset.
 The second and third conditions simply ensure that we are not mixing data and that it is coherent to make regression
 in each subset. 
 
 If we use K-means (perhaps the most popular clustering algorithm), then conditions 2. and 3. are met. The only 
-questions is in regards to conditions 1. K-means starts by randomly initialisting two or n centers (depending 
+questions is in regards to conditions 1. K-means starts by randomly initializing two or n centers (depending 
 on the number of clusters that we want), and the updates the centers that they locally 
 minimizes within-cluster variances. If our data is infinite support, and we re-run K-means if there is some cluster
 $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and for some $\rho$ we can be quite 
@@ -173,7 +173,7 @@ In practice this has always been the case (for $\rho = .3$); so we conjecture th
 rigorously. 
 
 The last question is, "How many clusters do we want?". Obviously for the small data regime we must be content 
-wuth only two clusers; but what if we have a lot of data? As we will see, we observe experimentally that if we 
+with only two clusters; but what if we have a lot of data? As we will see, we observe experimentally that if we 
 we choose the number of partition as an increasing function w.r.t. sample size, then we can get better accuracies.
 
 One reason that more partitions are desirable is that then the regression problem becomes easier; Indeed, as we 
@@ -191,30 +191,30 @@ Show example of many partitions
 
 \subsection{Score functions}
 
-We have seen in previous chapters various ways to measure the distances between two distribtions say 
-$p_1$ and $p_2$, via some score function $\mathcal{D}(p_1, p_2)$; for example $\mathcal{D}$ could be the 
+We have seen in previous chapters various ways to measure the distances between two distributions say 
+$p_1$ and $p_2$, via some score function $d(p_1, p_2)$; for example $d$ could be the 
 MMD metric, or the $l_1$ distance.
 
 Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous
-$P_k$ is compared to some other set $\tilde{P}_j$ -- recall that we wish to see in which of the two, 
- the distribtions are more likely to be the same, i.e. we are testing the iid assumption. 
+$P_k$ is compared to some other set $\tilde{P}_j$ --  recall that we wish to see in which of the two, 
+ the distributions are more likely to be the same, i.e. we are testing the i.i.d assumption. 
 
 There are several simple ways to go about this:
 
 $$
-    C(P_k) = \operatorname{max}_{i, j} \mathcal{D}(p_i, p_j)
+    C(P_k) = \operatorname{max}_{i, j} d(p_i, p_j)
 $$
 
 Another option is to take an average of the pairwise score:
 
 $$
-    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} \mathcal{D}(p_i, p_j)
+    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} d(p_i, p_j)
 $$
 
 or even 
 
 $$
-    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} \mathcal{D}(p_i, p_\mu)
+    C(P_k) = \frac{1}{\binom{k}{2}} \sum_{i < j} d(p_i, p_\mu)
     , \quad p_\mu = \frac{1}{k} \sum_i p_i
 $$
 
@@ -222,7 +222,7 @@ $$
 Thus if $C(P_k) < C(\tilde{P}_j)$, we can say that the distributions in $P_k$ are
 more homogenous; e.g. they more likely to produce similar looking noise. 
 
-We have tested all of the above and find that the first method -- using the maximum score between pairs --
+We have tested all of the above and find that the first method --  using the maximum score between pairs --
 gives the best performance.
 
 \subsection{Algorithm}
@@ -230,7 +230,7 @@ gives the best performance.
 We note that the algorithm is a general framework as we are free to choose the partition, regression method
 and score function. We would like to point out that we recycle the data, i.e. we use the same data for 
 estimating the regression and subsequent score function; obviously if one wishes one can easily split the 
-data in the paritions to use a different portion of the data for estimation and for evaluating the score function.
+data in the partitions to use a different portion of the data for estimation and for evaluating the score function.
 
 \begin{algorithm}[H]
 
@@ -311,7 +311,7 @@ data in the paritions to use a different portion of the data for estimation and 
 
 \subsection{Consistency}
 
-We will show consistency for a simple set up of the twin test -- but we note that generalising it to the more 
+We will show consistency for a simple set up of the twin test --  but we note that generalizing it to the more 
 general set up should be direct from our proof. 
 
 
@@ -327,7 +327,7 @@ In practice we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from a
 the algorithm will proceed to split the data into sets $\mathcal{D}_1$ and $\mathcal{D}_2$. It then proceeds 
 to compute residuals and compute some scores between them.
 
-To simplify the proof, we will \textbf{skipe the partition procedure} and assume that
+To simplify the proof, we will \textbf{skip the partition procedure} and assume that
 we are directly given $\mathcal{D}_1$ and $\mathcal{D}_2$, each with 
 $n$ samples (Note that, if $p_x$ is uniform, then having these sets be of equal size would happen exponentially 
 fast; indeed, in general, we will have dense partitions). 
@@ -337,7 +337,7 @@ Next, we will assume that on each interval, the data is linear with slope $a_1$ 
 \begin{figure}[!h]
     \centering
     \begin{tikzpicture}
-        \draw[thin, dashed] (1.5, -0.5) -- (1.5, 2.6) node[above] {};
+        \draw[thin, dashed] (1.5, -0.5) --  (1.5, 2.6) node[above] {};
         \path (0.75, -0.8) -- (0.75, -0.6) node[above] {$\mathcal{D}_1$};
         \path (2.25, -0.8) -- (2.25, -0.6) node[above] {$\mathcal{D}_2$};
         \draw[->] (-1, 0) -- (4.2, 0) node[right] {$x$};
@@ -382,10 +382,10 @@ $$
     \hat{Z}_1 = Y_1 - \hat{a}_1 X
 $$
 
-We then discretise $\hat{Z}_1$ and form a distribution say $\hat{p}_1$; we can do the same thing for 
+We then discretize $\hat{Z}_1$ and form a distribution say $\hat{p}_1$; we can do the same thing for 
 $\mathcal{D}_2$, and by doing the same procedure obtain $\hat{p}_2$.
 
-We discretise both with a fixed step size, say $s$; as we will see, the only requirement is that we fix 
+We discretize both with a fixed step size, say $s$; as we will see, the only requirement is that we fix 
 the size beforehand.
 
 We use the $l_1$ distance as our score:
@@ -414,7 +414,7 @@ $$
 The idea of the proof is to observe the following:
 
 If we have enough data, i.e. when $n$ is large enough then assuming the regression is 
-faithfull, we can chose any $\alpha$ such that
+faithful, we can chose any $\alpha$ such that
 
 $$
     \abs{a_1 - \hat{a}_1} \leq \alpha \qquad \text{and} \qquad \abs{a_2 - \hat{a}_2} \leq \alpha
@@ -433,9 +433,9 @@ $$
 $$
 
 Note that $\hat{Z}_1 \thicksim P_{Z + \Delta_1 X}$ and $\hat{Z}_2 \thicksim P_{Z + \Delta_2 X}$ , where for 
-brevity we denote $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$. We can visualise the distance
-between these distribtions as follows: (see\footnote{Note that the illustration does not follow the actual
-gemoetry of the space, we draw it solely to gain intuition about the problem.} figure \ref{fig:dist})
+brevity we denote $\Delta_1 = a_1 - \hat{a}_1$ and $\Delta_2 = a_2 - \hat{a}_2$. We can visualize the distance
+between these distributions as follows: (see\footnote{Note that the illustration does not follow the actual
+geometry of the space, we draw it solely to gain intuition about the problem.} figure \ref{fig:dist})
 
 \begin{figure}[!h]
     \centering
@@ -453,7 +453,7 @@ gemoetry of the space, we draw it solely to gain intuition about the problem.} f
       \label{fig:dist}
 \end{figure}
 
-The idea is then the following, given some $\epsilon > 0$, we want to show that asympotically
+The idea is then the following, given some $\epsilon > 0$, we want to show that asymptotically
 
 $$
     \norm{\hat{p}_1 - \hat{p}_2}_1 > \epsilon
@@ -523,7 +523,7 @@ integration) since all measures are measurable. We next use the law of total pro
 the expectation w.r.t some $k$ to be chosen later.  
 
 The next upper bounds follows by noting that
-$\norm{p - q}_1 \leq 2$ for any distribtions $p$ and $q$. Next observe that 
+$\norm{p - q}_1 \leq 2$ for any distributions $p$ and $q$. Next observe that 
 $\E \left[ \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right]$ is the average $l_1$ distance
 between $\norm{P_{Z}}$ and random shifts of itself. Hence if we choose the shift as follows:
 
@@ -532,11 +532,11 @@ $$
 $$
 
 we can upper bound the average distance by the largest $l_1$ distance between any shift; 
-note that there is at least one maximiser since we are optimising over a compact set. 
+note that there is at least one maximizer since we are optimizing over a compact set. 
 
-TODO -- Taylor approx bound -- 
+TODO  ---   Taylor approx bound  ---   
 
-We next approximate $P_{Z}(t-\alpha C^* )$ by using it's taylor expansions -- this is justified by the fact 
+We next approximate $P_{Z}(t-\alpha C^* )$ by using it's taylor expansions  ---   this is justified by the fact 
 that we will pick $\alpha \approx 0$.
 
 Using taylor expansions we get that:
@@ -561,31 +561,31 @@ $$
     \int P_{Z}(t)^{(n)} dt < K ,\quad \forall n \geq 1
 $$
 
-for some constant $K$. This is true for example for exponential / unfirom distribtions. 
+for some constant $K$. This is true for example for exponential / uniform distributions. 
 
 It would be nice to not have such an assumption though, maybe something like sub-gaussianity?
 Really not sure about this part. 
 
 
 
-TODO -- Taylor approx bound end -- 
+TODO  ---   Taylor approx bound end  ---   
 
 Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
 $C = C^* \int P_{Z}^{\prime}(t) d t$ and we are done.
 
-Note that as $k$ increases so does $C^*$, since we are growing the space to optimse for $C^*$; this is 
+Note that as $k$ increases so does $C^*$, since we are growing the space to optimise for $C^*$; this is 
 where the dependence between $\delta$ and $C$ comes from. 
 
 \end{proof}
 
 So we have found a bound on the $l_1$ distance between two continuos distributions; however in our
-application, these will be quantised versions of these distributions. The following lemma tells us 
-that this is not a problem, the $l_1$ distance between the quantised version cannot be bigger than 
-that of their continuos counter parts. The only requirement is that we fix the quantisation scheme
+application, these will be quantized versions of these distributions. The following lemma tells us 
+that this is not a problem, the $l_1$ distance between the quantized version cannot be bigger than 
+that of their continuos counter parts. The only requirement is that we fix the quantitation scheme
 beforehand and use the same one for both.
 
 \begin{lemma}
-    Let $P$ and $Q$ be two continuos distribtions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
+    Let $P$ and $Q$ be two continuos distributions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
     $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
 
     $$
@@ -599,7 +599,7 @@ beforehand and use the same one for both.
     We first quantize $\R$ in bins of length $w$, say $I_i = [wi, w(i + 1))$, note 
     $\bigcup_{i \in \Z} I_i = \R$.
 
-    Given continuos distribtions $P$ and $Q$, we form their quantised counter parts as
+    Given continuos distributions $P$ and $Q$, we form their quantized counter parts as
     follows:
 
     $$
@@ -637,7 +637,7 @@ $$
                         &\qquad + P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 \end{align*}
 
-Where $P^*_Z$ is the quantised version of $P_Z$.
+Where $P^*_Z$ is the quantized version of $P_Z$.
 
 The first inequality follows by the triangle inequality, and the second one by using the law of total probability.
 
@@ -648,7 +648,7 @@ P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \
 P\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 $$
 
-Both of which go to zero for any $\alpha > 0$ assuming that our regression is \textit{faithfull}.
+Both of which go to zero for any $\alpha > 0$ assuming that our regression is \textit{suitable}.
 
 
 It remains to bound 
@@ -708,7 +708,7 @@ The setup was the linear \textbf{ANM}:
 \]
 
 From $n$ samples $(X_i, Y_i)$ we estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
-$\hat{f}_X$ for the reverse model. We then comput the residuals
+$\hat{f}_X$ for the reverse model. We then compute the residuals
 
 \begin{align}
     &  \hat{e}_Y = Y - \hat{f}_Y(X)\\
@@ -716,7 +716,7 @@ $\hat{f}_X$ for the reverse model. We then comput the residuals
 \end{align}
 
 We note that for the ease of analysis, it would first be wise to use some fraction 
-of the data to first estimate the regression, and then use the remanining for the test.
+of the data to first estimate the regression, and then use the remaining for the test.
 
 For $n$ large enough we have that 
 
@@ -724,7 +724,7 @@ $$
     \hat{e}_Y \approx E_Y \thicksim P_{E_Y}
 $$
 
-The idea is then to first discretise\footnote{We do so in a naive manner we split
+The idea is then to first discretize\footnote{We do so in a naive manner we split
 it uniformly into $m$ bins.} $P_{E_Y}$ into $m$ bins, call this discrete distribution
 $Q$. We apply the same discretization to obtain $B = (b_1, ..., b_m)$ from $\hat{e}_Y$
 and $\tilde{B} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{e}_X$.
@@ -749,13 +749,13 @@ $$
 
 s.t. $U = (\frac{1}{m}, ..., \frac{1}{m})$.
 
-Given our assumption about the \textbf{ANM}, the probability to outpout the correct causal direction is:
+Given our assumption about the \textbf{ANM}, the probability to output the correct causal direction is:
 
 $$
    P_{\text{correct}} = \mathbb{P}\left[C \leq W\right] 
 $$
 
-We next upper bound thise quantity in order to show consistency
+We next upper bound this quantity in order to show consistency
 
 \begin{align}
     \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[ \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right] \\
@@ -775,7 +775,7 @@ $$
 
 We will next find appropriate bounds for $\mathbb{P}\left[ C \leq \tau \right]$ and $\mathbb{P}\left[W \leq \tau \right]$.
 
-\subsection{Bounding the false false postive}
+\subsection{Bounding the false false positive}
 
 We will first lower bound $\mathbb{P}\left[ C \leq \tau \right]$ by upper bounding the complement event.
 
@@ -793,7 +793,7 @@ inequality.
 
 \subsection{Bounding the false negatives}
 
-Recall that what is left to bound is the following quanity, $\mathbb{P}\left[W \leq \tau \right]$; 
+Recall that what is left to bound is the following quantity, $\mathbb{P}\left[W \leq \tau \right]$; 
 for this we first define the following set of probability distributions:
 
 $$
@@ -808,8 +808,8 @@ $$
     \{ W \leq \tau \} = \{ \tilde{B} \in \Gamma_\tau \}
 $$
 
-In essence, we are asking: "what is the chance that the realisation of $\tilde{B}$ – which is the 
-empricial distribution of some distribution $Q$ – lies inside some set of distribtions $\Gamma_\tau$.
+In essence, we are asking: "what is the chance that the realization of $\tilde{B}$ – which is the 
+empirical distribution of some distribution $Q$ – lies inside some set of distributions $\Gamma_\tau$.
 
 We note that bounding this kind of event is exactly what Sanov's theorem\footnote{See the section on Information Theory and statistics in 
 \cite{cover1999elements}} gives us, an important
@@ -824,7 +824,7 @@ independent samples of $Q$.
 
 \begin{theorem}[Sanov’s theorem]\label{sanov}
 
-    Let $\Pi$ be a set of distributions on $U,$ and $m=|U| .$ Let
+    Let $\Pi$ be a convex set of distributions on $U,$ and $m=|U| .$ Let
 
     \[
         P^{*}=\operatorname{argmin}_{P \in \Pi} D(P \| Q)
@@ -845,8 +845,8 @@ and the discretized distribution $\hat{e}_X = X - \hat{f}_X(Y)$ that of $Q$ we g
     \leq (n+1)^{m} 2^{-nD\left( \tau \right)}
 \end{equation}
 
-Where $D\left( \tau \right) := D\left(P^{*} \| Q\right)$, we make the $\tau$ relation excplicit to 
-keep in mind that the minimisation is contrainred to the set $\Gamma_\tau$ which depends on $\tau$.
+Where $D\left( \tau \right) := D\left(P^{*} \| Q\right)$, we make the $\tau$ relation explicit to 
+keep in mind that the minimization is constrained to the set $\Gamma_\tau$ which depends on $\tau$.
 
 We remark that the only place of concern is if $D\left(P^{*} \| Q\right) = 0$; assuming however that $Q \neq U$, then 
 there will be some $\tau$ s.t. $Q \notin \Gamma_\tau$ and thus $D\left(P^{*} \| Q\right) \neq 0$.
@@ -864,4 +864,4 @@ as follows:
 This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) > 0$ then we get consistency
 by letting $n \rightarrow \infty$.
 
-We note that to get the best bound we may maximisise the r.h.s. w.r.t. $\tau$.
+We note that to get the best bound we may maximizes the r.h.s. w.r.t. $\tau$.
