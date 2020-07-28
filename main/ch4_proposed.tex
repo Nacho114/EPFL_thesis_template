@@ -467,10 +467,10 @@ We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
 \begin{lemma} Given $\alpha, \delta > 0$, random variables $Z$ and $X$ s.t. $\alpha X + Z$, where $X \bigCI Z$, 
 $X \thicksim P_X$, $Z \thicksim P_Z$, with $\int P_{Z}^{\prime}(t) d t < \infty$.
-$\alpha X + Z \thicksim  P_{\alpha X + Z}$, there is some $C > 0$ s.t.
+$\alpha X + Z \thicksim  P_{\alpha X + Z}$, there is some $C(\delta) > 0$ s.t.
 
 $$
-\left\|P_{Z} -  P_{\alpha X + Z} \right\|_{1} \leqslant \alpha C + \delta
+\left\|P_{Z} -  P_{\alpha X + Z} \right\|_{1} \leqslant \alpha C(\delta) + \delta
 $$
 \label{lemma:conv_bound}
 \end{lemma}
@@ -573,9 +573,9 @@ TODO -- Taylor approx bound end --
 Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
 $C = C^* \int P_{Z}^{\prime}(t) d t$ and we are done.
 
-We note that while $C^*$ will depend on $\delta$, this is not a problem. We will first pick $\delta$ to be 
-some small constant, this will then determine $C^*$ to be some other constant; after this we will be choose 
-$\alpha$. 
+Note that as $k$ increases so does $C^*$, since we are growing the space to optimse for $C^*$; this is 
+where the dependence between $\delta$ and $C$ comes from. 
+
 \end{proof}
 
 So we have found a bound on the $l_1$ distance between two continuos distributions; however in our
@@ -631,11 +631,13 @@ $$
 
 \begin{align*}
         P\left( \norm{ \hat{p}_1 - \hat{p}_2 }_1 \geq \epsilon \right) &\leq 
-        P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_n}_1 \geq \epsilon \right) \\
-        &\leq P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
+        P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon \right) \\
+        &\leq P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right) \\
                         &\qquad + P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 \end{align*}
+
+Where $P^*_Z$ is the quantised version of $P_Z$.
 
 The first inequality follows by the triangle inequality, and the second one by using the law of total probability.
 
@@ -652,26 +654,33 @@ Both of which go to zero for any $\alpha > 0$ assuming that our regression is \t
 It remains to bound 
 
 \begin{equation}
-    P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
+    P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
 \end{equation}
 
 Note that $\hat{p}_1 \rightarrow P^*_{Z + \Delta_1 X}$ as $n \rightarrow \infty$; where 
-$P^*_{Z + \Delta_1 X}$ is the discretized distribution of $P_{Z + \Delta_1 X}$ -- recall that 
-we form $\hat{p}_1$ by creating a discretized histogram from the residuals.
+$P^*_{Z + \Delta_1 X}$ is the discretized distribution of $P_{Z + \Delta_1 X}$; recall that 
+we form $\hat{p}_1$ by creating a discretized histogram from the residuals. 
 
-Thus if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C}$. 
-We do the same for $\hat{p}_2$, which implies by lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation}
-that: 
+Then, by combing lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation} we have that:
+
+For any $\alpha$, and $\delta$, there is some $C(\delta) > 0$ s.t.
+$$
+    \norm{P^*_{Z} - P^*_{Z + \Delta_1 X}}_1 \leq \alpha C(\delta) + \delta
+$$
+
+
+Thus if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C(\delta)}$. 
+By applying the same idea to $\hat{p}_2$, we get that as $n \rightarrow \infty$
 
 $$
-   \norm{\hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
+   \norm{\hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 < \frac{\epsilon}{2} + \frac{\epsilon}{2} = \epsilon
 $$
 
 And so as $n \rightarrow \infty$
 
 $$
-    P\left( \norm{ \hat{p}_1 - p_Z}_1 + \norm{ \hat{p}_2 - p_Z}_1 \geq \epsilon 
+    P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
         \rightarrow 0 
 $$
