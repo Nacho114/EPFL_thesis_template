@@ -7,16 +7,16 @@
 
 \section{Problem and Motivation}
 
-Suppose we are given samples of data say $X$ and $Y$, s.t.
+Suppose we are given samples of data say $\mathbf{x}$ and $\mathbf{y}$, s.t.
 
 \begin{align*}
-    X = x_1, ..., x_n  \\
-    Y = y_1, ..., y_n 
+    \mathbf{x} = x_1, ..., x_n  \\
+    \mathbf{y} = y_1, ..., y_n 
 \end{align*}
 
 For example, we may be measuring the blood pressure and heart rate of Alice at time $k$, 
 say $x_k$ and $y_k$ respectively. Further, suppose we are unaware of her context, for example,
-Bob hacked into Alice's apple watch and so can only read $X$ and $Y$ --- he has no idea of 
+Bob hacked into Alice's apple watch and so can only read $\mathbf{x}$ and $\mathbf{y}$ --- he has no idea of 
 anything she might be up to.
 
 Bob then observes the following trend:
@@ -34,8 +34,8 @@ a similar trend, and is now more confident in the existence of a causal relation
 makes the conjecture that either blood pressure causes heart rate, or 
 perhaps the other way around. 
 
-Given this strong correlation, Bob asserts that he may either model $X$ as a function of $Y$ or the other way 
-around. He proceeds to find some $f$ s.t. $f(X) \approx Y$. The next day, to his dismay, he notices that his
+Given this strong correlation, Bob asserts that he may either model $x$ as a function of $y$ or the other way 
+around. He proceeds to find some $f$ s.t. $f(x) \approx y$. The next day, to his dismay, he notices that his
 model has terrible performance when evaluated on new data. He then proceeds to see what is going on, and 
 observes the following:
 
@@ -54,7 +54,7 @@ won’t always rise and fall in sync.
 
 So what did Bob learn\footnote{
     Note that heart rate and blood pressure are intimately linked, and the story between them is more complicated.
-    The plots were randomly generated using a gaussian process, however they do resemble some real examples that 
+    The plots were randomly generated using a Gaussian process, however they do resemble some real examples that 
     can be found in the internet.
 }?
 
@@ -104,7 +104,7 @@ can accurately predict causality in such settings with as few as 75 samples.
     \includegraphics[width=1\textwidth]{bivariate_causal_example.png}
     \caption{75 samples of data $X$, $Y$.  The samples are generated independently as follows:
     $y_i = f(x_i) + n_i$ where $x_i$ is drawn from an exponential distribution and $n_i$ is drawn 
-    independently from a gaussian one and $f(x) = 10 \tanh(x) + 4\sin(x) + x + x^2$}
+    independently from a Gaussian one and $f(x) = 10 \tanh(x) + 4\sin(x) + x + x^2$}
     \label{fig:simple_bivariate_example}
 \end{figure}
 
@@ -114,7 +114,8 @@ can accurately predict causality in such settings with as few as 75 samples.
 
 We can model any causal model by using a \textbf{Function Causal Model (FCM)} which can be constructed as follows:
 
-We \textit{generate} a random vector $X = (X_1, ..., X_d)$ by using a graph $\mathcal{G}$ (encoding the relationships),
+We \textit{generate} a random vector\footnote{That is, each $X_i$ is a random variable.}
+$X = (X_1, ..., X_d)$ by using a graph $\mathcal{G}$ (encoding the relationships),
 a set of functions $f = (f_1, ..., f_d)$ (encoding the type of relationship) and a noise distribution $\mathcal{E}$
 (the randomness generator).
 
@@ -157,7 +158,7 @@ and so $X_{\text{Pa}(4)} = X_1, X_2$.
     
     \end{tikzpicture}
     \caption{ Example for FCM with $X = X_1, ... X4$, with $E_i \thicksim \mathcal{E}$, 
-    with $X_1 = f_1(E_1)$, $X_2 = f_2(E_2)$, $X_3 = f_3(X_1, E_3)$ and 
+    with $X_1 = f_1(E_1)$, $X_2 = f_2(E_2)$, $X_3 = f_3(X_1, E_3)$, and 
     $X_4 = f_4(X_1, X_2, E_4)$}
     \label{fig:fcm_1}
 
@@ -271,7 +272,9 @@ We will propose a new\footnote{To the knowledge of the author no such method has
 before, although given it's simplicity we imagine that its not the first of its kind.} type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
 interval separately. In the right direction one would expect that the residuals of each 
-interval will be more homogenous in the causal direction --- in the ANM settings, asymmetries introduced
+interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will be similar 
+to each other, for example if we plot their respective histograms, these will asymptotically converge to the 
+same distribution} in the causal direction --- in the ANM settings, asymmetries introduced
 by inversion will break the i.i.d assumption. We will conclude by 
 showing that this intuition is indeed correct, by proving that the method is consistent --- 
 assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We will
@@ -287,5 +290,7 @@ popular methods for inference on the bivariate causal setting. Next, we will ove
 Since the MMD is a bit convolved, we will also review some background material that will help gain a better intuition on it. 
 
 We will end by going over the proposed methods, and showing both theoretical guarantees and experimental results. 
+
+
 
 

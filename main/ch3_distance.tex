@@ -16,8 +16,9 @@
     \subfloat[$X \thicksim P$]{{\includegraphics[width=5cm]{red_scatter.png} }}%
     \qquad
     \subfloat[$Y \thicksim Q$]{{\includegraphics[width=5cm]{other_scatter.png} }}%
-    \caption{Samples from two different sources, $X$ and $Y$, how can we tell if 
-    they come from the same distribution?}
+    \caption{Samples from two different one dimensional sources, $X$ and $Y$; the x 
+    axis represents the values that they take. 
+    How can we tell if they come from the same distribution?}
     \label{fig:scatter_dist_questions}%
 \end{figure}
 
@@ -32,6 +33,12 @@ families of measures of "distance" between probability measures.
 We start by introducing the Reproducing Kernel Hilbert Spaces (RKHS), which will serve as a 
 building block for the maximum mean discrepancy, an important instance of IPM.
 
+As we saw in the previous chapter, to understand causality, it is crucial to be able to 
+measure statistical dependence between random variables; therefore our ability of 
+performing causal inference will largely hinge on our ability to measure dependence 
+between random variables. 
+
+\newpage
 \section{Reproducing Kernel Hilbert Space}
 
 We will begin by defining the kernel,
@@ -42,7 +49,7 @@ We will begin by defining the kernel,
     Let $\mathcal{X}$ be a non-empty set. A function 
     $k: \mathcal{X} \times \mathcal{X} \rightarrow \R$ is a kernel if 
     \begin{enumerate}
-        \item $k$ is symmetric: $k(x, y) = k(y, x)$.
+        \item $k$ is symmetric: $k(x, y) = k(y, x)$, $\forall x, y \in \mathcal{X}$
         \item $k$ is positive semi-definite, i.e. $\forall x_1, ..., x_n \in \mathcal{X}$,
         the "Gram Matrix" $K$, defined by $K_{ij} = k(x_i, x_j)$ is positive semi-definite
         \footnote{A matrix $M \in \R^{n\times n}$ is positive semi-definite if $\forall a \in \R^n$
@@ -148,9 +155,9 @@ expect some independent additive noise.
 
 We can estimate $f$ as follows
 \footnote{Note that it is not obvious how to implement the optimization as $\mathcal{H}$ may be infinite. However,
-this setup with a gaussian kernel is in fact equivalent to a Gaussian Processes, which can be easily
+this setup with a Gaussian kernel is in fact equivalent to a Gaussian Processes, which can be easily
 implemented in practice (see \cite{JordanNotes}).}
-, pick an RHKS $\mathcal{H}$ with a gaussian kernel:
+, pick an RHKS $\mathcal{H}$ with a Gaussian kernel:
 
 \begin{equation}
     f^{*}=\arg \min _{f \in \mathcal{H}}\left(
@@ -181,14 +188,14 @@ $$
 
 It is precisely because the solution is of this form, that we may exploit the kernel trick. We can
 also quickly see what the role of the kernel is. If for example, $k$ is the Gaussian Kernel, then
-the solution will be a linear combination of scaled gaussians centered at the data points
-\footnote{In fact this will always be the case when we can write $k\left(x_i, x\right) = \tilde{k}\left(x_i - x\right)$}. 
+the solution will be a linear combination of scaled Gaussians centered at the data points
+\footnote{In fact this will always be the case when we can write $k\left(x, y\right) = \tilde{k}\left(x - y\right)$}. 
 
 As a final remark we will explain the role of the penalty $\Omega \norm{f}_{\mathcal{H}}^{2}$; from 
 statistical models, we now that this kind of term is known as regularization and is supposed to help 
 choose a "simpler" model. As we will now show, this is also the case here.
 
-To see this, we will use Mercer's Theorem --- a Generalization of the spectral theorem for positive-semidefinite
+To see this, we will use Mercer's Theorem (as stated in the lecture notes of \cite{BartlettNotes}) --- a Generalization of the spectral theorem for positive-semidefinite
 matrices\footnote{Recall that our Kernel $k$ is a generalization of a positive-semidefinite Matrix}.
 
 \begin{theorem}[Mercer's] 
@@ -304,7 +311,8 @@ Recall that if $\phi$ is the associated feature map to the kernel $k$ from
 RKHS $\mathcal{H}$ then we have $g(x) = \inp*{g}{\phi(x)}$.
 
 We define $\mu_P \in \mathcal{H}$, s.t. $\forall g \in \mathcal{H}$, we have that
-$\mathop{\E}_{X} g(X) = \inp*{g}{\mu_P}$. We will now show under which conditions $\mu_P$ exits.
+$\mathop{\E}_{X} g(X) = \inp*{g}{\mu_P}$. We will now show under which conditions $\mu_P$ exits
+(we follow the derivations as done by \cite{Peters2008diploma}).
 
 \begin{lemma}\label{embedding_existance}
     If k is measurable and $\mathop{\E}_{X} \sqrt{k(X, X)} < \infty$ then
@@ -382,34 +390,34 @@ The first condition is basically what we knew intuitively:
 If we consider a compact metric space, say $(\mathcal{X}, d)$, then a Kernel $k$ on $\mathcal{X}$
 is called universe if the corresponding RKHS is dense 
 in the space $C(\mathcal{X})$ of all continuous functions. The drawback is that the input space $\mathcal{X}$ needs to be compact --- which excludes $\R^n$; 
-this means that we cannot use universality to check our gaussian kernel. Luckily the second condition
+this means that we cannot use universality to check our Gaussian kernel. Luckily the second condition
 is enough.
 
 Assuming $k$ is a bounded continuous positive definite function, then if we can write
 $k(x, y) = \psi (x - y)$ we say that $k$ is a convolution kernel.
 
-From inspection it is clear that the gussian kernel is convolutional
+From inspection it is clear that the Gaussian kernel is convolutional
 
 $$
     k(x, y) = \exp (-\gamma^{-2}\norm{x - y}^2)
 $$
 
-Recall that the fixed point of convolution is the gaussian, which trivially implies
-that the inverse Fourier transform of a gaussian is supported everywhere. 
- This means that the gaussian kernel satisfies the second
+Recall that the fixed point of convolution is the Gaussian, which trivially implies
+that the inverse Fourier transform of a Gaussian is supported everywhere. 
+ This means that the Gaussian kernel satisfies the second
 condition, and it therefore generates an injective embedding $\mu_P$.
 
 We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence (in the 
 sense that measure the distance between the joint and product distributions to test for independence).
 
-In practice the gaussian kernel is very popular, it is used in the HSIC test when used as a
+In practice the Gaussian kernel is very popular, it is used in the HSIC test when used as a
 score function by \cite{Mooij2016jmlr}; but how do we find the parameter --- sometimes referred to 
 as the bandwidth --- of the kernel?
 
 One approach is the median heuristic (\cite{scholkopf2002learning}):
 
 $$
-\hat{\gamma}(u):=\operatorname{median}\left\{\left\|u_{i}-u_{j}\right\|:  i<j ,\left\|u_{i}-u_{j}\right\| \neq 0\right\}
+\hat{\gamma}(\mathbf{u}):=\operatorname{median}\left\{\left\|u_{i}-u_{j}\right\|:  i<j ,\left\|u_{i}-u_{j}\right\| \neq 0\right\}
 $$
 
 \subsection{The case for MMD}
@@ -500,20 +508,20 @@ The following are some examples of f-divergences:
 It is rather straightforward to come up with independence tests once we are we are able to test 
 for the distance between distributions. Say we are given two random variables $X$ and $Y$, with 
 values over the product space $\mathcal{X} \times \mathcal{Y}$. If their joint distribution is 
-$p_{X, Y}$, and their marginal distributions are $p_X$ and $p_Y$. Then to check if $X \bigCI Y$
-we need to verify if $p_{X, Y} = p_X \otimes p_Y$.
+$P_{X, Y}$, and their marginal distributions are $P_X$ and $P_Y$. Then to check if $X \bigCI Y$
+we need to verify if $P_{X, Y} = P_X \otimes P_Y$.
 
-If we want to create an independence test from an f-divergence, say $f(x) = xlog(x)$, then we 
+If we want to create an independence test from an f-divergence, say $f(x) = x\log(x)$, then we 
 can do as follows:
 
 $$
-    I (X; Y) :=  \infdiv{p_{X, Y}}{p_X \otimes p_Y}
+    I (X; Y) :=  \infdiv{P_{X, Y}}{P_X \otimes P_Y}
 $$
 
-This in fact the well known Mutual Information from Information Theory! 
+This is in fact the well known Mutual Information from Information Theory! 
 
 Recall that for the MMD we need to provide a kernel, since we are now in a product space, we need 
-to provide a product kernel on the space ($\mathcal{X}, \mathcal{Y}$):
+to provide a product kernel on the space ($\mathcal{X}, \mathcal{Y}$): (\cite{Peters2008diploma})
 
 \begin{align*}
     \mathcal{X} \times \mathcal{Y} \quad &\rightarrow \qquad \R \\
@@ -524,23 +532,15 @@ where $k$ and $l$ are kernels on $\mathcal{X}$ and $\mathcal{Y}$ respectively. W
 MMD to test independence as follows:
 
 $$
-    \operatorname{MMD}\left( p_{X, Y}, p_X \otimes p_Y  \right)
+    \operatorname{MMD}\left( P_{X, Y}, P_X \otimes P_Y  \right)
 $$
 
 Observe that 
 
 $$
-    \operatorname{MMD}\left( p_{X, Y}, p_X \otimes p_Y  \right)^2 = \operatorname{HSIC}(p_{X, Y})
+    \operatorname{MMD}\left( P_{X, Y}, P_X \otimes P_Y  \right)^2 = \operatorname{HSIC}(P_{X, Y})
 $$
 
-So the HSIC is basically an MMD distance between the joint and product distribution. 
-
-% \section{Large deviations}
-
-% Consider making this into a chapter
-
-% \subsection{Hoeffding}
-
-% \subsection{Sanov}
+The HSIC is thd MMD distance between the joint and product distribution. 
 
 

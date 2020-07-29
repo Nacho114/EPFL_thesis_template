@@ -28,21 +28,42 @@
 % \binoppenalty=9999
 
 
-\usepackage{amsmath}
+% \usepackage{amsmath}
+\usepackage{amsmath,amsthm}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{mathtools}
 
 % For the nice bold Ex symbol // dosent work
 % \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
+% \makeatletter
+% \def\thm@space@setup{%
+%   \thm@preskip=1cm plus 0cm minus 0cm
+%   \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+% }
+% \makeatother
 
+\newtheoremstyle{thmstyle}
+  {.5em plus .1em minus .1em}%   Space above
+  {.5em plus .1em minus .1em}%   Space below
+  {} % Body font
+  {} % Indent amount
+  {\bfseries} % Theorem head font
+  {.} % Punctuation after theorem head
+  {.5em} % Space after theorem head
+  {} % Theorem head spec (can be left empty, meaning `normal')
+
+\theoremstyle{thmstyle}
 \newtheorem{theorem}{Theorem}
+
+\theoremstyle{thmstyle}
 \newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
-\newtheorem{scolium}{Scolium}   %% And a not so common one.
+
+\theoremstyle{thmstyle}
 \newtheorem{definition}{Definition}
 
-\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+
+% \newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
 % for indep symbol
 \newcommand{\bigCI}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}

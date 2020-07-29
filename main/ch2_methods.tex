@@ -13,18 +13,21 @@ the relationship as follows:
 \begin{equation}
     \begin{cases} 
         & Y = f(X, Z) \\
-        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
+        & X \bigCI Z,\quad X \thicksim P_X,\quad Z \thicksim P_{Z}  
      \end{cases}
      \label{causal_model}
 \end{equation}
 
-where $p_X$ is the density of the cause and $p_Z$ that of the latent variable; $f: \R \times \R \rightarrow \R$
+where $P_X$ is the density of the cause and $P_Z$ that of the latent variable; $f: \R \times \R \rightarrow \R$
 is a borel measurable function (w.r.t. to the Borel sets of $\R \times \R$ and $\R$). 
 
 If we assume that there is no confounder, no sampling bias\footnote{If you consider the 
 example given in the introduction, then if Bob always sampled when Alice was exercising, then this 
 would have lead to sampling bias, as during exercise both heart rate and blood pressure tend to increase.} 
 and no cycles then it is natural to assume that $X \bigCI Z$.
+
+A confounder is a third variable say $Z$, that influences both $X$ and $Y$; for example in figure \ref{fig:conditionalIndep}
+, if the edges are directed from $X$ to $Z$ and also from $Z$ to $Y$, then we would say that $Z$ is a confounder.
 
 While we can model $Z$ as either a scalar or a vector, we can without loss of generality assume it to be a scalar.
 It can be shown that if $Z$ is a vector, then one can construct a simpler model with scalar noise, which has the 
@@ -36,7 +39,7 @@ $\tilde{f}$ and $\tilde{Z}$ such that
 \begin{equation}
     \begin{cases} 
         & X = \tilde{f}(Y, \tilde{Z}) \\
-        & Y \bigCI \tilde{Z},\quad Y \thicksim p_Y,\quad \tilde{Z} \thicksim p_{\tilde{Z}}  
+        & Y \bigCI \tilde{Z},\quad Y \thicksim P_Y,\quad \tilde{Z} \thicksim P_{\tilde{Z}}  
      \end{cases}
 \end{equation}
 
@@ -49,28 +52,28 @@ on observational data alone.
 In particular we will consider the following class of models. Note that these models are a subset of those 
 that we just introduced (equation \ref{causal_model}).
 
-\begin{definition} Given a triplet $(p_X, p_Z, f)$, consisting of two finite mean densities and a Borel-measurable function
+\begin{definition} Given a triplet $(P_X, P_Z, f)$, consisting of two finite mean densities and a Borel-measurable function
 $f: \R \rightarrow \R$, we can define a \textbf{bivariate Additive Noise Model (ANM)} $X \rightarrow Y$
 \[
     \begin{cases} 
         & Y = f(X) + Z \\
-        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
+        & X \bigCI Z,\quad X \thicksim P_X,\quad Z \thicksim P_{Z}  
      \end{cases}  
 \]
-If the induced joint density of $X$ and $Y$, $p_{X, Y}$ has a density with respect to Lebesgue measure, 
-we say that $p_{X, Y}$ satisfies the ANM $X \rightarrow Y$.
+If the induced joint density of $X$ and $Y$, $P_{X, Y}$ has a density with respect to Lebesgue measure, 
+we say that $P_{X, Y}$ satisfies the ANM $X \rightarrow Y$.
 \end{definition}
 
-Given such a model, we are interested in the cases when the observational distribution $p_{X, Y}$ can only
+Given such a model, we are interested in the cases when the observational distribution $P_{X, Y}$ can only
 lead to only one causal explanation; this motivates the following definition:
 
-\begin{definition} If the joint density $p_{X, Y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
+\begin{definition} If the joint density $P_{X, Y}$ satisfies an ANM $X \rightarrow Y$, but does not satisfy
 ANM $Y \rightarrow X$, then we call the ANM $X \rightarrow Y$ \textbf{identifiable}. 
 \end{definition}
 
 Intuitively, non-linearities due to $f$ will break the symmetry needed to make a reverse ANM. This is what
 \cite{hoyer2009nonlinear} and friends explore; they show that for the 
-a triplet $(p_X, p_Z, f)$ to generate a non-identifiable ANM, it needs to satisfy a particular 
+a triplet $(P_X, P_Z, f)$ to generate a non-identifiable ANM, it needs to satisfy a particular 
 differential equation. Loosely speaking cannot happen in the generic case: in other words the forward 
 model $X \rightarrow Y$ cannot be inverted. 
 
@@ -91,7 +94,7 @@ if and only if $X, Y, Z, \tilde{Z}$ are Gaussian distributed.
 The proof is a simple application of the Darmois-Skitovich Theorem\footnote{ The theorem also plays an important role
 in independent component analysis (ICA), in short it deals with source separation. It turns out that if we have the 
 linear multivariate causal setting, then we can cast it as a source separation problem and use ICA to solve it. 
-Note that there too gaussianty makes or breaks the method.}; it states the following:
+Note that there too Gaussianty makes or breaks the method.}; it states the following:
 
 \begin{theorem}[Darmois-Skitovich] Let $X_i$, $i \in [n]$ be independent random variables, and let
     $\alpha_i$, $\beta_j$ be non zero constants. Then, if the random variables
@@ -101,7 +104,7 @@ Note that there too gaussianty makes or breaks the method.}; it states the follo
     $$ 
         L_2 = \sum_{i \in [n]} \beta_i X_i
     $$
-    are independent, i.e. $L_1 \bigCI L_2$; then all the random variables $X_i$ are gaussian. 
+    are independent, i.e. $L_1 \bigCI L_2$; then all the random variables $X_i$ are Gaussian. 
 \end{theorem}
 
 We now prove Theorem \ref{linear_indentifiability} using the Darmois-Skitovich Theorem.
@@ -147,29 +150,29 @@ We next show the "if" part; first assume that $X$ and $Z$ are Gaussian random va
 It is easy to verify that:
 $\operatorname{Cov}(Y, \tilde{Z}) = a(1 - a\tilde{a})\operatorname{Var}(X) - \tilde{a}\operatorname{Var}(Z)$.
 Thus if we set $\tilde{a} = \frac{a \operatorname{Var}(X)}{a^2 \operatorname{Var}(X) + \operatorname{Var}(Z)}$ 
-we get that $\operatorname{Cov}(Y, \tilde{Z}) = 0$, and since they are gaussian random variables we get 
+we get that $\operatorname{Cov}(Y, \tilde{Z}) = 0$, and since they are Gaussian random variables we get 
 that they are also independent.
 
 \end{proof}
 
 These results show that indeed, in most cases, we should be able to perform causal inference as most 
-additive models should be identifiable. Interestingly, the guaussian setting provides difficulty  due 
-to the symmetry of the gaussian (in the linear case). In general the gaussian is our friend, but not today.
+additive models should be identifiable. Interestingly, the Gaussian setting provides difficulty  due 
+to the symmetry of the Gaussian (in the linear case). In general the Gaussian is our friend, but not today.
 We will next explore some methods for causal inference.
 
 \section{ANM Methods}
 
-The additive noise model (ANM) methods are a very simple score based family of methods for causal inference.
+Additive noise model (ANM) methods are a very simple score based family of methods for causal inference.
 The following lemma\footnote{A simple proof can be found here \cite{Mooij2016jmlr}} motivates the method:
 
 \begin{lemma}
-    Given a joint density $p_{X, Y}$ of two random variables $X$, $Y$ s.t. the conditional expectation
-    $\E(Y |X = x)$ is well-defined for all x and measurable. Then, $p_{X, Y}$ satisfies a bivariate 
+    Given a joint density $P_{X, Y}$ of two random variables $X$, $Y$ s.t. the conditional expectation
+    $\E(Y |X = x)$ is well-defined for all x and measurable. Then, $P_{X, Y}$ satisfies a bivariate 
     Additive Noise Model $X \rightarrow Y$ if and only if $E_Y := Y - \E(Y|X)$ has 
     finite mean and is independent of $X$.
 \end{lemma}
 
-In practice we get some data from $p_{X, Y}$ ; say 
+In practice we get some data from $P_{X, Y}$ ; say 
 $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$. We can then either split it into a test/train in order to 
 first fit a regression which we then evaluate using the test set. If the data is scarce we may alternatively 
 recycle the data --- i.e. reuse it for both training and evaluation.
@@ -185,19 +188,17 @@ here Algorithm \ref{alg:anm_general}.
 In order to show that such a procedure is consistent we need 3 things:
 
 \begin{enumerate}
-    \item $p_{X, Y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
+    \item $P_{X, Y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
     \item The regression method should be \textbf{suitable} for regressing $Y$ on $X$.
     \item If $X \rightarrow Y$, then asymptotically $\hat{C}_{X \rightarrow Y} < \hat{C}_{Y \rightarrow X}$
 \end{enumerate}
 
 
 We will take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
-test to check if $p_{X, Y}$ satisfies an ANM $X \rightarrow Y$. 
+test to check if $P_{X, Y}$ satisfies an ANM $X \rightarrow Y$. 
 
-In point 2, by \textbf{suitable} regression we mean that $\norm{\mathbf{\hat{e}} - \mathbf{e}} \rightarrow 0$.
-Essentially we require the regression used on the data to have 0 mean square error in expectation.
-
-More precisely, given two real-valued random variable $X$, $Y$, with joint distribution $p_{X, Y}$. If 
+In point 2, we will say that a regression is \textbf{suitable} if the following holds:
+Given two real-valued random variable $X$, $Y$, with joint distribution $P_{X, Y}$. If 
 we are given two sequences --- for training and test --- say $D_N = X_1, ..., X_N$ and 
 $D_N^\prime = X^\prime_1, ..., X^\prime_N$. We say that a regression method is \textbf{suitable} for 
 regressing $Y$ on $X$ satisfies
@@ -212,7 +213,7 @@ $$
 
 \begin{algorithm}%[H]%[tbp]
 
-    \caption{General procedure to decide whether $p_{X, Y}$ satisfies and ANM $X \rightarrow Y$
+    \caption{General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
         or $Y \rightarrow X$}
   
     \textbf{Input}:
@@ -274,7 +275,7 @@ First considered by \cite{hoyer2009nonlinear}, is the Hilbert-Schmidt independen
 testing the independence between the residuals and the input. 
 
 $$
-  \hat{C}(u, v) := \widehat{\operatorname{HSIC}}_{k, l} (u, v)
+  \hat{C}(\mathbf{u}, \mathbf{v}) := \widehat{\operatorname{HSIC}}_{k, l} (\mathbf{u}, \mathbf{v})
 $$
 
 We will give a formal description of the HSIC in the next chapter, where we will develop some of the background 
@@ -291,7 +292,7 @@ for the independence test.
 Another type of score function looks at differential entropies instead of directly testing for independence.
 These ideas stem from \cite{kpotufe2014consistency} and \cite{nowzohour2016score}; The following lemma shows how this might be used in practice:
 
-\begin{lemma} Consider random variables $X$ and $Y$, with joint density $p_{X, Y}$. For any functions 
+\begin{lemma} Consider random variables $X$ and $Y$, with joint density $P_{X, Y}$. For any functions 
 $f, g : \R \rightarrow \R$ we have:
 
 $$
@@ -332,7 +333,7 @@ Probably will skip this?
 \subsection{CGNN: Causal Generative Neural Nets}
 
 In the work of \cite{goudet2017causal}, they estimate a \textit{generative} model by approximating
-the FCM structure using neural networks given some data from $p_{X, Y}$. Using the same notation
+the FCM structure using neural networks given some data from $P_{X, Y}$. Using the same notation
 as in the introduction on FCM, the idea is to estimate each $f_i$ by a neural network, and the 
 search through the DAG space. Since the DAG space is super exponential in the number of variables,
 they apply a greedy procedure to decide whether or not to include an edge $X_i \rightarrow X_j$.
@@ -364,7 +365,7 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 
 % Then Shannon came along, in his Magnum Opus, \cite{shannon}, he not only formalised the foundations of information
 % Theory, but he also proved\footnote{Shannon had a very deep...} most of the main results in it. In particular, he
-% showed that for the AWGN (Additive white nois gaussian channel), it is possible to realiably transmit at most $C$
+% showed that for the AWGN (Additive white nois Gaussian channel), it is possible to realiably transmit at most $C$
 % bits per time unit:
 
 % $$

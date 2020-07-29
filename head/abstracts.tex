@@ -29,7 +29,9 @@ before, although given it's simplicity we suspect that its not the first of its 
 type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
 interval separately. In the causal direction, one would expect that the residuals of each 
-interval will be more homogenous --- in the ANM settings, asymmetries introduced
+interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will 
+be similar to each other, for example if we plot their respective histograms, these will asymptotically 
+converge to the same distribution.} --- in the ANM settings, asymmetries introduced
 by inversion will break the i.i.d assumption. We will conclude by 
 showing that this intuition is indeed correct, by proving that the method is consistent --- 
 assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We will

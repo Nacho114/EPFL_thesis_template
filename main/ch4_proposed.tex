@@ -2,27 +2,31 @@
 \chapter{First principle methods}
 
 
+In this section we will present our proposed methods for causal inference in the 
+bivariate setting : The twin test and the residual method. We will introduce each method, 
+provide a detailed algorithmic description and end by giving a proof of correctness. 
 
 
 \section{The twin test}
 
-
-Suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which recall has the form
+Let us recall the setup: 
+suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which has the form
 
 \[
     \begin{cases} 
         & Y = f(X) + Z \\
-        & X \bigCI Z,\quad X \thicksim p_X,\quad Z \thicksim p_{Z}  
+        & X \bigCI Z,\quad X \thicksim P_X,\quad Z \thicksim P_{Z}  
      \end{cases}  
 \]
 
-The main strategy of most causal inference methods has been to estimate $f$, and then to compute the estimated
+The main strategy of of the ANM methods has been to estimate $f$, and then to compute the estimated
 residual $\hat{e} = \hat{f}(x) - y$; the final step is to test the independence between $\hat{e}$ and $X$. This exploits 
-the assumption that $X \bigCI Z$. In practice we often have that the noise is \textit{independent}, 
-i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$.
+the assumption that $X \bigCI Z$. In practice we often have that the noise is \textit{independent} between each sample
+i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$; for example when we are 
+taking measurements, the additive noise of our devices tends to be independent.
 
 By directly exploiting the IID noise assumption, we will circumvent the need for an independence test. The 
-idea is to to partition the data --  for simplicity you can think about splitting it around the median; we 
+idea is to to partition the data ---  for simplicity you can think about splitting it around the median; we 
 then estimate the residuals for each partition, and we then test if the IID noise assumption holds by comparing
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
 direction causal if it's residuals are more similar. 
@@ -67,8 +71,8 @@ and $\mathcal{\tilde{D}}_2$. We can visualize this parition bellow in Figure \re
 
 If we estimate a fit $\hat{f}_1$ for $\mathcal{D}_1$ and similarly $\hat{f}_2$ for $\mathcal{D}_2$, then we can 
 compute residuals for each sets, say $\hat{e}_1$ for $\mathcal{D}_1$  and $\hat{e}_2$ for $\mathcal{D}_2$.
-Since the noise is --  not only independent from $X$ but also --  i.i.d, it follows that $\hat{e}_1$ and $\hat{e}_2$
-follow the same distribution --  assuming a perfect fit $f$. We can visualize this by looking at the 
+Since the noise is ---  not only independent from $X$ but also ---  i.i.d, it follows that $\hat{e}_1$ and $\hat{e}_2$
+follow the same distribution ---  assuming a perfect fit $f$. We can visualize this by looking at the 
 histograms from the residuals.
 
 \begin{figure}[H]
@@ -86,12 +90,12 @@ histograms from the residuals.
     \subfloat{{\includegraphics[width=6.5cm]{algo_res_reverse.png} }}%
 
     \caption{  We show the the estimated fits $\hat{f}$ for each parition in black. Bellow each 
-    partition we plot the histograms of the residuals --  in the same color. }
+    partition we plot the histograms of the residuals ---  in the same color. }
     \label{fig:algo_fit}
 \end{figure}
 
 Note that for the reverse model, the noise in $\mathcal{\tilde{D}}_1$ appears to be very different from 
-that of $\mathcal{\tilde{D}}_2$; this is not a coincidence --  intuitively, it seems very unlikely that 
+that of $\mathcal{\tilde{D}}_2$; this is not a coincidence ---  intuitively, it seems very unlikely that 
 regressing in the other direction will also result in independence noise. Further, as we briefly 
 mentioned in the early chapters, as \cite{hoyer2009nonlinear} show, it is unlikely that for a non-linear 
 we might not have identifiability. 
@@ -119,7 +123,7 @@ In the above example, we get that $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) = 0
 $\mathcal{C}(\mathcal{\tilde{D}}_1, \mathcal{\tilde{D}}_2) = 0.480$ where use bins of size $5$ 
 for discretization; We are able to predict the causal direction with high confidence.
 
-Assuming the regressions are \textbf{faithfull}, then as $n \rightarrow \infty$ we know that both 
+Assuming the regressions are \textbf{suitable}, then as $n \rightarrow \infty$ we know that both 
 $p_1$ and $p_2$ will converge to the same $p_Z$ and so $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) \rightarrow 0$.
 On the other hand, it is unlikely that the residuals of $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ 
 follow the same distribution (due to the non-linearlities introduced by f and the additivity of the noise) and 
@@ -138,17 +142,17 @@ Before giving the general description of the algorithm we will comment on each o
 
 \subsection{Partition}
 
-Say that we partition $\mathcal{D}$ into $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
-partitions need to satisfy three requirements:
+Say that we partition $\mathcal{D}$ into disjoint sets $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
+partitions need to satisfy two requirements:
 
 \begin{enumerate}
     \item The partitions need to be \textbf{dense}: 
     $|\mathcal{D}_i| \geq \rho |\mathcal{D}|, \quad \forall i \in [k]$, for some $\rho \in (0, 1)$.
-    \item The partitions need to be disjoint 
-    $$
-    \mathcal{D} = \bigcup_i \mathcal{D}_i \quad \text{and} \quad
-    \mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j
-    $$
+    % \item By disjoint partitions we mean that
+    % $$
+    % \mathcal{D} = \bigcup_i \mathcal{D}_i \quad \text{and} \quad
+    % \mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j
+    % $$
     \item We need to be able to order the partitions, say $\mathcal{D}_1, ..., \mathcal{D}_k$, such that
     if $i < j$ then\footnote{The $*$ is to indicate a dummy variable, as we do not care for the value of $y$.}: 
     $$
@@ -157,12 +161,12 @@ partitions need to satisfy three requirements:
     $$
 \end{enumerate}
 
-The first condition --  that of dense partitions --  is to avoid getting trivial large deviations between residuals 
+The first condition ---  that of dense partitions ---  is to avoid getting trivial large deviations between residuals 
 in the subsets; the second reason is that if they are dense, then we can give asymptotic guarantees about each subset.
-The second and third conditions simply ensure that we are not mixing data and that it is coherent to make regression
+The second conditions simply ensure that we are not mixing data and that it is coherent to make regression
 in each subset. 
 
-If we use K-means (perhaps the most popular clustering algorithm), then conditions 2. and 3. are met. The only 
+If we use K-means (perhaps the most popular clustering algorithm), then condition 2 are met. The only 
 questions is in regards to conditions 1. K-means starts by randomly initializing two or n centers (depending 
 on the number of clusters that we want), and the updates the centers that they locally 
 minimizes within-cluster variances. If our data is infinite support, and we re-run K-means if there is some cluster
@@ -170,7 +174,7 @@ $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and
 certain that the algorithm will eventually terminate. 
 
 In practice this has always been the case (for $\rho = .3$); so we conjecture that one can prove the above statement 
-rigorously. 
+(or some variant) rigorously. 
 
 The last question is, "How many clusters do we want?". Obviously for the small data regime we must be content 
 with only two clusters; but what if we have a lot of data? As we will see, we observe experimentally that if we 
@@ -195,8 +199,10 @@ We have seen in previous chapters various ways to measure the distances between 
 $p_1$ and $p_2$, via some score function $d(p_1, p_2)$; for example $d$ could be the 
 MMD metric, or the $l_1$ distance.
 
-Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous
-$P_k$ is compared to some other set $\tilde{P}_j$ --  recall that we wish to see in which of the two, 
+Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous\footnote{
+    By homogenous set we simply mean one in which its elements resemble each other, which is precisely what we will try to measure. 
+}
+$P_k$ is compared to some other set $\tilde{P}_j$ ---  recall that we wish to see in which of the two, 
  the distributions are more likely to be the same, i.e. we are testing the i.i.d assumption. 
 
 There are several simple ways to go about this:
@@ -220,9 +226,9 @@ $$
 
 
 Thus if $C(P_k) < C(\tilde{P}_j)$, we can say that the distributions in $P_k$ are
-more homogenous; e.g. they more likely to produce similar looking noise. 
+more homogenous; e.g. they more likely stem from the same noise distribution. 
 
-We have tested all of the above and find that the first method --  using the maximum score between pairs --
+We have tested all of the above and find that the first method ---  using the maximum score between pairs ---
 gives the best performance.
 
 \subsection{Algorithm}
@@ -273,7 +279,7 @@ data in the partitions to use a different portion of the data for estimation and
 
         end for
 
-        $\mathbf{E_Y} := \{ \mathbf{\hat{e}_{Y}}(i) \}_{i \in [k]} $
+        $\mathbf{Z} := \{ \mathbf{\hat{e}_{Y}}(i) \}_{i \in [k]} $
 
         for $i \in [j]:$
 
@@ -289,7 +295,7 @@ data in the partitions to use a different portion of the data for estimation and
 
         \item \textbf{Compute scores} to measure the difference between the residuals
         \begin{itemize}
-            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( \mathbf{E_Y} )$ 
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( \mathbf{Z} )$ 
             \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \mathbf{E_X} )$
         \end{itemize}        
 
@@ -311,8 +317,8 @@ data in the partitions to use a different portion of the data for estimation and
 
 \subsection{Consistency}
 
-We will show consistency for a simple set up of the twin test --  but we note that generalizing it to the more 
-general set up should be direct from our proof. 
+We will show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
+general set up should follow with little effort from our proof. 
 
 
 The setup was the linear \textbf{ANM}:
@@ -325,7 +331,7 @@ The setup was the linear \textbf{ANM}:
 
 In practice we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; next 
 the algorithm will proceed to split the data into sets $\mathcal{D}_1$ and $\mathcal{D}_2$. It then proceeds 
-to compute residuals and compute some scores between them.
+to compute residuals and to compute some scores between them.
 
 To simplify the proof, we will \textbf{skip the partition procedure} and assume that
 we are directly given $\mathcal{D}_1$ and $\mathcal{D}_2$, each with 
@@ -404,17 +410,23 @@ $$
 This is precisely what we will show:
 
 \begin{theorem}
-    The \textbf{simplified Twin Test scenario}t is consistent, i.e. 
+    The \textbf{simplified Twin Test scenario} is consistent, i.e. 
 
 $$
     \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty
 $$
+
+Assuming that the noise distribution satisfies the following: 
+$\int \left| P_{Z}^{(n)}(t) \right| d t < L$, $\forall n\geq 1$, for some $L > 0$
 \end{theorem}
+
+The assumption about the noise distribution holds for most distributions, for example uniform, 
+normal, exponential, ...
 
 The idea of the proof is to observe the following:
 
 If we have enough data, i.e. when $n$ is large enough then assuming the regression is 
-faithful, we can chose any $\alpha$ such that
+\textbf{suitable}, we can chose any $\alpha$ such that
 
 $$
     \abs{a_1 - \hat{a}_1} \leq \alpha \qquad \text{and} \qquad \abs{a_2 - \hat{a}_2} \leq \alpha
@@ -465,8 +477,13 @@ estimate, which we can get arbitrarily small with enough samples.
 
 We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
-\begin{lemma} Given $\alpha, \delta > 0$, random variables $Z$ and $X$ s.t. $\alpha X + Z$, where $X \bigCI Z$, 
-$X \thicksim P_X$, $Z \thicksim P_Z$, with $\int P_{Z}^{\prime}(t) d t < \infty$.
+\begin{lemma} 
+    
+    Given $\alpha, \delta > 0$, random variables $Z$ and $X$ s.t. $\alpha X + Z$, where $X \bigCI Z$, 
+$X \thicksim P_X$, $Z \thicksim P_Z$, where\footnote{
+    Where $P_{Z}^{(n)}(t)$ is the n\textsuperscript{th} derivative of $P_Z$; we remark that this 
+    condition holds for most distributions such as the uniform, exponential and Gaussian.} 
+$\int \left| P_{Z}^{(n)}(t) \right| d t < L$, $\forall n\geq 1$, for some $L > 0$.
 $\alpha X + Z \thicksim  P_{\alpha X + Z}$, there is some $C(\delta) > 0$ s.t.
 
 $$
@@ -474,6 +491,8 @@ $$
 $$
 \label{lemma:conv_bound}
 \end{lemma}
+
+ 
 
 \begin{proof}
     ~
@@ -493,7 +512,7 @@ Let $T^{\alpha X} P_Z(t) := P_{Z}(t-\alpha x)$ (we use the notation introduced b
 Hence we may write (with $P_X$ as the underlying measure):
 
 $$
-    P_{\alpha X + Z} (t) = \E\left[P_{Z}(t-\alpha X ) \right]
+    P_{\alpha X + Z} (t) = \E\left(P_{Z}(t-\alpha X ) \right)
 $$
 
 
@@ -501,17 +520,17 @@ We proceed as follows:
 
 $$
 \begin{aligned}
-\norm{P_{Z}- P_{\alpha X + Z}}_{1} &=\int\abs{ P_{Z}(t)-\E\left[P_{Z}(t-\alpha X ) \right]} d t \\
+\norm{P_{Z}- P_{\alpha X + Z}}_{1} &=\int\abs{ P_{Z}(t)-\E\left(P_{Z}(t-\alpha X ) \right)} d t \\
 &\leq \int \E \abs{ P_{Z}(t)-P_{Z}(t-\alpha X )} d t \\
 &=\E \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha X ) } d t \\
-&= \E \left[ \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right] 
-P\left( \abs{X} \leq k \right) + \E \left[ \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} > k \right] 
+&= \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right) 
+P\left( \abs{X} \leq k \right) + \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} > k \right) 
 P\left( \abs{X} > k \right) \\
-&\leq \E \left[ \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right] 
+&\leq \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right) 
  + 2 P(\abs{ X} > k) \\ 
 &\leq \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
-&\leq \int\abs{ P_{Z}(t)- (P_{Z}(t) + \alpha C^* P_{Z}^{\prime}(t)) } d t  + 2 P(\abs{ X} > k)\\
-&\leq \alpha C^* \int P_{Z}^{\prime}(t) d t + 2 P(\abs{ X} > k)\\
+&\leq \int\abs{ P_{Z}(t)- \left( P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right) } d t  + 2 P(\abs{ X} > k)\\
+&\leq \alpha C^* L + 2 P(\abs{ X} > k)\\
 &\leq \alpha C + \delta
 \end{aligned}
 $$
@@ -524,7 +543,7 @@ the expectation w.r.t some $k$ to be chosen later.
 
 The next upper bounds follows by noting that
 $\norm{p - q}_1 \leq 2$ for any distributions $p$ and $q$. Next observe that 
-$\E \left[ \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right]$ is the average $l_1$ distance
+$\E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right)$ is the average $l_1$ distance
 between $\norm{P_{Z}}$ and random shifts of itself. Hence if we choose the shift as follows:
 
 $$
@@ -534,44 +553,25 @@ $$
 we can upper bound the average distance by the largest $l_1$ distance between any shift; 
 note that there is at least one maximizer since we are optimizing over a compact set. 
 
-TODO  ---   Taylor approx bound  ---   
-
-We next approximate $P_{Z}(t-\alpha C^* )$ by using it's taylor expansions  ---   this is justified by the fact 
-that we will pick $\alpha \approx 0$.
-
-Using taylor expansions we get that:
+Using taylor expansions we obtain 
 
 $$
     P_{Z}(t-\alpha C^* ) = P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)}
 $$
 
-Note that in our original equation this means that we need to bound
+then  we upper bound what we get after as follows
 
+\begin{align*}
+    \int \left| \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right|
+    &\leq L \sum_{n \geq 1} \left( \alpha C^* \right)^n \\
+    &\leq L \frac{\alpha C^*}{1 - \alpha C^*} \\
+    &\approx \alpha C^* L
+\end{align*}
 
-$$
-     \sum_{n \geq 1} \left( \alpha C^* \right)^n \int P_{Z}(t)^{(n)} dt
-$$
+We will later pick $\alpha \ll 1$, and so it follows from $\frac{x}{1 - x} \approx x$ for small $x$. 
 
-Note that we can pick any $\alpha$, indeed we will later make it smaller than $\epsilon$. But I am 
-not sure how to bound the derivatives of the pdf...
-
-One easy fix is to assume 
-
-$$
-    \int P_{Z}(t)^{(n)} dt < K ,\quad \forall n \geq 1
-$$
-
-for some constant $K$. This is true for example for exponential / uniform distributions. 
-
-It would be nice to not have such an assumption though, maybe something like sub-gaussianity?
-Really not sure about this part. 
-
-
-
-TODO  ---   Taylor approx bound end  ---   
-
-Finally, since we can pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
-$C = C^* \int P_{Z}^{\prime}(t) d t$ and we are done.
+Finally, since are free to pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
+$C = C^* L$ and we are done.
 
 Note that as $k$ increases so does $C^*$, since we are growing the space to optimise for $C^*$; this is 
 where the dependence between $\delta$ and $C$ comes from. 
@@ -586,7 +586,7 @@ beforehand and use the same one for both.
 
 \begin{lemma}
     Let $P$ and $Q$ be two continuos distributions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
-    $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
+     $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
 
     $$
         \norm{P^* - Q^*}_1 \leq \delta
@@ -630,11 +630,11 @@ $$
 \begin{proof}
 
 \begin{align*}
-        P\left( \norm{ \hat{p}_1 - \hat{p}_2 }_1 \geq \epsilon \right) &\leq 
-        P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon \right) \\
-        &\leq P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
+        \Prob\left( \norm{ \hat{p}_1 - \hat{p}_2 }_1 \geq \epsilon \right) &\leq 
+        \Prob\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon \right) \\
+        &\leq \Prob\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right) \\
-                        &\qquad + P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
+                        &\qquad + \Prob\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 \end{align*}
 
 Where $P^*_Z$ is the quantized version of $P_Z$.
@@ -644,8 +644,8 @@ The first inequality follows by the triangle inequality, and the second one by u
 Observe that 
 
 $$
-P\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right)  =
-P\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
+\Prob\left( \abs{a_1 - \hat{a}_1} > \alpha \; \text{or} \; \abs{a_2 - \hat{a}_2} > \alpha  \right)  =
+\Prob\left( \abs{a_1 - \hat{a}_1} > \alpha \right) + P \left( \abs{a_2 - \hat{a}_2} > \alpha  \right) 
 $$
 
 Both of which go to zero for any $\alpha > 0$ assuming that our regression is \textit{suitable}.
@@ -654,7 +654,7 @@ Both of which go to zero for any $\alpha > 0$ assuming that our regression is \t
 It remains to bound 
 
 \begin{equation}
-    P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
+    \Prob\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
 \end{equation}
 
@@ -680,7 +680,7 @@ $$
 And so as $n \rightarrow \infty$
 
 $$
-    P\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
+    \Prob\left( \norm{ \hat{p}_1 -  P^*_Z}_1 + \norm{ \hat{p}_2 -  P^*_Z}_1 \geq \epsilon 
         \; | \; \abs{a_1 - \hat{a}_1} \leq \alpha \; \text{,} \; \abs{a_2 - \hat{a}_2} \leq \alpha \right)
         \rightarrow 0 
 $$
@@ -693,41 +693,43 @@ $$
 
 \subsection{Introduction}
 
+The residual method is the precursor of the twin test. Here to we try to exploit knowledge of the noise
+directly; the key difference is that here we assume that we know $P_Z$, i.e. the distribution of the 
+additive noise.
 
-The residuals method is linked to the twin test. Here we assume we know the noise, etc. 
-
+This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
+cannot run it on benchmark data since we do not know the the underlying distribution. 
 
 \subsection{Proof of consistency: A tale of two bounds}
 
 The setup was the linear \textbf{ANM}:
 
 \[ \begin{cases} 
-    & Y = aX + E_Y  \\
-    & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
+    & Y = aX + Z  \\
+    & X \bigCI Z,\; X \thicksim P_X,\; Z \thicksim P_{Z}  
  \end{cases}
 \]
 
-From $n$ samples $(X_i, Y_i)$ we estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
-$\hat{f}_X$ for the reverse model. We then compute the residuals
+Given data $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from this ANM, we 
+estimate $\hat{f}_Y$ by regressing $X$ on $Y$ and 
+$\hat{f}_X$ for the reverse model. We then compute the residuals (as always we can 
+either recycle data or perform a test/train partition). 
 
 \begin{align}
-    &  \hat{e}_Y = Y - \hat{f}_Y(X)\\
-    &  \hat{e}_X = X - \hat{f}_X(Y)
+    &  \hat{\mathbf{e}}_Y = \mathbf{y} - \hat{f}_Y(\mathbf{x})\\
+    &  \hat{\mathbf{e}}_X = \mathbf{x} - \hat{f}_X(\mathbf{y})
 \end{align}
 
 We note that for the ease of analysis, it would first be wise to use some fraction 
 of the data to first estimate the regression, and then use the remaining for the test.
 
-For $n$ large enough we have that 
+The idea is the very simple, test which of the residuals $\hat{\mathbf{e}}_Y$ or 
+$\hat{\mathbf{e}}_X$ is more likely to be distributed according to $P_Z$
 
-$$
-    \hat{e}_Y \approx E_Y \thicksim P_{E_Y}
-$$
-
-The idea is then to first discretize\footnote{We do so in a naive manner we split
-it uniformly into $m$ bins.} $P_{E_Y}$ into $m$ bins, call this discrete distribution
-$Q$. We apply the same discretization to obtain $B = (b_1, ..., b_m)$ from $\hat{e}_Y$
-and $\tilde{B} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{e}_X$.
+To do so we first discretize\footnote{We do so in a naive manner by splitting
+it uniformly into $m$ bins.} $P_{Z}$ into $m$ bins, call this discrete distribution
+$Q$. We apply the same discretization to obtain $\mathbf{b} = (b_1, ..., b_m)$ from $\hat{\mathbf{e}}_Y$
+and $\tilde{\mathbf{b}} = (\tilde{b}_1, ..., \tilde{b}_m)$ from $\hat{\mathbf{e}}_X$.
 
 We then decide the causal direction as follows
 
@@ -740,27 +742,31 @@ We then decide the causal direction as follows
 Where 
 
 $$
-    C = \norm{B - U}_{L_1} 
+    C = \norm{\mathbf{b} - \mathbf{u}}_{1} 
 $$
 $$
-    W = \norm{\tilde{B} - U}_{L_1}
+    W = \norm{\tilde{\mathbf{b}} - \mathbf{u}}_{1}
 $$
 
 
-s.t. $U = (\frac{1}{m}, ..., \frac{1}{m})$.
+s.t. $\mathbf{u} = (\frac{1}{m}, ..., \frac{1}{m})$.
 
 Given our assumption about the \textbf{ANM}, the probability to output the correct causal direction is:
 
 $$
-   P_{\text{correct}} = \mathbb{P}\left[C \leq W\right] 
+   P_{\text{correct}} = \mathbb{P}\left(C \leq W\right) 
 $$
+
+We will assume that we have perfect regression estimates to simplify the proof; as we have seen in the 
+previous chapter, with a little bit of work we can incorporate the error terms of the regression in 
+the probability of correctness. 
 
 We next upper bound this quantity in order to show consistency
 
 \begin{align}
-    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[ \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right] \\
-    &\geq \mathbb{P}\left[C \leq \tau \cap W > \tau \right] \\
-    &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right]
+    \Prob\left(C \leq W\right) &\geq \Prob\left( \underset{\tau \in \mathbb{Q}}{\bigcup} C \leq \tau \cap W > \tau \right) \\
+    &\geq \Prob\left(C \leq \tau \cap W > \tau \right) \\
+    &\geq \Prob\left(C \leq \tau \right) - \Prob\left(W \leq \tau \right)
 \end{align}
 
 The first inequality is due to the fact that we are only taking the union in the rationals\footnote{We note that
@@ -769,21 +775,21 @@ inequality is very close to equality (and in practice and among friends it would
 looking at the probability of a fixed $\tau$; and the final one follows by:
 
 $$
-    1 \geq \mathbb{P}\left[ C \leq \tau \cup W > \tau \right] = 
-    \mathbb{P}\left[ C \leq \tau \right] + \mathbb{P}\left[ W > \tau \right] - \mathbb{P}\left[ C \leq \tau \cap W > \tau \right]
+    1 \geq \Prob\left( C \leq \tau \cup W > \tau \right) = 
+    \Prob\left( C \leq \tau \right) + \Prob\left( W > \tau \right) - \Prob\left( C \leq \tau \cap W > \tau \right)
 $$
 
-We will next find appropriate bounds for $\mathbb{P}\left[ C \leq \tau \right]$ and $\mathbb{P}\left[W \leq \tau \right]$.
+We will next find appropriate bounds for $\Prob\left( C \leq \tau \right)$ and $\Prob\left(W \leq \tau \right)$.
 
 \subsection{Bounding the false false positive}
 
-We will first lower bound $\mathbb{P}\left[ C \leq \tau \right]$ by upper bounding the complement event.
+We will first lower bound $\Prob\left( C \leq \tau \right)$ by upper bounding the complement event.
 
 \begin{align}
-    \mathbb{P}\left[ C \geq \tau \right] &= \mathbb{P}\left[ \sum_{i = 1}^{m} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
-    &\leq \mathbb{P}\left[ m \operatorname{max}_{i} \abs{b_i - \frac{1}{m}} \geq \tau \right]  \\
-    &= \mathbb{P}\left[ \bigcup_{i} \; \abs{b_i - \frac{1}{m}} \geq \frac{\tau}{m} \right]  \\
-    &\leq m \; \mathbb{P}\left[ \abs{b_0 - \frac{1}{m}} \geq \frac{\tau}{m} \right] \\
+    \Prob\left( C \geq \tau \right) &= \Prob\left( \sum_{i = 1}^{m} \abs{b_i - \frac{1}{m}} \geq \tau \right)  \\
+    &\leq \Prob\left( m \operatorname{max}_{i} \abs{b_i - \frac{1}{m}} \geq \tau \right)  \\
+    &= \Prob\left( \bigcup_{i} \; \abs{b_i - \frac{1}{m}} \geq \frac{\tau}{m} \right)  \\
+    &\leq m \; \Prob\left( \abs{b_0 - \frac{1}{m}} \geq \frac{\tau}{m} \right) \\
     &\leq m2\exp \left( -2n \frac{\tau^2}{m^2} \right)
 \end{align}
 
@@ -793,7 +799,7 @@ inequality.
 
 \subsection{Bounding the false negatives}
 
-Recall that what is left to bound is the following quantity, $\mathbb{P}\left[W \leq \tau \right]$; 
+Recall that what is left to bound is the following quantity, $\Prob\left(W \leq \tau \right)$; 
 for this we first define the following set of probability distributions:
 
 $$
@@ -805,11 +811,11 @@ Where the $\Delta_m$ is the $m$ dimensional simple and $U$ the uniform vector as
 Observe that: 
 
 $$
-    \{ W \leq \tau \} = \{ \tilde{B} \in \Gamma_\tau \}
+    \{ W \leq \tau \} = \{ \tilde{\mathbf{b}} \in \Gamma_\tau \}
 $$
 
-In essence, we are asking: "what is the chance that the realization of $\tilde{B}$ – which is the 
-empirical distribution of some distribution $Q$ – lies inside some set of distributions $\Gamma_\tau$.
+In essence, we are asking: "what is the chance that the realization of $\tilde{\mathbf{b}}$ --- which is the 
+empirical distribution of some distribution $Q$ --- lies inside some set of distributions $\Gamma_\tau$.
 
 We note that bounding this kind of event is exactly what Sanov's theorem\footnote{See the section on Information Theory and statistics in 
 \cite{cover1999elements}} gives us, an important
@@ -818,8 +824,8 @@ result from large deviation theory that also exploits concentration of measure.
 
 
 Let $\mathbf{x} = (x_1, ..., x_n)$ be a sequence of $n$ each drawn independently from 
-a finite universe $U$ with $|U| = m$. Denote by $P_\mathbf{x}$ the empirical distribution – 
-or type – for a given sequence $\mathbf{x}$. Let $Q^{n}$ be the product distribution $n$
+a finite universe $U$ with $|U| = m$. Denote by $P_\mathbf{x}$ the empirical distribution --- 
+or type --- for a given sequence $\mathbf{x}$. Let $Q^{n}$ be the product distribution $n$
 independent samples of $Q$. 
 
 \begin{theorem}[Sanov’s theorem]\label{sanov}
@@ -832,16 +838,16 @@ independent samples of $Q$.
     
     Then
     \[
-        \underset{Q^{n}}{\mathbb{P}}\left[P_{\mathbf{x}} \in \Pi\right] \leq(n+1)^{m} 2^{-nD\left(P^{*} \| Q\right)}
+        \underset{Q^{n}}{\Prob}\left(P_{\mathbf{x}} \in \Pi\right) \leq(n+1)^{m} 2^{-nD\left(P^{*} \| Q\right)}
     \]
     
 \end{theorem}
 
-Applying the above theorem, and noting that $\Gamma_\tau$ takes the place of $\Pi$, $\tilde{B}$ that of $P_{\mathbf{x}}$
+Applying the above theorem, and noting that $\Gamma_\tau$ takes the place of $\Pi$, $\tilde{\mathbf{b}}$ that of $P_{\mathbf{x}}$
 and the discretized distribution $\hat{e}_X = X - \hat{f}_X(Y)$ that of $Q$ we get:
 
 \begin{equation}
-    \mathbb{P}\left[W \leq \tau \right] = \mathbb{P}\left[ \tilde{B} \in \Gamma_\tau \right] 
+    \Prob\left(W \leq \tau \right) = \Prob\left( \tilde{\mathbf{b}} \in \Gamma_\tau \right) 
     \leq (n+1)^{m} 2^{-nD\left( \tau \right)}
 \end{equation}
 
@@ -857,11 +863,11 @@ as follows:
 
 
 \begin{align}
-    \mathbb{P}\left[C \leq W\right] &\geq \mathbb{P}\left[C \leq \tau \right] - \mathbb{P}\left[W \leq \tau \right] \\
+    \Prob\left(C \leq W\right) &\geq \Prob\left(C \leq \tau \right) - \Prob\left(W \leq \tau \right) \\
     &\geq 1 - 2m\exp \left( -2n \frac{\tau^2}{m^2} \right) - (n+1)^{m} 2^{-nD\left( \tau \right)}
 \end{align}
 
 This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) > 0$ then we get consistency
 by letting $n \rightarrow \infty$.
 
-We note that to get the best bound we may maximizes the r.h.s. w.r.t. $\tau$.
+We note that to get the best bound we may maximizes the right hand side w.r.t. $\tau$.
