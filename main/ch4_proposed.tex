@@ -20,7 +20,7 @@ suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an AN
 \]
 
 The main strategy of of the ANM methods has been to estimate $f$, and then to compute the estimated
-residual $\hat{e} = \hat{f}(x) - y$; the final step is to test the independence between $\hat{e}$ and $X$. This exploits 
+residual $\hat{\mathbf{e}} = \hat{f}(\mathbf{x}) - \mathbf{y}$; the final step is to test the independence between $\hat{\mathbf{e}}$ and $\mathbf{x}$. This exploits 
 the assumption that $X \bigCI Z$. In practice we often have that the noise is \textit{independent} between each sample
 i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$; for example when we are 
 taking measurements, the additive noise of our devices tends to be independent.
@@ -138,7 +138,13 @@ In essence the algorithm consists of the parts:
     \item Compute scores
 \end{enumerate}
 
-Before giving the general description of the algorithm we will comment on each of these parts in more detail. 
+We note that the algorithm is a general framework as we are free to choose the partition, regression method
+and score function. We would like to point out that we recycle the data, i.e. we use the same data for 
+estimating the regression and subsequent score function; obviously if one wishes one can easily split the 
+data in the partitions to use a different portion of the data for estimation and for evaluating the score function.
+The algorithmic description can be found here \ref{alg:twin_test}.
+
+We will next describe in more detail the core parts of the algorithm.
 
 \subsection{Partition}
 
@@ -231,91 +237,10 @@ more homogenous; e.g. they more likely stem from the same noise distribution.
 We have tested all of the above and find that the first method ---  using the maximum score between pairs ---
 gives the best performance.
 
-\subsection{Algorithm}
-
-We note that the algorithm is a general framework as we are free to choose the partition, regression method
-and score function. We would like to point out that we recycle the data, i.e. we use the same data for 
-estimating the regression and subsequent score function; obviously if one wishes one can easily split the 
-data in the partitions to use a different portion of the data for estimation and for evaluating the score function.
-
-\begin{algorithm}[H]
-
-    \caption{\textbf{Twin method}: General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
-        or $Y \rightarrow X$}
-  
-    \textbf{Input}:
-
-    \begin{enumerate}
-        \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
-        \item Partition procedure
-        \item Regression method
-        \item Score estimator $\hat{C}: R^{* \times *} \rightarrow \R$, where E is a set of vectors. 
-    \end{enumerate}
-    
-    \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
-
-    \begin{enumerate}
-
-        \item $\tilde{\mathcal{D}} := \{ ( y_i, x_i )\}_{i \in [N]}$
-
-        \item \textbf{Partition} the data into subsets\footnote{The subsets are disjoint and their union equals the data}:
-        \begin{itemize}
-            \item[--] $\{ \mathcal{D}_i \}_{i \in [k]} \quad \text{s.t.} \quad \mathcal{D}_i \subset \mathcal{D}, 
-            \forall i \in [k]$
-            \item[--] $\{ \tilde{\mathcal{D}}_i \}_{i \in [j]} \quad \text{s.t.} \quad \tilde{\mathcal{D}}_i 
-            \subset \tilde{\mathcal{D}}, \forall i \in [j]$
-            \item[--] Where integers $j, k > 1$ are determined by the partition procedure.
-        \end{itemize}
-
-        \item \textbf{Estimate regressions} and residuals for each subset
-        
-        for $i \in [k]:$
-
-        \begin{itemize}
-            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\mathcal{D}_i$
-            \item[--] $\hat{f}_Y$ of the regression function $x \mapsto \E(Y | X=x)$
-            \item[--] $ \mathbf{\hat{e}_{Y}}(i) := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
-        \end{itemize}
-
-        end for
-
-        $\mathbf{Z} := \{ \mathbf{\hat{e}_{Y}}(i) \}_{i \in [k]} $
-
-        for $i \in [j]:$
-
-        \begin{itemize}
-            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\tilde{\mathcal{D}}_i$
-            \item[--] $\hat{f}_X$ of the regression function $y \mapsto \E(X | Y=y)$
-            \item[--] $ \mathbf{\hat{e}_{X}}(i) := \mathbf{x} - \hat{f}_X(\mathbf{y})$
-        \end{itemize}
-
-        end for
-
-        $\mathbf{E_X} := \{ \mathbf{\hat{e}_{X}}(i) \}_{i \in [j]} $
-
-        \item \textbf{Compute scores} to measure the difference between the residuals
-        \begin{itemize}
-            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( \mathbf{Z} )$ 
-            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \mathbf{E_X} )$
-        \end{itemize}        
-
-        \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
-        
-        \[ 
-        \text{dir} :=  
-         \begin{cases} 
-            & X \rightarrow Y \quad \text{if} \; \hat{C}_{X \rightarrow Y} \leq \hat{C}_{Y \rightarrow X}\\
-            & Y \rightarrow X \quad \text{otherwise}
-         \end{cases}
-        \]
-        
-    \end{enumerate}
-
-  \label{alg:twin_test}
-  \end{algorithm}
 
 
-\subsection{Consistency}
+
+\subsection{Proof of consistency}
 
 We will show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
 general set up should follow with little effort from our proof. 
@@ -374,7 +299,7 @@ and $\mathcal{D}_2$ is sampled from
  \end{cases}
 \]
 
-Note that without loss of generality we can assume $X_1 \thicksim X_2 \thicksim X \thicksim P_X$.
+Without loss of generality we can assume $X_1 \thicksim X_2 \thicksim X \thicksim P_X$.
 
 We will call this scenario the \textbf{simplified Twin Test scenario}. 
 
@@ -688,64 +613,69 @@ $$
 
 \end{proof}
 
-\newpage
-\section{The residual method}
 
-When given an ANM $X \rightarrow Y $, the traditional method based on ANM is to regress $X$ on 
-$Y$ and then vice versa in order to see which residual is more independent from it's input. A
-ver basic --- put restrictive --- idea is to assume knowledge about the additive noise, $P_Z$. 
-In some sense idea was the precursor to the twin test, where we check if the noise is consistent
-in the different intervals of the data. Instead here, since we assume knowledge about $P_Z$, we 
-will test and see which residual is more likely to be drawn from the actual noise distribution $P_Z$.
+\subsection{Algorithm}
 
-This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
-cannot run it on benchmark data since we do not know the the underlying distribution. 
 
 \begin{algorithm}[H]
 
-    \caption{\textbf{Residual method}: Method to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
-        or $Y \rightarrow X$}, for an ANM given that the additive noise $P_Z$ is known. 
+    \caption{\textbf{Twin method}: General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
+        or $Y \rightarrow X$}
   
     \textbf{Input}:
 
     \begin{enumerate}
         \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
-        \item Noise distribution $P_Z$
+        \item Partition procedure
         \item Regression method
-        \item Score estimator $\hat{C}: R^{m \times m} \rightarrow \R$
+        \item Score estimator $\hat{C}: R^{* \times *} \rightarrow \R$, where E is a set of vectors. 
     \end{enumerate}
     
     \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
 
     \begin{enumerate}
 
-        \item \textbf{Estimate regressions} 
-        
+        \item $\tilde{\mathcal{D}} := \{ ( y_i, x_i )\}_{i \in [N]}$
+
+        \item \textbf{Partition} the data into subsets\footnote{The subsets are disjoint and their union equals the data}:
         \begin{itemize}
+            \item[--] $\{ \mathcal{D}_i \}_{i \in [k]} \quad \text{s.t.} \quad \mathcal{D}_i \subset \mathcal{D}, 
+            \forall i \in [k]$
+            \item[--] $\{ \tilde{\mathcal{D}}_i \}_{i \in [j]} \quad \text{s.t.} \quad \tilde{\mathcal{D}}_i 
+            \subset \tilde{\mathcal{D}}, \forall i \in [j]$
+            \item[--] Where integers $j, k > 1$ are determined by the partition procedure.
+        \end{itemize}
+
+        \item \textbf{Estimate regressions} and residuals for each subset
+        
+        for $i \in [k]:$
+
+        \begin{itemize}
+            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\mathcal{D}_i$
             \item[--] $\hat{f}_Y$ of the regression function $x \mapsto \E(Y | X=x)$
+            \item[--] $ \mathbf{\hat{e}_{Y}}(i) := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
+        \end{itemize}
+
+        end for
+
+        $\mathbf{E_Y} := \{ \mathbf{\hat{e}_{Y}}(i) \}_{i \in [k]} $
+
+        for $i \in [j]:$
+
+        \begin{itemize}
+            \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\tilde{\mathcal{D}}_i$
             \item[--] $\hat{f}_X$ of the regression function $y \mapsto \E(X | Y=y)$
+            \item[--] $ \mathbf{\hat{e}_{X}}(i) := \mathbf{x} - \hat{f}_X(\mathbf{y})$
         \end{itemize}
 
-        \item \textbf{Estimate residuals} 
-        
-        \begin{itemize}
-            \item[--] $ \mathbf{\hat{e}_{Y}} := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
-            \item[--] $ \mathbf{\hat{e}_{X}} := \mathbf{x} - \hat{f}_X(\mathbf{y})$
-        \end{itemize}
+        end for
 
-
-        \item \textbf{Discrete distribution} 
-       
-        \begin{itemize}
-            \item[--] $P^*_Z :=$ discretized distribution of $P_Z$
-            \item[--] $b :=$ histogram of $ \mathbf{\hat{e}_{Y}}$
-            \item[--] $\tilde{b} :=$ histogram of $ \mathbf{\hat{e}_{X}}$
-        \end{itemize}
+        $\mathbf{E_X} := \{ \mathbf{\hat{e}_{X}}(i) \}_{i \in [j]} $
 
         \item \textbf{Compute scores} to measure the difference between the residuals
         \begin{itemize}
-            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( b, P^*_Z  )$ 
-            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \tilde{b}, P^*_Z  )$
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( \mathbf{E_Y} )$ 
+            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \mathbf{E_X} )$
         \end{itemize}        
 
         \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
@@ -760,8 +690,66 @@ cannot run it on benchmark data since we do not know the the underlying distribu
         
     \end{enumerate}
 
-  \label{alg:residual}
+  \label{alg:twin_test}
   \end{algorithm}
+
+\newpage
+\section{The residual method}
+
+When given an ANM $X \rightarrow Y $, the traditional method based on ANM is to regress $X$ on 
+$Y$ and then vice versa in order to see which residual is more independent from it's input. A
+very basic --- but restrictive --- idea is to assume knowledge about the additive noise, $P_Z$. 
+In some sense this idea was the precursor to the twin test, where we check if the noise is consistent
+in the different intervals of the data. Instead here, since we assume knowledge about $P_Z$, we 
+will test and see which residual is more likely to be drawn from the actual noise distribution $P_Z$.
+
+This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
+cannot run it on benchmark data since we do not know the the underlying distribution. 
+
+We start again we typical setup:
+suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which has the form
+
+\[
+    \begin{cases} 
+        & Y = f(X) + Z \\
+        & X \bigCI Z,\quad X \thicksim P_X,\quad Z \thicksim P_{Z}  
+     \end{cases}  
+\]
+
+In addition, we will know $P_{Z}$, in some cases it is not such an unreasonable assumption; for example, 
+a lot of thermal noise in measurements is usually very well modeled by a Gaussian. Another example 
+is when a real value x from a sensor, is discretized with a uniform quantizer, the error is 
+likely to be uniformly distributed. (\cite{uniformCond})
+
+For the ANM methods, the first step was to 
+
+1. Regress $\mathbf{x}$ on $\mathbf{y}$, to find an estimate say $\hat{f}_Y$
+
+2. Estimate residual via $\mathbf{\hat{e}}_Y = \hat{f}_Y(\mathbf{x}) - \mathbf{y}$
+
+The next step was to then compute the same thing for the reverse model, that is, swapping the 
+roles of $\mathbf{x}$ and $\mathbf{y}$. We would then compute some score of independence 
+between the residual and their respective inputs ($\mathbf{x}$ for the direct model And
+ $\mathbf{y}$ for the reverse). 
+
+ Since we have knowledge of $P_Z$ we can avoid this last step all together, and instead simply 
+ compute a score to see how close $\mathbf{\hat{e}}_Y$ is to $P_Z$. 
+
+ One simple idea is the following:
+
+ 1. $\mathbf{b} :=$ histogram of $\mathbf{\hat{e}}_Y$
+
+ 2. $P^*_Z :=$  discretized distribution of $P_Z$
+
+ For both we pick the same discretization size, say $m$. 
+
+ Our score is then 
+ $
+     \hat{C}_{X \rightarrow Y} := d\left(\mathbf{b}, P^*_Z \right)
+ $
+ Where $d$ is some statistical distance, such as an f-divergence. We compute the score for reverse model 
+ by swapping the roles of $\mathbf{x}$ and $\mathbf{y}$.
+
 
 \subsection{Proof of consistency: A tale of two bounds}
 
@@ -932,3 +920,67 @@ This, if we fix $m$, and if there exists some $\tau$ s.t. $D\left( \tau \right) 
 by letting $n \rightarrow \infty$.
 
 We note that to get the best bound we may maximizes the right hand side w.r.t. $\tau$.
+
+\subsection{Algorithm}
+
+\begin{algorithm}[H]
+
+    \caption{\textbf{Residual method}: Method to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
+        or $Y \rightarrow X$ , for an ANM given that the additive noise $P_Z$ is known.}
+  
+    \textbf{Input}:
+
+    \begin{enumerate}
+        \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
+        \item Noise distribution $P_Z$
+        \item Regression method
+        \item Score estimator $\hat{C}: R^{m \times m} \rightarrow \R$
+    \end{enumerate}
+    
+    \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
+
+    \begin{enumerate}
+
+        \item \textbf{Estimate regressions} 
+        
+        \begin{itemize}
+            \item[--] $\hat{f}_Y$ of the regression function $x \mapsto \E(Y | X=x)$
+            \item[--] $\hat{f}_X$ of the regression function $y \mapsto \E(X | Y=y)$
+        \end{itemize}
+
+        \item \textbf{Estimate residuals} 
+        
+        \begin{itemize}
+            \item[--] $ \mathbf{\hat{e}_{Y}} := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
+            \item[--] $ \mathbf{\hat{e}_{X}} := \mathbf{x} - \hat{f}_X(\mathbf{y})$
+        \end{itemize}
+
+
+        \item \textbf{Discrete distribution} 
+       
+        \begin{itemize}
+            \item[--] $P^*_Z :=$ discretized distribution of $P_Z$
+            \item[--] $b :=$ histogram of $ \mathbf{\hat{e}_{Y}}$
+            \item[--] $\tilde{b} :=$ histogram of $ \mathbf{\hat{e}_{X}}$
+        \end{itemize}
+
+        \item \textbf{Compute scores} to measure the difference between the residuals
+        \begin{itemize}
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( b, P^*_Z  )$ 
+            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \tilde{b}, P^*_Z  )$
+        \end{itemize}        
+
+        \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
+        
+        \[ 
+        \text{dir} :=  
+         \begin{cases} 
+            & X \rightarrow Y \quad \text{if} \; \hat{C}_{X \rightarrow Y} \leq \hat{C}_{Y \rightarrow X}\\
+            & Y \rightarrow X \quad \text{otherwise}
+         \end{cases}
+        \]
+        
+    \end{enumerate}
+
+  \label{alg:residual}
+  \end{algorithm}
