@@ -142,3 +142,14 @@
 \usepackage{pgfplots}
 
 \usepackage{enumitem}
+
+
+% load the CM symbol font
+\DeclareSymbolFont{arrows}{OMS}{cmsy}{m}{n}
+% change the arrows to be taken from the CM symbol font
+\DeclareMathSymbol{\leftrightarrow}{\mathrel}{arrows}{"24}
+\DeclareMathSymbol{\leftarrow}{\mathrel}{arrows}{"20}
+   \let\gets=\leftarrow
+\DeclareMathSymbol{\rightarrow}{\mathrel}{arrows}{"21}
+   \let\to=\rightarrow
+\DeclareMathSymbol{\mapstochar}{\mathrel}{arrows}{"37}

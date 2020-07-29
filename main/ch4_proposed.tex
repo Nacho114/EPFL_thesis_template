@@ -240,7 +240,7 @@ data in the partitions to use a different portion of the data for estimation and
 
 \begin{algorithm}[H]
 
-    \caption{\textbf{Twin method}: General procedure to decide whether $p_{x, y}$ satisfies and ANM $X \rightarrow Y$
+    \caption{\textbf{Twin method}: General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
         or $Y \rightarrow X$}
   
     \textbf{Input}:
@@ -285,7 +285,7 @@ data in the partitions to use a different portion of the data for estimation and
 
         \begin{itemize}
             \item[--] Let $\mathbf{x}$, $\mathbf{y}$ be the vectors formed from $\tilde{\mathcal{D}}_i$
-            \item[--] $\hat{f}_X$ of the regression function $x \mapsto \E(X | Y=y)$
+            \item[--] $\hat{f}_X$ of the regression function $y \mapsto \E(X | Y=y)$
             \item[--] $ \mathbf{\hat{e}_{X}}(i) := \mathbf{x} - \hat{f}_X(\mathbf{y})$
         \end{itemize}
 
@@ -691,14 +691,77 @@ $$
 \newpage
 \section{The residual method}
 
-\subsection{Introduction}
-
-The residual method is the precursor of the twin test. Here to we try to exploit knowledge of the noise
-directly; the key difference is that here we assume that we know $P_Z$, i.e. the distribution of the 
-additive noise.
+When given an ANM $X \rightarrow Y $, the traditional method based on ANM is to regress $X$ on 
+$Y$ and then vice versa in order to see which residual is more independent from it's input. A
+ver basic --- put restrictive --- idea is to assume knowledge about the additive noise, $P_Z$. 
+In some sense idea was the precursor to the twin test, where we check if the noise is consistent
+in the different intervals of the data. Instead here, since we assume knowledge about $P_Z$, we 
+will test and see which residual is more likely to be drawn from the actual noise distribution $P_Z$.
 
 This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
 cannot run it on benchmark data since we do not know the the underlying distribution. 
+
+\begin{algorithm}[H]
+
+    \caption{\textbf{Residual method}: Method to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
+        or $Y \rightarrow X$}, for an ANM given that the additive noise $P_Z$ is known. 
+  
+    \textbf{Input}:
+
+    \begin{enumerate}
+        \item I.i.d samples $\mathcal{D} = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
+        \item Noise distribution $P_Z$
+        \item Regression method
+        \item Score estimator $\hat{C}: R^{m \times m} \rightarrow \R$
+    \end{enumerate}
+    
+    \textbf{Output}: $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, dir
+
+    \begin{enumerate}
+
+        \item \textbf{Estimate regressions} 
+        
+        \begin{itemize}
+            \item[--] $\hat{f}_Y$ of the regression function $x \mapsto \E(Y | X=x)$
+            \item[--] $\hat{f}_X$ of the regression function $y \mapsto \E(X | Y=y)$
+        \end{itemize}
+
+        \item \textbf{Estimate residuals} 
+        
+        \begin{itemize}
+            \item[--] $ \mathbf{\hat{e}_{Y}} := \mathbf{y} - \hat{f}_Y(\mathbf{x})$
+            \item[--] $ \mathbf{\hat{e}_{X}} := \mathbf{x} - \hat{f}_X(\mathbf{y})$
+        \end{itemize}
+
+
+        \item \textbf{Discrete distribution} 
+       
+        \begin{itemize}
+            \item[--] $P^*_Z :=$ discretized distribution of $P_Z$
+            \item[--] $b :=$ histogram of $ \mathbf{\hat{e}_{Y}}$
+            \item[--] $\tilde{b} :=$ histogram of $ \mathbf{\hat{e}_{X}}$
+        \end{itemize}
+
+        \item \textbf{Compute scores} to measure the difference between the residuals
+        \begin{itemize}
+            \item[--] $\hat{C}_{X \rightarrow Y}: = \hat{C}( b, P^*_Z  )$ 
+            \item[--] $\hat{C}_{Y \rightarrow X}: = \hat{C}( \tilde{b}, P^*_Z  )$
+        \end{itemize}        
+
+        \item Output $\hat{C}_{X \rightarrow Y}$, $\hat{C}_{Y \rightarrow X}$, and
+        
+        \[ 
+        \text{dir} :=  
+         \begin{cases} 
+            & X \rightarrow Y \quad \text{if} \; \hat{C}_{X \rightarrow Y} \leq \hat{C}_{Y \rightarrow X}\\
+            & Y \rightarrow X \quad \text{otherwise}
+         \end{cases}
+        \]
+        
+    \end{enumerate}
+
+  \label{alg:residual}
+  \end{algorithm}
 
 \subsection{Proof of consistency: A tale of two bounds}
 
@@ -781,7 +844,6 @@ $$
 
 We will next find appropriate bounds for $\Prob\left( C \leq \tau \right)$ and $\Prob\left(W \leq \tau \right)$.
 
-\subsection{Bounding the false false positive}
 
 We will first lower bound $\Prob\left( C \leq \tau \right)$ by upper bounding the complement event.
 
@@ -797,7 +859,6 @@ The second to last inequality follows by the union bound and by noting that all 
 are discretized empirical distribution coming from a uniform source. For the final inequality we use Hoeffding's
 inequality.
 
-\subsection{Bounding the false negatives}
 
 Recall that what is left to bound is the following quantity, $\Prob\left(W \leq \tau \right)$; 
 for this we first define the following set of probability distributions:
