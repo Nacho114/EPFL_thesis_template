@@ -203,7 +203,8 @@ For regression we try two different methods:
 \begin{enumerate}
     \item Polynomial regression: We perform model selection based on the BIC\footnote{
     The BIC score is defined as follows: $\mathrm{BIC} =k\ln(n)-2\ln({\widehat{L}})$; where $\widehat{L}$
-    is the the maximized value of the likelihood function of the model. In essence it is a score that 
+    is the the maximized value of the likelihood function of the model, $n$ the number of samples and 
+    $k$ the number of parameters in model. In essence it is a score that 
     trades off model fit with model complexity. } score. We pick the model with the 
     best BIC score with degree at most 6. 
     \item Neural networks: We perform regression with a one layer 100 neuron network with ReLu activation

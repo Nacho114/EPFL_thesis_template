@@ -46,7 +46,9 @@ We report the scores in table \ref{tab:AUPR}. The first good news is that we are
 method! In terms of accuracy with TCEP we perform reasonably well, and somewhat surprisingly, in the  
 AUPC metric we outperform CGNN. 
 
-We found the best results by using TwinTest with polynomial regression and as a score function:
+We found the best results\footnote{More details about the implementation can be found 
+\href{https://github.com/Nacho114/bivariate-causal-inference}{\color{blue}{here}}.}
+ by using TwinTest with polynomial regression and as a score function:
 
 $$
     C(P_k) = \operatorname{max}_{i, j} d(p_i, p_j)
