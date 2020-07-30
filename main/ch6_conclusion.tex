@@ -1,5 +1,24 @@
 \chapter{Conclusion}
 
+We have introduced a new method to perform causal inference in the bivariate additive 
+noise model. The method is simple, and is different from ANM methods in that it 
+exploits the residual directly rather than testing for independence between 
+the residual and input. This has the advantage of avoiding independence testing 
+which is known to be hard. The drawback is that we assume that the noise is independent 
+between each sample. The method is also theoretically sound as we were able to prove that 
+it is consistent asymptotically. While it is not as good as state of the art methods, it is
+competitive, this shows that exploiting noise independent additivity is also a viable 
+line of research for the causal inference. 
+
+TODO (will remove this later, just as a reminder)
++ unsupervised 
++ fast 
++ no independence test needed
++ theoretically sound
+
+- iid on Z assumption
+- acc
+
 TODO:
 
 IGCI, at least mention a bit

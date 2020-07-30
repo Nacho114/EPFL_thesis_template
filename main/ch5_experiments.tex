@@ -27,6 +27,29 @@ all the other datasets can be found
 
 \end{enumerate}
 
+We use the results reported by \cite{goudet2017causal}. We compare against the following algorithms
+in the benchmark: ANM (\cite{Mooij2016jmlr}) with Gaussian Process regression and HSIC score as described 
+in the introduction. IGCI \cite{daniusis2012inferring} with entropy estimator and Gaussian reference measure.
+A  pairwise version of LiNGAM \cite{shimizu2011directlingam}. GCNN without the approximated MMD. 
+
+A pairwise version of LiNGAM \cite{shimizu2011directlingam}
+
+% aseline approaches. CGNN is assessed comparatively to the following algorithms:6 i) ANM 
+% (Mooij et al., 2016) with Gaussian process regression and HSIC independence test of 
+% the residual; ii) a pairwise version of LiNGAM (Shimizu et al., 2006
+% ) relying on Independent Component Analysis to identify the linear relations between variables; iii) 
+% IGCI (Daniusis et al., 2012) with entropy estimator and Gaussian reference measure; 
+% iv) the post-nonlinear model (PNL) with HSIC test (Zhang and 
+% Hyva ̈rinen, 2009); v) GPI-MML (Stegle et al., 2010
+% ); where the Gaussian process regression with higher marginal likelihood is selected as causal direction; 
+% vi) CDS, retaining the causal orientation with lowest variance of the conditional probability distribution
+% ; vii) Jarfo (Fonollosa, 2016), using a random forest causal classifier trained 
+% from the ChaLearn Cause-effect pairs on top of 150 features including ANM, IGCI
+% , CDS, LiNGAM, regressions, HSIC tests.
+
+% For each baseline and competitor method, a leave-one-dataset-out scheme 
+% is used to select the best hyperparameters for each method (details omitted for brevity).
+
 Cite competitors. (as done in GCNN)
 
 The first is via the Area Under the Precision Recall curve, and the second 
@@ -38,17 +61,16 @@ only checks at accruacy.
 
     \begin{tabular}{lccccc}
         \hline method & Cha & Net & Gauss & Multi & TCEP \\
-        \hline Best fit & 56.4 & 77.6 & 36.3 & 55.4 & 58.4 (44.9) \\
+        % \hline Best fit & 56.4 & 77.6 & 36.3 & 55.4 & 58.4 (44.9) \\
         LiNGAM & 54.3 & 43.7 & 66.5 & 59.3 & 39.7 (44.3) \\
-        CDS & 55.4 & 89.5 & 84.3 & 37.2 & 59.8 (65.5) \\
+        % CDS & 55.4 & 89.5 & 84.3 & 37.2 & 59.8 (65.5) \\
         IGCI & 54.4 & 54.7 & 33.2 & 80.7 & 60.7 (62.6) \\
         ANM & 66.3 & 85.1 & 88.9 & 35.5 & 53.7 (59.5) \\
-        PNL & 73.1 & 75.5 & 83.0 & 49.0 & 68.1 (66.2) \\
+        % PNL & 73.1 & 75.5 & 83.0 & 49.0 & 68.1 (66.2) \\
         Jarfo & 79.5 & 92.7 & 85.3 & 94.6 & 54.5 (59.5) \\
-        GPI & 67.4 & 88.4 & 89.1 & 65.8 & 66.4 (62.6) \\
-        CGNN $\left(\widehat{\mathrm{MMD}}_{k}\right)$ & 73.6 & 89.6 & 82.9 & 96.6 & 79.8 (74.4) \\
-        CGNN $\left(\widehat{\mathrm{MMD}}_{k}^{m}\right)$ & 76.5 & 87.0 & 88.3 & 94.2 & 76.9 (72.7) \\
-        \hline TwinTest & 66.3 & 81.9 & 85.1 & 39.8 & 77.0 (82.0) \\
+        % GPI & 67.4 & 88.4 & 89.1 & 65.8 & 66.4 (62.6) \\
+        CGNN  & 73.6 & 89.6 & 82.9 & 96.6 & 79.8 (74.4) \\
+        \hline TwinTest & 66.3 & 81.9 & 85.1 & 39.8 & 82.0 (62.4) \\
         \hline
     \end{tabular}
 
@@ -60,21 +82,21 @@ only checks at accruacy.
 
 Table \ref{tab:AUPR} is taken from \cite{goudet2017causal}
 
-\begin{table}[H]
-    \centering
+% \begin{table}[H]
+%     \centering
 
-    \begin{tabular}{lcc}
-        \hline Model & TCEP & TCEP with 75 samples \\
-        \hline BCI & 0.64 & 0.60 \\
-        ANM-HSIC & 0.63 & 0.54 \\
-        ANM-MML & 0.58 & 0.56 \\
-        IGCI & 0.66 & 0.62 \\
-        CGNN & 0.70 & 0.69 \\
-        \hline TwinTest & 0.62 & TODO \\
-        \hline
-    \end{tabular}
-    \caption{Accuracy for TCEP Benchmark} 
-    \label{tab:acc}
-\end{table}
+%     \begin{tabular}{lcc}
+%         \hline Model & TCEP & TCEP with 75 samples \\
+%         \hline BCI & 0.64 & 0.60 \\
+%         ANM-HSIC & 0.63 & 0.54 \\
+%         ANM-MML & 0.58 & 0.56 \\
+%         IGCI & 0.66 & 0.62 \\
+%         CGNN & 0.70 & 0.69 \\
+%         \hline TwinTest & 0.62 & TODO \\
+%         \hline
+%     \end{tabular}
+%     \caption{Accuracy for TCEP Benchmark} 
+%     \label{tab:acc}
+% \end{table}
 
-Table \ref{tab:acc} is taken from \cite{kurthen2018bayesian}
+% Table \ref{tab:acc} is taken from \cite{kurthen2018bayesian}

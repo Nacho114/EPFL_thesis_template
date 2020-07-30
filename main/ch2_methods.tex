@@ -341,7 +341,17 @@ as a loss function between $\hat{P}$ and $P$ (the data distribution).
 
 So far the CGNN appears to have the best performance on the various benchmarks. 
 
+\subsection{Other methods}
 
+
+
+\textbf{IGIC} (Information Geometric Causal Inference), the method stems from \cite{janzing2010causal}.  
+The idea is on the following observation: If $X \rightarrow Y$, then a reasonable assumption is that 
+$P_X$ contains no information about $P_{Y | X}$. If one thinks about $X$ as as the distribution of 
+elevations in a country, and $Y$ the temperature, then this assumption is likely to hold. The difficulty 
+lies in formalizing the notion of "information" in a good way. For more details see \cite{Mooij2016jmlr}.
+
+There are many other methods some of which can be found in the review of \cite{Mooij2016jmlr}.
 
 
 % \section{SNR and causality}

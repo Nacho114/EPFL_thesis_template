@@ -23,7 +23,7 @@ The main strategy of of the ANM methods has been to estimate $f$, and then to co
 residual $\hat{\mathbf{e}} = \hat{f}(\mathbf{x}) - \mathbf{y}$; the final step is to test the independence between $\hat{\mathbf{e}}$ and $\mathbf{x}$. This exploits 
 the assumption that $X \bigCI Z$. In practice we often have that the noise is \textit{independent} between each sample
 i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$; for example when we are 
-taking measurements, the additive noise of our devices tends to be independent.
+taking measurements, the additive noise of our devices tends to be independent between each sample.
 
 By directly exploiting the IID noise assumption, we will circumvent the need for an independence test. The 
 idea is to to partition the data ---  for simplicity you can think about splitting it around the median; we 
@@ -126,7 +126,7 @@ for discretization; We are able to predict the causal direction with high confid
 Assuming the regressions are \textbf{suitable}, then as $n \rightarrow \infty$ we know that both 
 $p_1$ and $p_2$ will converge to the same $p_Z$ and so $\mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) \rightarrow 0$.
 On the other hand, it is unlikely that the residuals of $\mathcal{\tilde{D}}_1$ and $\mathcal{\tilde{D}}_2$ 
-follow the same distribution (due to the non-linearlities introduced by f and the additivity of the noise) and 
+follow the same distribution (due to the non-linearlities introduced by f) and 
 so we can be pretty confident that asymptotically the procedure will correct. In fact, assuming that \textbf{ANM}
 $X \rightarrow Y$ is identifiable will be enough to show that this procedure is consistent.
 
@@ -134,8 +134,8 @@ In essence the algorithm consists of the parts:
 
 \begin{enumerate}
     \item Partition the data
-    \item Estimate regressions and residuals
-    \item Compute scores
+    \item Estimate regressions and residuals for each partition
+    \item Compute scores between partition
 \end{enumerate}
 
 We note that the algorithm is a general framework as we are free to choose the partition, regression method
@@ -148,7 +148,10 @@ We will next describe in more detail the core parts of the algorithm.
 
 \subsection{Partition}
 
-Say that we partition $\mathcal{D}$ into disjoint sets $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
+Say that we partition\footnote{
+    A partition is said disjoint if:
+    $\mathcal{D} = \bigcup_i \mathcal{D}_i $ and $\mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j$}
+$\mathcal{D}$ into disjoint sets $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
 partitions need to satisfy two requirements:
 
 \begin{enumerate}
@@ -183,8 +186,8 @@ In practice this has always been the case (for $\rho = .3$); so we conjecture th
 (or some variant) rigorously. 
 
 The last question is, "How many clusters do we want?". Obviously for the small data regime we must be content 
-with only two clusters; but what if we have a lot of data? As we will see, we observe experimentally that if we 
-we choose the number of partition as an increasing function w.r.t. sample size, then we can get better accuracies.
+with only two clusters; but what if we have a lot of data? Experimentally we observed that if we 
+we choose the number of partition as an increasing function w.r.t. sample size, then we can get better performance.
 
 One reason that more partitions are desirable is that then the regression problem becomes easier; Indeed, as we 
 zoom into a function it tends to become smoother.
@@ -243,7 +246,7 @@ gives the best performance.
 \subsection{Proof of consistency}
 
 We will show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
-general set up should follow with little effort from our proof. 
+general case should follow with little effort from our proof. 
 
 
 The setup was the linear \textbf{ANM}:
@@ -705,6 +708,8 @@ will test and see which residual is more likely to be drawn from the actual nois
 
 This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
 cannot run it on benchmark data since we do not know the the underlying distribution. 
+
+TODO: Comment? on similarity with max entropy.
 
 We start again we typical setup:
 suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which has the form
