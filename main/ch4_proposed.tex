@@ -25,7 +25,7 @@ the assumption that $X \bigCI Z$. In practice we often have that the noise is \t
 i.e. we produce a sequence $Y_1, ..., Y_n$, where $Z_i \bigCI Z_j$ $\forall i \neq j$; for example when we are 
 taking measurements, the additive noise of our devices tends to be independent between each sample.
 
-By directly exploiting the IID noise assumption, we will circumvent the need for an independence test. The 
+By directly exploiting the i.i.d noise assumption, we will circumvent the need for an independence test. The 
 idea is to to partition the data ---  for simplicity you can think about splitting it around the median; we 
 then estimate the residuals for each partition, and we then test if the IID noise assumption holds by comparing
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
@@ -198,9 +198,22 @@ zoom into a function it tends to become smoother.
 A benefit of partitioning the is that we are also partitioning the function we are trying to estimate; in 
 particular one would expect that the regression will be easier, e.g. a low order polynomial might be enough.
 
-We do elementary model selection, we take the best model with BIC score for degrees 1 to 6. 
+For regression we try two different methods:
 
-Show example of many partitions
+\begin{enumerate}
+    \item Polynomial regression: We perform model selection based on the BIC score (a measure that takes 
+    into account both the complexity and the $R^2$). We pick the model with the 
+    best BIC score with degree at most 6. 
+    \item Neural networks: We perform regression with a one layer 100 neuron network with ReLu activation
+    function, and trained on Adam.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.45\textwidth]{partition_smooth.png}
+    \caption{An example of how partitioning the data may make the regression task easier.}
+\end{figure}
+
 
 \subsection{Score functions}
 

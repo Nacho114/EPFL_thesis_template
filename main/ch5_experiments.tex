@@ -3,12 +3,11 @@
 
 \section{Benchmark}
 
-We benchmark on five bivariate cause-effect datasets\footnote{ The TCEP dataset 
+We perform benchmarks on five bivariate cause-effect datasets\footnote{ The TCEP dataset 
 can be found \href{https://webdav.tuebingen.mpg.de/cause-effect/}{\color{blue}{here}} and 
 all the other datasets can be found 
 \href{https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/3757KX}{\color{blue}{here}}
-}
-, covering a wide range of associations:
+}, covering a wide range of associations:
 
 % \begin{enumerate}[itemsep=-1.8em, topsep=0pt]
 \begin{enumerate}[noitemsep, topsep=0pt]
@@ -21,7 +20,8 @@ all the other datasets can be found
     \item \textbf{Multi} (300 cause-effect pairs) built with random linear and 
     polynomial causal mechanisms (by \cite{goudet2017causal}). In this dataset, 
     additive or multiplicative noise, is applied before or after the causal mechanism.
-    \item \textbf{TCEP} (108 cause-effect pairs)\footnote{Note that 6 of these pairs are not bivariate.} 
+    \item \textbf{TCEP} (108 cause-effect pairs)\footnote{Note that 6 of these pairs are not bivariate; the 
+    dataset is also weighted as some samples come from similar data generation processes. } 
      is the Tübingen Cause Effect Pair data set which consists of various 
     domains such as climatology, finance, and medicine (\cite{Mooij2016jmlr}).
 
@@ -30,30 +30,32 @@ all the other datasets can be found
 We use the results reported by \cite{goudet2017causal}. We compare against the following algorithms
 in the benchmark: ANM (\cite{Mooij2016jmlr}) with Gaussian Process regression and HSIC score as described 
 in the introduction. IGCI \cite{daniusis2012inferring} with entropy estimator and Gaussian reference measure.
-A  pairwise version of LiNGAM \cite{shimizu2011directlingam}. GCNN without the approximated MMD. 
+A  pairwise version of LiNGAM \cite{shimizu2011directlingam}.  Jarfo (Fonollosa, 2016), using a random forest 
+causal classifier trained from the ChaLearn Cause-effect pairs on top of 150 features including ANM, IGCI,
+CDS, LiNGAM, regressions, HSIC tests (\cite{fonollosa2019conditional}). GCNN without the approximated MMD (\cite{goudet2017causal})
 
-A pairwise version of LiNGAM \cite{shimizu2011directlingam}
+Following the performance metric used by \cite{goudet2017causal}, we report the AUPR (Area Under the Precision/Recall curve)
+values for each data set. For the TCEP we also report the weighted accuracy along with the AUPR score. 
 
-% aseline approaches. CGNN is assessed comparatively to the following algorithms:6 i) ANM 
-% (Mooij et al., 2016) with Gaussian process regression and HSIC independence test of 
-% the residual; ii) a pairwise version of LiNGAM (Shimizu et al., 2006
-% ) relying on Independent Component Analysis to identify the linear relations between variables; iii) 
-% IGCI (Daniusis et al., 2012) with entropy estimator and Gaussian reference measure; 
-% iv) the post-nonlinear model (PNL) with HSIC test (Zhang and 
-% Hyva ̈rinen, 2009); v) GPI-MML (Stegle et al., 2010
-% ); where the Gaussian process regression with higher marginal likelihood is selected as causal direction; 
-% vi) CDS, retaining the causal orientation with lowest variance of the conditional probability distribution
-% ; vii) Jarfo (Fonollosa, 2016), using a random forest causal classifier trained 
-% from the ChaLearn Cause-effect pairs on top of 150 features including ANM, IGCI
-% , CDS, LiNGAM, regressions, HSIC tests.
+For each  competitor method, a leave-one-dataset-out scheme 
+is used to select the best hyperparameters for each method (as reported by \cite{goudet2017causal}). For 
+our method we do no such thing; on our own synthetic data we performed some simple grid search to find 
+hyperparameters that performed well in practice. 
 
-% For each baseline and competitor method, a leave-one-dataset-out scheme 
-% is used to select the best hyperparameters for each method (details omitted for brevity).
+We report the scores in table \ref{tab:AUPR}. The first good news is that we are never worse than any other 
+method! In terms of accuracy with TCEP we perform reasonably well, and somewhat surprisingly, in the  
+AUPC metric we outperform CGNN. 
 
-Cite competitors. (as done in GCNN)
+We found the best results by using TwinTest with polynomial regression and as a score function:
 
-The first is via the Area Under the Precision Recall curve, and the second 
-only checks at accruacy. 
+$$
+    C(P_k) = \operatorname{max}_{i, j} d(p_i, p_j)
+$$
+
+with $d$ as the $l_1$ metric. 
+
+
+
 
 \begin{table}[H]
     \centering
@@ -76,11 +78,10 @@ only checks at accruacy.
 
     \caption{Cause-effect relations: Area Under the Precision Recall curve
      on 5 benchmarks for the cause-effect experiments (weighted accuracy 
-     in parenthesis for TCEP)}   
+     in parenthesis for TCEP).}   
     \label{tab:AUPR}
 \end{table}
 
-Table \ref{tab:AUPR} is taken from \cite{goudet2017causal}
 
 % \begin{table}[H]
 %     \centering
