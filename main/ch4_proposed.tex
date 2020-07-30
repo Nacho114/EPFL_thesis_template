@@ -27,7 +27,7 @@ taking measurements, the additive noise of our devices tends to be independent b
 
 By directly exploiting the i.i.d noise assumption, we will circumvent the need for an independence test. The 
 idea is to to partition the data ---  for simplicity you can think about splitting it around the median; we 
-then estimate the residuals for each partition, and we then test if the IID noise assumption holds by comparing
+then estimate the residuals for each partition, and we then test if the i.i.d noise assumption holds by comparing
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
 direction causal if it's residuals are more similar. 
 
@@ -423,16 +423,21 @@ We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
 \begin{lemma} 
     
-    Given $\alpha, \delta > 0$, random variables $Z$ and $X$ s.t. $\alpha X + Z$, where $X \bigCI Z$, 
-$X \thicksim P_X$, $Z \thicksim P_Z$, where\footnote{
-    Where $P_{Z}^{(n)}(t)$ is the n\textsuperscript{th} derivative of $P_Z$; we remark that this 
-    condition holds for most distributions such as the uniform, exponential and Gaussian.} 
-$\int \left| P_{Z}^{(n)}(t) \right| d t < L$, $\forall n\geq 1$, for some $L > 0$.
-$\alpha X + Z \thicksim  P_{\alpha X + Z}$, there is some $C(\delta) > 0$ s.t.
+    Given $\alpha > 0$, random variables $Z$ and $X$ , with $X \bigCI Z$, 
+$X \thicksim P_X$, $Z \thicksim P_Z$, such that\footnote{
+    we remark that this 
+    condition holds for most distributions such as the uniform, exponential and Gaussian.} there is 
+    some $g$ s.t. 
+    $ \forall \theta \in (-\sqrt{\alpha}, \sqrt{\alpha}), \; \left| P_{Z}^{\prime}(t - \theta) \right| \leq g(t) \; \forall t$
+    and $\int \left| g(t) \right| d t < L$, for some $L > 0$.
+ then
 
 $$
-\left\|P_{Z} -  P_{\alpha X + Z} \right\|_{1} \leqslant \alpha C(\delta) + \delta
+\norm{P_{Z}- P_{\alpha X + Z}}_{1} \leq \sqrt{\alpha} L + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)
 $$
+
+Where $P_{\alpha X + Z}$ is the distribution of the sum: $\alpha X + Z \thicksim  P_{\alpha X + Z}$.
+
 \label{lemma:conv_bound}
 \end{lemma}
 
@@ -442,7 +447,7 @@ $$
     ~
 
 First note that $\alpha X \thicksim \frac{1}{\alpha}P_{X} \left( \frac{\tau}{\alpha} \right)$ by applying the 
-change of variable rule. 
+change of variable rule. Let $P_{\alpha X + Z}$ be the distribution of the sum: $\alpha X + Z \thicksim  P_{\alpha X + Z}$.
 
 Next, since $X \bigCI Z$, we may write $P_{\alpha X + Z}$ as a convolution:
 
@@ -467,15 +472,17 @@ $$
 \norm{P_{Z}- P_{\alpha X + Z}}_{1} &=\int\abs{ P_{Z}(t)-\E\left(P_{Z}(t-\alpha X ) \right)} d t \\
 &\leq \int \E \abs{ P_{Z}(t)-P_{Z}(t-\alpha X )} d t \\
 &=\E \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha X ) } d t \\
-&= \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right) 
-P\left( \abs{X} \leq k \right) + \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} > k \right) 
-P\left( \abs{X} > k \right) \\
-&\leq \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right) 
- + 2 P(\abs{ X} > k) \\ 
-&\leq \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha C^* ) } d t + 2 P(\abs{ X} > k) \\
-&\leq \int\abs{ P_{Z}(t)- \left( P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right) } d t  + 2 P(\abs{ X} > k)\\
-&\leq \alpha C^* L + 2 P(\abs{ X} > k)\\
-&\leq \alpha C + \delta
+&= \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq \frac{1}{\sqrt{\alpha}} \right) 
+\Prob\left( \abs{X} \leq \frac{1}{\sqrt{\alpha}} \right) + \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} > \frac{1}{\sqrt{\alpha}} \right) 
+\Prob\left( \abs{X} > \frac{1}{\sqrt{\alpha}} \right) \\
+&\leq \E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq \frac{1}{\sqrt{\alpha}} \right) 
+ + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right) \\ 
+&\leq \operatorname{max}_{\eta \in (-\sqrt{\alpha}, \sqrt{\alpha})} \int\abs{ P_{Z}(t)-P_{Z}(t-\eta ) } d t + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right) \\
+&\leq \operatorname{max}_{\eta \in (-\sqrt{\alpha}, \sqrt{\alpha})} \int \abs{ \eta g(t) } d t  + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)\\
+% &\leq \int\abs{ P_{Z}(t)- \left( P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right) } d t  + 2 P(\abs{ X} > \frac{1}{\sqrt{\alpha}})\\
+% &\leq \alpha C^* L + 2 P(\abs{ X} > \frac{1}{\sqrt{\alpha}})\\
+&\leq \sqrt{\alpha} \int \abs{ g (t)} dt + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)\\
+&\leq \sqrt{\alpha} L + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)
 \end{aligned}
 $$
 
@@ -483,42 +490,45 @@ The first equality follows by the aforementioned observation. The first inequali
 inequality; 
 the equality that comes after is due to Fubini's theorem, we can swap the expectation (which is also an 
 integration) since all measures are measurable. We next use the law of total probability by splitting 
-the expectation w.r.t some $k$ to be chosen later.  
+the expectation w.r.t $\frac{1}{\sqrt{\alpha}}$.
 
 The next upper bounds follows by noting that
 $\norm{p - q}_1 \leq 2$ for any distributions $p$ and $q$. Next observe that 
-$\E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq k \right)$ is the average $l_1$ distance
-between $\norm{P_{Z}}$ and random shifts of itself. Hence if we choose the shift as follows:
+$\E \left( \norm{P_{Z}- T^{\alpha X} P_Z }_{1} \, | \, \abs{X} \leq \frac{1}{\sqrt{\alpha}} \right)$ is the average $l_1$ distance
+between $\norm{P_{Z}}$ and random shifts of itself. Hence we can bound this by the maximum shift.
+
+Since $\eta \approx 0$, and since 
+$  \eta \in (-\sqrt{\alpha}, \sqrt{\alpha}) \implies  \left| P_{Z}^{\prime}(t - \eta) \right| \leq g(t) \; \forall t$
+, using Taylor's theorem we obtain that: 
 
 $$
-    C^* = \operatorname{argmax}_{s \in [-k, k]} = \int\abs{ P_{Z}(t)-P_{Z}(t-\alpha s ) } d t 
+    \abs{P_{Z}(t- \eta ) - P_{Z}(t) }  \leq \eta g(t)
 $$
 
-we can upper bound the average distance by the largest $l_1$ distance between any shift; 
-note that there is at least one maximizer since we are optimizing over a compact set. 
+The rest follows from the assumption that $\int g(t) dt \leq L$.
 
-Using taylor expansions we obtain 
+% % Using taylor expansions we obtain 
 
-$$
-    P_{Z}(t-\alpha C^* ) = P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)}
-$$
+% % $$
+% %     P_{Z}(t-\alpha C^* ) = P_{Z}(t) + \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)}
+% % $$
 
-then  we upper bound what we get after as follows
+% % then  we upper bound what we get after as follows
 
-\begin{align*}
-    \int \left| \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right|
-    &\leq L \sum_{n \geq 1} \left( \alpha C^* \right)^n \\
-    &\leq L \frac{\alpha C^*}{1 - \alpha C^*} \\
-    &\approx \alpha C^* L
-\end{align*}
+% % \begin{align*}
+% %     \int \left| \sum_{n \geq 1} \left( \alpha C^* \right)^n P_{Z}(t)^{(n)} \right|
+% %     &\leq L \sum_{n \geq 1} \left( \alpha C^* \right)^n \\
+% %     &\leq L \frac{\alpha C^*}{1 - \alpha C^*} \\
+% %     &\approx \alpha C^* L
+% % \end{align*}
 
-We will later pick $\alpha \ll 1$, and so it follows from $\frac{x}{1 - x} \approx x$ for small $x$. 
+% % We will later pick $\alpha \ll 1$, and so it follows from $\frac{x}{1 - x} \approx x$ for small $x$. 
 
-Finally, since are free to pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
-$C = C^* L$ and we are done.
+% Finally, since are free to pick $k$, we choose it large enough s.t. $2P(\abs{ X} > k) \leq \delta$, we then let 
+% $C = C^* L$ and we are done.
 
-Note that as $k$ increases so does $C^*$, since we are growing the space to optimise for $C^*$; this is 
-where the dependence between $\delta$ and $C$ comes from. 
+% Note that as $k$ increases so does $C^*$, since we are growing the space to optimise for $C^*$; this is 
+% where the dependence between $\delta$ and $C$ comes from. 
 
 \end{proof}
 
@@ -529,11 +539,11 @@ that of their continuos counter parts. The only requirement is that we fix the q
 beforehand and use the same one for both.
 
 \begin{lemma}
-    Let $P$ and $Q$ be two continuos distributions, then let $P^*$, $Q^*$ resp. be discretized versions. Then if 
-     $\norm{P - Q}_1 \leq \delta$ for some $\delta$, then
+    Let $P$ and $Q$ be two continuos distributions, then let $P^*$, $Q^*$ resp. be discretized versions.
+    Then
 
     $$
-        \norm{P^* - Q^*}_1 \leq \delta
+        \norm{P^* - Q^*}_1 \leq \norm{P - Q}_1 
     $$
     \label{lemma:quantisation}
 \end{lemma}
@@ -608,13 +618,21 @@ we form $\hat{p}_1$ by creating a discretized histogram from the residuals.
 
 Then, by combing lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation} we have that:
 
-For any $\alpha$, and $\delta$, there is some $C(\delta) > 0$ s.t.
+For any $\alpha$, there is some $L > 0$ s.t.
 $$
-    \norm{P^*_{Z} - P^*_{Z + \Delta_1 X}}_1 \leq \alpha C(\delta) + \delta
+    \norm{P^*_{Z} - P^*_{Z + \Delta_1 X}}_1 \leq \sqrt{\alpha} L + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)
 $$
 
 
-Thus if we are given some $\epsilon > 0$, we first pick $\delta = \frac{\epsilon}{4}$, and $\alpha > \frac{\epsilon}{4C(\delta)}$. 
+
+Thus if we are given some $\epsilon > 0$, pick\footnote{We can do this since $\sqrt{\alpha}$ is increasing 
+in $\alpha$ and $\Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right)$ is decreasing in $\alpha$.} 
+some $\alpha$ such that
+
+$$
+    \sqrt{\alpha} L + 2 \Prob \left(\abs{ X} > \frac{1}{\sqrt{\alpha}} \right) < \frac{\epsilon}{2}
+$$
+
 By applying the same idea to $\hat{p}_2$, we get that as $n \rightarrow \infty$
 
 $$
@@ -724,8 +742,6 @@ will test and see which residual is more likely to be drawn from the actual nois
 
 This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
 cannot run it on benchmark data since we do not know the the underlying distribution. 
-
-TODO: Comment? on similarity with max entropy.
 
 We start again we typical setup:
 suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which has the form

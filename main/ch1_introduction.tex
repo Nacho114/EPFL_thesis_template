@@ -21,10 +21,14 @@ anything she might be up to.
 
 Bob then observes the following trend:
 
-\begin{figure}[H]
+\begin{figure}[htb]
     \centering
-    \includegraphics[width=.45\textwidth]{correlated_hr.png}
-    \caption{Heart rate (HR) and Blood pressure (BP) of Alice.}
+    \begin{tikzpicture}
+        \node (img)  {\includegraphics[width=.45\textwidth]{correlated_hr.png}};
+        \node[below=of img, node distance=0cm, yshift=1cm,font=\color{black}] {time};
+        \node[left=of img, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {bpm/mmHg};
+    \end{tikzpicture}
+    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp.}
 \end{figure}
 
 Bob, having studied data science, is well aware of the fallacy of the law of small numbers\footnote{
@@ -39,10 +43,14 @@ around. He proceeds to find some $f$ s.t. $f(x) \approx y$. The next day, to his
 model has terrible performance when evaluated on new data. He then proceeds to see what is going on, and 
 observes the following:
 
-\begin{figure}[H]
+\begin{figure}[htb]
     \centering
-    \includegraphics[width=.45\textwidth]{uncorrelated_hr.png}
-    \caption{Heart rate (HR) and Blood pressure (BP) of Alice.}
+    \begin{tikzpicture}
+        \node (img)  {\includegraphics[width=.45\textwidth]{uncorrelated_hr.png}};
+        \node[below=of img, node distance=0cm, yshift=1cm,font=\color{black}] {time};
+        \node[left=of img, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {bpm/mmHg};
+    \end{tikzpicture}
+    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp.}
 \end{figure}
 
 As it turns out, in the last few days, Alice was working hard on finishing her thesis and the deadline had been 
@@ -268,8 +276,7 @@ it is a model specification; and the key insight is that it should not be revers
 
 \section{Proposed Methods}
 
-We will propose a new\footnote{To the knowledge of the author no such method has been published 
-before, although given it's simplicity we imagine that its not the first of its kind.} type of inference method which exploits the i.i.d 
+We will propose a new type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
 interval separately. In the right direction one would expect that the residuals of each 
 interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will be similar 
