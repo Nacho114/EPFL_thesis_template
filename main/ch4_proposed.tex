@@ -29,7 +29,7 @@ By directly exploiting the i.i.d noise assumption, we will circumvent the need f
 idea is to to partition the data ---  for simplicity you can think about splitting it around the median; we 
 then estimate the residuals for each partition, and we then test if the i.i.d noise assumption holds by comparing
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
-direction causal if it's residuals are more similar. 
+direction causal if its residuals are more similar. 
 
 We will explain this idea in more detail by following an example: we are given samples 
 $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; 
@@ -52,7 +52,10 @@ X to Y, and vice versa (see Figure \ref{fig:algo_data}).
 
 
 For simplicity assume $X \thicksim \mathcal{U}_{[-a, a]}$ (i.e. $X$ is uniformly disributed), then we can split 
-the data in two, say $D_1$ and $D_2$, where we place all samples with $x_i < 0$ into $D_1$, and the rest into 
+the data in two\footnote{ The question of how to split the data is important, and we will address this problem in 
+more detail later, but for now, given the assumptions, splitting it in half is not such a bad idea; another 
+question one might ask is the following: how many intervals? We will clarify all this later.}
+, say $D_1$ and $D_2$, where we place all samples with $x_i < 0$ into $D_1$, and the rest into 
 $D_2$. To be more precise, $\mathcal{D}_1 = \{(x_i, y_i) : x_i < 0\}$ and $\mathcal{D}_2 = \mathcal{D} 
 \backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. we reverse the roles of x and y
 , $\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure we obtain $\mathcal{\tilde{D}}_1$
@@ -139,10 +142,8 @@ In essence the algorithm consists of the parts:
 \end{enumerate}
 
 We note that the algorithm is a general framework as we are free to choose the partition, regression method
-and score function. We would like to point out that we recycle the data, i.e. we use the same data for 
-estimating the regression and subsequent score function; obviously if one wishes one can easily split the 
-data in the partitions to use a different portion of the data for estimation and for evaluating the score function.
-The algorithmic description can be found here \ref{alg:twin_test}.
+and score function. As in the ANM methods, one can either form a train/test split to learn the regression, or
+instead recycle the data. The algorithmic description can be found in Algorithm \ref{alg:twin_test}.
 
 We will next describe in more detail the core parts of the algorithm.
 
@@ -183,14 +184,27 @@ $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and
 certain that the algorithm will eventually terminate. 
 
 In practice this has always been the case (for $\rho = .3$); so we conjecture that one can prove the above statement 
-(or some variant) rigorously. 
+(or some variant) rigorously. More formally, given $n$ samples $ \mathcal{D} = x_1, ..., x_n$ from some random variable $X$ 
+that is "well behaved"\footnote{By well behaved it would relate to concentration, if the data has enough spread, then 
+partitioning should occur --- versus being concentrated at one point.}, by running k-means once we get two partitions, 
+$\mathcal{D}_1$ and $\mathcal{D}_2$; we can
+restart k-means $r$  times with a different initialization to obtain $\mathcal{D}_1(1), ...\mathcal{D}_1(r)$ and 
+$\mathcal{D}_2(1), ...\mathcal{D}_2(r)$. Let $s_j = \operatorname{min} (\mathcal{D}_1(j), \mathcal{D}_2(j))$
+
+then there is some $\rho > 0$ s.t.
+
+$$
+    \Prob \left( \operatorname{min}_j s_j \geq \rho n \right) \rightarrow 1
+$$
+
+as $n \rightarrow \infty$, with $r = \log(n)$. 
 
 The last question is, "How many clusters do we want?". Obviously for the small data regime we must be content 
 with only two clusters; but what if we have a lot of data? Experimentally we observed that if we 
 we choose the number of partition as an increasing function w.r.t. sample size, then we can get better performance.
 
-One reason that more partitions are desirable is that then the regression problem becomes easier; Indeed, as we 
-zoom into a function it tends to become smoother.
+One crucial aspect is that we work in the 1-D setting, where clustering is of reasonable difficulty; in higher dimensions 
+clustering will not be so easy. 
 
 
 \subsection{Regression}
@@ -224,7 +238,7 @@ We have seen in previous chapters various ways to measure the distances between 
 $p_1$ and $p_2$, via some score function $d(p_1, p_2)$; for example $d$ could be the 
 MMD metric, or the $l_1$ distance.
 
-Now instead we have a set of distributions, say $P_k = p_1, ..., p_k$, and we wish to see how homogenous\footnote{
+Now instead we have a set of distributions, say $P_k = \{p_1, ..., p_k\}$, and we wish to see how homogenous\footnote{
     By homogenous set we simply mean one in which its elements resemble each other, which is precisely what we will try to measure. 
 }
 $P_k$ is compared to some other set $\tilde{P}_j$ ---  recall that we wish to see in which of the two, 
@@ -262,7 +276,7 @@ gives the best performance.
 \subsection{Proof of consistency}
 
 We will show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
-general case should follow with little effort from our proof. 
+general case should follow with little effort from our proof. We leave it as an exercise for the reader. 
 
 
 The setup was the linear \textbf{ANM}:
@@ -532,14 +546,14 @@ The rest follows from the assumption that $\int g(t) dt \leq L$.
 
 \end{proof}
 
-So we have found a bound on the $l_1$ distance between two continuos distributions; however in our
+So we have found a bound on the $l_1$ distance between two continuous distributions; however in our
 application, these will be quantized versions of these distributions. The following lemma tells us 
 that this is not a problem, the $l_1$ distance between the quantized version cannot be bigger than 
-that of their continuos counter parts. The only requirement is that we fix the quantitation scheme
+that of their continuous counter parts. The only requirement is that we fix the quantization scheme
 beforehand and use the same one for both.
 
 \begin{lemma}
-    Let $P$ and $Q$ be two continuos distributions, then let $P^*$, $Q^*$ resp. be discretized versions.
+    Let $P$ and $Q$ be two continuous distributions, then let $P^*$, $Q^*$ resp. be discretized versions.
     Then
 
     $$
@@ -553,7 +567,7 @@ beforehand and use the same one for both.
     We first quantize $\R$ in bins of length $w$, say $I_i = [wi, w(i + 1))$, note 
     $\bigcup_{i \in \Z} I_i = \R$.
 
-    Given continuos distributions $P$ and $Q$, we form their quantized counter parts as
+    Given continuous distributions $P$ and $Q$, we form their quantized counter parts as
     follows:
 
     $$
@@ -740,8 +754,7 @@ In some sense this idea was the precursor to the twin test, where we check if th
 in the different intervals of the data. Instead here, since we assume knowledge about $P_Z$, we 
 will test and see which residual is more likely to be drawn from the actual noise distribution $P_Z$.
 
-This is however quite a strong assumption, so it is more of a theoretical curiosity. Indeed, we 
-cannot run it on benchmark data since we do not know the the underlying distribution. 
+This is however quite a strong assumption, so it is more of a theoretical curiosity. 
 
 We start again we typical setup:
 suppose we are given samples $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$, which has the form
@@ -812,7 +825,9 @@ We note that for the ease of analysis, it would first be wise to use some fracti
 of the data to first estimate the regression, and then use the remaining for the test.
 
 The idea is the very simple, test which of the residuals $\hat{\mathbf{e}}_Y$ or 
-$\hat{\mathbf{e}}_X$ is more likely to be distributed according to $P_Z$
+$\hat{\mathbf{e}}_X$ is more likely to be distributed according to $P_Z$.
+To ease computation in the bounds we will assume $P_Z$ to be the uniform
+distribution, but we remark that the analysis will hold in general. 
 
 To do so we first discretize\footnote{We do so in a naive manner by splitting
 it uniformly into $m$ bins.} $P_{Z}$ into $m$ bins, call this discrete distribution
