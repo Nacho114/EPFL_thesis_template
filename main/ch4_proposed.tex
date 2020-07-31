@@ -181,7 +181,7 @@ minimizes within-cluster variances. If our data is infinite support, and we re-r
 $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and for some $\rho$ we can be quite 
 certain that the algorithm will eventually terminate. 
 
-In practice this has always been the case; we conjecture that the following statement or a slight variant holds true, 
+In practice this has always been the case; we conjecture that the following statement or a slight variant holds true: 
 given $n$ samples $ \mathcal{D} = x_1, ..., x_n$ from some random variable $X$ 
 that is "well behaved"\footnote{By well behaved we mean that the data should have enough spread, if it is too
 concentrated then partitioning will be hard.}, by running k-means once we get two partitions, 
@@ -371,12 +371,12 @@ $$
     \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty \qquad \text{in probability}
 $$
 
-Assuming that the noise distribution satisfies the following: 
-$\int \left| P_{Z}^{(n)}(t) \right| d t < L$, $\forall n\geq 1$, for some $L > 0$
+Assuming that the noise distribution satisfies the conditions of lemma \ref{lemma:conv_bound}.
+
 \end{theorem}
 
 The assumption about the noise distribution holds for most distributions, for example uniform, 
-normal, exponential, ...
+exponential, ...
 
 The idea of the proof is to observe the following:
 
