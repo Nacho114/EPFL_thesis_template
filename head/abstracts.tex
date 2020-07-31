@@ -9,34 +9,39 @@
 % \addcontentsline{toc}{chapter}{Abstract} % adds an entry to the table of contents
 % put your text here
 % \lipsum[1-2]
-\vspace{0.2\textheight}
+\vspace{0.05\textheight}
 
-Understanding the relationships among objects is in some sense half of the study of science; the other 
+Understanding the relationships among objects is in some sense half of science; the other 
 half being the definition and discovery these objects. Causality tries to understand the question of 
 relation; if we are given random variables $X$ and $Y$, under what conditions can we infer that 
-one causes the other, and if so, how? 
+one causes the other, and if so, how? \\
 
 
-If we are able to intervene on a system, then the problem is more straightforward; this is essentially
-how we learn growing up. The second and more challenging scenario is the observational setting: given 
-only observations of $X$ and $Y$, what can we infer? We will tackle the bivariate setting, which has 
+If we are able to intervene on a system, then the problem is more straightforward; if we can force\footnote{
+As a silly example imagine that we want to see if a broken switch causes a light to turn on, then clearly,
+whether or not we press the switch, the light will not turn on (i.e. it's distribution does not change).}
+$X$ to take a certain value, but observe no change in the distribution of $Y$, then we can readily 
+conclude that $X$ does not cause $Y$.
+The second and more challenging scenario is the observational setting: given 
+only \textit{observations} of $X$ and $Y$, can we conclude that one caused the other? \\
+
+We will tackle the bivariate setting, which has 
 seen various methods proposed over the years. We will review the most common family of such methods: 
-the additive noise models (ANM), as well as some more recent ones such as the causal generative neural 
-network (CGNN). 
+the additive noise models (ANM) by \cite{Mooij2016jmlr}, as well as some more recent ones such as 
+the causal generative neural network (CGNN) \cite{goudet2017causal}. \\
 
-We will propose a new 
-type of inference method which exploits the i.i.d 
+We propose a new type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
 interval separately. In the causal direction, one would expect that the residuals of each 
 interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will 
 be similar to each other, for example if we plot their respective histograms, these will asymptotically 
 converge to the same distribution.} --- in the ANM settings, asymmetries introduced
-by inversion will break the i.i.d assumption. We will conclude by 
+by inversion will break the i.i.d assumption. We conclude by 
 showing that this intuition is indeed correct, by proving that the method is consistent --- 
-assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We will
+assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We
 also propose a second method, which while also consistent, requires knowledge of the 
-noise distribution, which is a poor assumption. We will show that our (first) method is competitive with 
-other methods in the popular benchmarks such as the Tübingen cause and effect dataset. 
+noise distribution, which is a not a good assumption in practice. We will show that our former method is competitive with 
+other methods on popular benchmarks such as the Tübingen cause and effect dataset. 
 
 
 

@@ -15,8 +15,8 @@ Suppose we are given samples of data say $\mathbf{x}$ and $\mathbf{y}$, s.t.
 \end{align*}
 
 For example, we may be measuring the blood pressure and heart rate of Alice at time $k$, 
-say $x_k$ and $y_k$ respectively. Further, suppose we are unaware of her context, for example,
-Bob hacked into Alice's apple watch and so can only read $\mathbf{x}$ and $\mathbf{y}$ --- he has no idea of 
+say $x_k$ and $y_k$ respectively, with $x_k, y_k \in \R$. Further, suppose we are unaware of her context, for example,
+Bob hacked into Alice's Apple watch and so can only read $\mathbf{x}$ and $\mathbf{y}$ --- he has no idea of 
 anything she might be up to.
 
 Bob then observes the following trend:
@@ -55,7 +55,7 @@ observes the following:
 
 As it turns out, in the last few days, Alice was working hard on finishing her thesis and the deadline had been 
 the previous day. But how, Bob wondered, could this have changed the relationship between BP and HR? 
-Finally, admitting to himself that machine learning alone is not enough to understand the world; 
+Finally, admitting to himself that curve fitting alone is not enough to understand the world; 
 Bob spends some time learning about the heart. It turns out, that fear triggers a "flight or fight"
 response that increases both the heart rate and blood pressure; Interestingly your heart rate and blood pressure 
 won’t always rise and fall in sync.
@@ -67,13 +67,13 @@ So what did Bob learn\footnote{
 }?
 
 \begin{enumerate}
-    \item When we train a model with some data, when we use it on some newly acquired data, we might
-    face a \textbf{covariate-shift} --- that is, the distribution might change due to the context changing.
+    \item When we train a model with some data, and then use it on some newly acquired data, we might
+    face a \textbf{covariate-shift}\footnote{Another way to describe the covariate-shift is as follows, 
+    suppose we observe some samples, but
+    these samples only represent a small portion of the data space, then when we acquire new data, this new data might be very 
+    different from our original acquisition. } --- that is, the distribution might change due to the context changing.
     \item When we see correlation it might be spurious due to a \textbf{confounder} --- fear was the \textbf{confounder} 
     of the heart rate and blood pressure.
-    \item His degree in Data Science is worth less than he thought; \textbf{machine learning is in fact not 
-    a panacea}, contrary to common culture. However, applied with domain knowledge and causal reasoning
-    it may be useful. 
 \end{enumerate}
 
 If Bob was able to incorporate these notions into his machine learning models, then it might have been more
@@ -81,7 +81,7 @@ robust to the covariate-shift. To give a more concrete example, there is a "neur
     More about this story here: https://www.gwern.net/Tanks.
 }
 , where a neural network accurately predicts if there is a tank or not in an image, but it turns out it uses the 
-weather as a predictor. From this it is clear that the model will preform badly under covariate shift, and indeed
+weather as a predictor. From this it is clear that the model will perform badly under covariate shift, and indeed
 it makes the case that incorporating causality to a model should make it more robust as
 \cite{scholkopf2019causality} argues. Note that this is in effect the issue with generalization in machine learning:
 how can we ensure that we learn \textit{meaningful} representations (features about the tanks) rather than just
