@@ -120,7 +120,8 @@ can accurately predict causality in such settings with as few as 75 samples.
 
 \subsection{Causal models: FCM}
 
-We can model any causal model by using a \textbf{Function Causal Model (FCM)} which can be constructed as follows:
+We can model any causal model by using a \textbf{Function Causal Model (FCM)} which can be constructed as follows
+(\cite{Peters2017}):
 
 We \textit{generate} a random vector\footnote{That is, each $X_i$ is a random variable.}
 $X = (X_1, ..., X_d)$ by using a graph $\mathcal{G}$ (encoding the relationships),
@@ -133,9 +134,9 @@ $$
     X_i \leftarrow f_i(X_{\text{Pa}(i)}, E_i), \quad E_i \thicksim \mathcal{E}
 $$
 
-where $\text{Pa}(i)$ is the set of parents of $i$; and so $X_{\text{Pa}(i)}$ is the set of random parent
-random variables of $X_i$. For example in Figure \ref{fig:fcm_1}, $\text{Pa}(4) = \{1, 2\}$, 
-and so $X_{\text{Pa}(4)} = X_1, X_2$.
+where $\text{Pa}(i)$ is the set of parents of $i$; and so $X_{\text{Pa}(i)}$ is the set of random variables
+for the parents of $X_i$. For example in Figure \ref{fig:fcm_1}, $\text{Pa}(4) = \{1, 2\}$, 
+and so $X_{\text{Pa}(4)} = \{X_1, X_2\}$.
 
 \begin{figure}[!h]
     \centering
@@ -174,7 +175,7 @@ and so $X_{\text{Pa}(4)} = X_1, X_2$.
 
 
 Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
-$X$ ad infinitum. While this deserves consideration as many systems have feedback loops we will
+$X$ ad infinitum; while this deserves consideration as many systems have feedback loops we will
 for simplicity not look at such settings.
 
 \subsection{Interventions}
@@ -191,7 +192,7 @@ This motivates the following definition:
 
 \begin{definition}
     We say that $X$ \textbf{causes} $Y$ if $p_{y|do(x)} \neq p_{y|do(x^\prime)}$ for some
-    $x, x^\prime$
+    $x \neq x^\prime$
 \end{definition}
 
 When we talk about $p_{y|x}$, we often say, "The chance of $y$ given that $x$ happened". This sounds similar
@@ -201,16 +202,16 @@ random to smoke, he would on average be less likely to have cancer than someone 
 This also illustrates 
 one of the limitations of causality: some interventions are not possible due to ethical issues.
 
-You might have heard about randomized trials or A/B testing, these are both ways to estimate $p_{y|do(x)}$.
+You might have heard about randomized trials or A/B testing, these are both common ways to estimate $p_{y|do(x)}$.
 For example, when developing cures, the idea of a random trial is to give experimental drugs to participants
 at random. When designing new UIs to maximize user participation in apps, developers implement A/B testing, 
 they assign new versions to people at random to estimate engagement. Note that in both of these, we are able 
-to avoid a potential confounder by using picking $x$'s at random, and "forcing" them to "do$(x)$".
+to avoid a potential confounder by picking $x$'s at random, and "forcing" them to "do$(x)$".
 
 Since we will restrict ourselves to the observational setting, we will not be able to perform any interventions,
 which would allow us to estimate $p_{y|do(x)}$. In this setting however, in order to perform any meaningful
 inference, we will need to make concessions; in particular, we will make some assumptions about 
-the causal structure. If and when we are able to that we can infer the causal structure in such a setting, we 
+the causal structure. If we are able to infer the causal structure in such a setting, we 
 shall call it \textbf{identifiable}.
 
 % f we have the random variables $X$, $Y$, and $Z$, then depending on how they are causaly linked, then 
@@ -224,16 +225,17 @@ shall call it \textbf{identifiable}.
 We will restrict ourselves also to the bivariate case; one big difference worth noting is that in the
 multivariate setting we can test conditional independence. Using conditional independence tests 
 is a very powerful method for causal inference. Suppose 
-we have random variables $X$, $Y$ and $Z$, then if we can estimate that $X \bigCI Y | Z$ then it must be 
+we have random variables $X$, $Y$ and $Z$, then if we can estimate that $X \bigCI Y | Z$, then it must be 
 that all information between $X$ and $Y$ must flow through $Z$ (See Figure \ref{fig:conditionalIndep}).
-With one test we were able to pinpoint the causal graph $\mathcal{G}$! 
+This test alone has has now greatly reduced the space of possible causal directions between these random variables.
 
 One can in fact generalize the conditional independence such that $X$ and the other variables are 
 a collection of random variables, which gives a lot of flexibility to devise clever algorithms. 
 The theory comes from graphical models, which tries to understand the relationship between 
 distributions and their graphical counterparts, such as Figure \ref{fig:conditionalIndep}.
 The key difference is that in graphical models we do not care about the causal direction. 
-Since we will not be using any of this theory, we will not go into any detail. 
+Since we will not be using any of this theory, we will not go into any detail 
+(a good overview can found in \cite{bishop2006pattern}).
 
 \begin{figure}[!h]
     \centering
@@ -270,7 +272,7 @@ In some sense the two variable case is hard because we cannot use conditional in
 it is not possible to distinguish causality in the general bivariate setting when only observing 
 observational data; we will thus need to restrict 
 the class of such models. The underlying structure behind such causal models is what is known as 
-Structural Equation Models (SEM). Essentially 
+Structural Equation Models (SEM) (\cite{Peters2017}). Essentially 
 it is a model specification; and the key insight is that it should not be reversible. 
 
 
@@ -278,15 +280,15 @@ it is a model specification; and the key insight is that it should not be revers
 
 We will propose a new type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
-interval separately. In the right direction one would expect that the residuals of each 
+interval separately. In the causal direction one would expect that the residuals of each 
 interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will be similar 
 to each other, for example if we plot their respective histograms, these will asymptotically converge to the 
-same distribution} in the causal direction --- in the ANM settings, asymmetries introduced
+same distribution}  --- in the ANM settings, asymmetries introduced
 by inversion will break the i.i.d assumption. We will conclude by 
 showing that this intuition is indeed correct, by proving that the method is consistent --- 
 assuming that causal discovery is indeed possible and that the additive noise is i.i.d. We will
 also propose a second method, however while also consistent, it requires knowledge of the 
-noise distribution, which is a poor assumption. 
+noise distribution, which is not a good assumption in practice. 
 
 
 \section{Outline}
@@ -294,7 +296,8 @@ noise distribution, which is a poor assumption.
 We will begin by formalizing further the causal framework that we will explore; we will then present an overview of 
 popular methods for inference on the bivariate causal setting. Next, we will overview some notions in statistical distance 
 --- as these play a central role in causal inference --- such as maximum mean discrepancy (MMD) and f-divergences. 
-Since the MMD is a bit convolved, we will also review some background material that will help gain a better intuition on it. 
+For the convenience of the reader we will also review some background material that will help gain a better 
+intuition on the MMD. 
 
 We will end by going over the proposed methods, and showing both theoretical guarantees and experimental results. 
 

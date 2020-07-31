@@ -48,7 +48,7 @@ equation \ref{causal_model}. However in general the interventional distribution 
 this means that with observational data alone we are not able identify the right causal direction.
 
 We must therefore make further assumptions on $f$ that break this symmetry and allow us to make causal inference
-on observational data alone.
+using observational data alone.
 In particular we will consider the following class of models. Note that these models are a subset of those 
 that we just introduced (equation \ref{causal_model}).
 
@@ -72,9 +72,9 @@ ANM $Y \rightarrow X$, then we call the ANM $X \rightarrow Y$ \textbf{identifiab
 \end{definition}
 
 Intuitively, non-linearities due to $f$ will break the symmetry needed to make a reverse ANM. This is what
-\cite{hoyer2009nonlinear} and friends explore; they show that for the 
+\cite{hoyer2009nonlinear} explore; they show that for the 
 a triplet $(P_X, P_Z, f)$ to generate a non-identifiable ANM, it needs to satisfy a particular 
-differential equation. Loosely speaking cannot happen in the generic case: in other words the forward 
+differential equation. Loosely speaking this cannot happen in the generic case: in other words the forward 
 model $X \rightarrow Y$ cannot be inverted. 
 
 If $f$ is linear, then one can give a much more precise statement about identifiability:
@@ -179,13 +179,15 @@ recycle the data --- i.e. reuse it for both training and evaluation.
 
 First we estimate through regression the function $x \mapsto \E(Y | X=x)$, say $\hat{f}$; we 
 then compute the estimated residual $\hat{e} = \hat{f}(X) - Y$. 
-Next, we estimate the dependence between $\hat{e}$ and $X$ using a score function $C$; i.e. $C$ could be 
+Next, we estimate the dependence between $\hat{e}$ and $X$ using a score function $C$; e.g. $C$ could be 
 the empirical mutual information between them. Thus a low score would be evidence for an ANM in that direction; 
 we can compute the score for the reverse model by switching the roles of $X$ and $Y$. We can then compare 
 the scores and use this as a criteria for inference. We write down this idea more explicitly 
 here Algorithm \ref{alg:anm_general}.
 
-In order to show that such a procedure is consistent we need 3 things:
+In order to show that such a procedure is consistent\footnote{By consistent we mean that the probability of
+predicting the true causal direction goes to 1 as the number of samples $n \rightarrow \infty$.
+} we need 3 things:
 
 \begin{enumerate}
     \item $P_{X, Y}$ satisfies either $X \rightarrow Y$ or $Y \rightarrow X$, but not both.
@@ -204,8 +206,8 @@ $D_N^\prime = X^\prime_1, ..., X^\prime_N$. We say that a regression method is \
 regressing $Y$ on $X$ satisfies
 
 $$
-\lim _{N \rightarrow \infty} \E_{\mathcal{D}_{N}, \mathcal{D}_{N}^{\prime}}\left(\frac{1}{N} 
-\sum_{n=1}^{N}\left|\hat{f}_{Y}\left(X_{n}^{\prime} ; 
+\lim _{N \rightarrow \infty} \frac{1}{N} 
+\sum_{n=1}^{N} \E_{\mathcal{D}_{N}, \mathcal{D}_{N}^{\prime}}\left(\left|\hat{f}_{Y}\left(X_{n}^{\prime} ; 
 \mathcal{D}_{N}\right)-\E\left(Y \mid X=X_{n}^{\prime}\right)\right|^{2}\right)=0
 $$
 
@@ -267,7 +269,7 @@ $$
 
 
   We will now overview some score functions, note that the list is far from exhaustive and other methods can be found 
-  in \cite{Mooij2016jmlr}. We will end the chapter by presenting to alternative methods. 
+  in \cite{Mooij2016jmlr}. We will end the chapter by presenting some alternative methods. 
 
 \subsection{HSIC score}
 
@@ -279,7 +281,7 @@ $$
 $$
 
 We will give a formal description of the HSIC in the next chapter, where we will develop some of the background 
-to get an intuition on this measure. For now, you can think of the HSIC as a metric that computes the distance 
+to get an intuition on this measure. For now, one can think of the HSIC as a metric that computes the distance 
 between the the product distribution and the joint (similar to the Mutual information); the key difference is that 
 we provide two kernels, $k$ and $l$ which will transform the distributions to a different space. For specific 
 kernel choices the HSIC indeed becomes a metric. 
@@ -319,15 +321,16 @@ $$
 
 This approach to estimate the direction of the ANM is consistent under certain assumptions as is shown by 
 \cite{kpotufe2014consistency} and \cite{nowzohour2016score}. One of the main drawbacks of using differential
-entropy is that we need to go through discretization, which can lead to undesired effects.
+entropy is that we need to go through discretization, which can lead to undesired effects --- and can also be 
+inefficient in higher dimensions. 
 
 
 \subsection{CGNN: Causal Generative Neural Nets}
 
-In the work of \cite{goudet2017causal}, they estimate a \textit{generative} model by approximating
+In the work of \cite{goudet2017causal}, the authors estimate a \textit{generative} model by approximating
 the FCM structure using neural networks given some data from $P_{X, Y}$. Using the same notation
 as in the introduction on FCM, the idea is to estimate each $f_i$ by a neural network, and the 
-search through the DAG space. Since the DAG space is super exponential in the number of variables,
+search through the DAG space. Since the DAG space is super-exponential in the number of variables,
 they apply a greedy procedure to decide whether or not to include an edge $X_i \rightarrow X_j$.
 In some sense this is similar to greedy methods used in model selection. The caveat here is that
 using the generative model they can backpropagate to learn all the $f_i$ simultaneously. 
@@ -344,129 +347,9 @@ So far the CGNN appears to have the best performance on the various benchmarks.
 
 
 \textbf{IGIC} (Information Geometric Causal Inference), the method stems from \cite{janzing2010causal}.  
-The idea is on the following observation: If $X \rightarrow Y$, then a reasonable assumption is that 
+The idea is based on the following observation: If $X \rightarrow Y$, then a reasonable assumption is that 
 $P_X$ contains no information about $P_{Y | X}$. If one thinks about $X$ as as the distribution of 
 elevations in a country, and $Y$ the temperature, then this assumption is likely to hold. The difficulty 
-lies in formalizing the notion of "information" in a good way. For more details see \cite{Mooij2016jmlr}.
+lies in formalizing the notion of "information" in a good way. 
 
 There are many other methods some of which can be found in the review of \cite{Mooij2016jmlr}.
-
-
-% \section{SNR and causality}
-
-% In this section we give a brief commentary about causality from the perspective of communication theory.
-
-% In virtually most of the predictive fields, noise is the enemey; Indeed, in the absence of noise, finding the
-% best linear fit to a linear model is trivial. Emre Telatar, a powerful information theorist, liked to jest
-% in his digital communication course that "without noise, we communication engineers would be without a job".
-
-% Indeed, for most of the early 20th century\footnote{quote comm book} noise was keeping engineers busy as they 
-% devised clever schemes to fight noise. At the time the whole business was very experimental as
-% no one had come close to understanding noise in the context of transmission; questions such 
-% as "Is it possible to send a message with arbitrary reliability?" and "What is the theoretical maximum amount
-% of information that can be reliably sent?", were questions that no one had come close to solving.
-
-% Then Shannon came along, in his Magnum Opus, \cite{shannon}, he not only formalised the foundations of information
-% Theory, but he also proved\footnote{Shannon had a very deep...} most of the main results in it. In particular, he
-% showed that for the AWGN (Additive white nois Gaussian channel), it is possible to realiably transmit at most $C$
-% bits per time unit:
-
-% $$
-% C \propto log(1 + SNR)
-% $$
-
-% Where $SNR$ is the celebrated signal to noise ratio --- $SNR = \frac{\E(X^2)}{\E(N^2)}$. As we 
-% would expect, if $SNR \rightarrow \infty$ then we can send an arbitrary amount of information 
-% per time unit (the only limit is the physical one, i.e. the speed of light). Conversely if $SNR = 0$
-% then we find ourseleve at a rave, not matter how much we yell, our friends will not be able to 
-% understand us.
-
-% If we return to the question of causality; a somehwhat trivial observation is that if the mechanism 
-% is injective\footnote{If it is not injective, then the function is not invertible, and thus only one 
-% causal direction is possible.}, in the absence of noise, it is 
-% not possible to say anything about the causal direction of the mechanism. Here too noise is the
-% benelovent giver of jobs, albeit not for the same reasons. Interestingly, we can use noise to 
-% help us deduce the causal nature of a process. 
-
-% We will now see what perhaps could be considered the most simple causal set up, and describe a method
-% for causal inference. We will then see that $SNR$ also plays an important role.
-
-% Consider the linear additive noise model --- our first causal model!
-
-% \[ \begin{cases} 
-%     & Y = aX + E_Y  \\
-%     & X \bigCI E_Y,\; X \thicksim p_x,\; E_Y \thicksim p_{E_Y}  
-%  \end{cases}
-% \]
-
-% Suppose we are given $n$ samples of the above process:
-
-% $$
-%     y_i = ax_i + z_i, i \in \left[n\right]
-% $$
-
-% We collect these into vectors say $y$, $x$ and $z$; note that we do not have
-% access to the latter, but it will come in handy for the derivation that follows.
-
-% One common idea is to first compute the residuals for both possible regression models,
-% and the to check which residual is less dependent on $x$ and $y$ respectively --- we are
-% testing for the noise / data independence hypothesis.
-
-% We first regress $y$ on $x$. i.e.
-
-% $$
-%     \hat{a} = \operatorname{argmax}_{\alpha} \norm{y - \alpha x}_{2}^2
-% $$
-
-% We differentiate w.r.t to $\alpha$:
-
-% $$
-%     -2y^\intercal x + 2\alpha \norm{x}_2^2 = 0 \qquad \Rightarrow \qquad 
-%     \alpha = \frac{y^\intercal x}{\norm{x}_2^2} = 
-%     \frac{a\norm{x}_2^2 + z^\intercal x}{\norm{x}_2^2}
-% $$
-
-% Note that by symmetry, we find that if we regress x on y we get
-
-% $$
-%     \tilde{a} = \frac{x^\intercal y}{\norm{y}_2^2} = 
-%     \frac{a\norm{x}_2^2 + z^\intercal x}{a^2 \norm{x}_2^2 + 2a x^\intercal z + \norm{z}^2_2}
-% $$
-
-% As $n \rightarrow \infty$ we can invoke the Law of Large Numbers\footnote{The samples are i.i.d, 
-% and we note that convergance in probability is preserved when taking products and 
-% continuous mappings.} and we thus --- given that $E(z) = \E(N) = 0$ --- find:
-
-% $$
-%     \E(\hat{a}) = \frac{a\E(\norm{x}_2^2) + 0}{\E(\norm{x}_2^2)} \xrightarrow{p} a 
-% $$
-
-% $$
-%     \E(\tilde{a}) = \frac{a\E(\norm{x}_2^2) + 0}{
-%         a^2 \E(\norm{x}_2^2) + 0 + \E(\norm{z}^2_2)} \xrightarrow{p}
-%         \frac{a SNR}{a^2 SNR + 1}
-% $$
-
-% Thus for large $n$ we have that:
-
-% $$
-%     r_{x \rightarrow y} \approx y - ax = z
-% $$
-
-% and
-
-% $$
-%     r_{y \rightarrow x} = x - \tilde{a}y \approx x - \frac{a SNR}{a^2 SNR + 1} (ax + z) 
-% $$
-
-% Observe that if $SNR = 0$, then $r_{y \rightarrow x} \approx x$, in which case whaat??
-
-% If however $SNR \rightarrow \infty$, then $r_{y \rightarrow x} \approx -\frac{1}{a}z \approx \frac{1}{a}z$, thus 
-% the residuals carry no information about causality.
-
-% We note that this somewhat formalises the intuition that we had about the role of noise in 
-% causality; it also shows that indeed, $SNR$ plays an inverted role vis-a-vis that of communication
-% theory. 
-
-% If we are interested in finite sample results if we demand a certain accuracy for a given
-% sample size, then we conjecture that $SNR$ will play a key role in determining this.
