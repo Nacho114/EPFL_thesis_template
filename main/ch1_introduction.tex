@@ -28,12 +28,13 @@ Bob then observes the following trend:
         \node[below=of img, node distance=0cm, yshift=1cm,font=\color{black}] {time};
         \node[left=of img, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {bpm/mmHg};
     \end{tikzpicture}
-    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp.}
+    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp. at day 1.}
 \end{figure}
 
 Bob, having studied data science, is well aware of the fallacy of the law of small numbers\footnote{
-    The law of small numbers is the error of concluding too much from too few data. 
-}. He therefore checks again the data the next day at a slightly different time. He again observes 
+    The law of small numbers is the error of concluding too much from too few data (many such examples 
+    can be found in the book "fooled by randomness" by \cite{taleb}).}. 
+ He therefore checks again the data the next day at a slightly different time. He again observes 
 a similar trend, and is now more confident in the existence of a causal relation and --- having neglected biology --- 
 makes the conjecture that either blood pressure causes heart rate, or 
 perhaps the other way around. 
@@ -50,7 +51,7 @@ observes the following:
         \node[below=of img, node distance=0cm, yshift=1cm,font=\color{black}] {time};
         \node[left=of img, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {bpm/mmHg};
     \end{tikzpicture}
-    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp.}
+    \caption{Heart rate (HR) and Blood pressure (BP) measured in bbp and mmHg resp. at day 3.}
 \end{figure}
 
 As it turns out, in the last few days, Alice was working hard on finishing her thesis and the deadline had been 
@@ -85,14 +86,14 @@ weather as a predictor. From this it is clear that the model will perform badly 
 it makes the case that incorporating causality to a model should make it more robust as
 \cite{scholkopf2019causality} argues. Note that this is in effect the issue with generalization in machine learning:
 how can we ensure that we learn \textit{meaningful} representations (features about the tanks) rather than just
-correlations (the weather) useful for train accuracy. 
+correlations (the weather) useful for training accuracy. 
 
 As for confounders, it is impossible to say anything in general\footnote{
     For most of the 20th century, a huge debate took place to determine the question of whether or not 
     smoking caused cancer. A clever argument against a causal relation was that there existed a gene that 
     made a person both want to smoke and more prone to cancer; even the father of modern statistics
     himself thought this explanation more plausible (For a good read on how science is and was used 
-    for wrong see the excellent book \cite{NaomiMerchants}).
+    for wrong see the excellent book of \cite{NaomiMerchants}).
     
 }. We must therefore specify a causal model, and
 then see what guarantees we can give under what assumptions. Even in the absence of confounders it is highly 
@@ -166,7 +167,7 @@ and so $X_{\text{Pa}(4)} = \{X_1, X_2\}$.
     \path[->] (b) edge node {} (d);
     
     \end{tikzpicture}
-    \caption{ Example for FCM with $X = X_1, ... X4$, with $E_i \thicksim \mathcal{E}$, 
+    \caption{ Example for FCM with $X = X_1, ... X_4$, with $E_i \thicksim \mathcal{E}$, 
     with $X_1 = f_1(E_1)$, $X_2 = f_2(E_2)$, $X_3 = f_3(X_1, E_3)$, and 
     $X_4 = f_4(X_1, X_2, E_4)$}
     \label{fig:fcm_1}
@@ -176,7 +177,7 @@ and so $X_{\text{Pa}(4)} = \{X_1, X_2\}$.
 
 Note that causal relations can also be \textit{cyclic}, i.e. $X$ causes $Y$ which in turn causes 
 $X$ ad infinitum; while this deserves consideration as many systems have feedback loops we will
-for simplicity not look at such settings.
+not look at such settings for simplicity. 
 
 \subsection{Interventions}
 

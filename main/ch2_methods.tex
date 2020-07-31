@@ -140,7 +140,7 @@ We will next show that both of these conditions must be true for the process to 
         in the discrete case, but if both are continuous then we need to be a bit more careful as is the 
         case with degenerate random variables; but essentially the same holds (see \cite{Peters2008diploma}).
     }.
-    \item Finally, if $1 - \tilde{a}a \neq 0$ then $\tilde{Z} = -\tilde{a}Z$, and thus 
+    \item Finally, if $1 - \tilde{a}a = 0$ then $\tilde{Z} = -\tilde{a}Z$, and thus 
     $-\tilde{a}Z \bigCI Y$, a contradiction.
 \end{enumerate}
 
@@ -183,7 +183,7 @@ Next, we estimate the dependence between $\hat{e}$ and $X$ using a score functio
 the empirical mutual information between them. Thus a low score would be evidence for an ANM in that direction; 
 we can compute the score for the reverse model by switching the roles of $X$ and $Y$. We can then compare 
 the scores and use this as a criteria for inference. We write down this idea more explicitly 
-here Algorithm \ref{alg:anm_general}.
+in Algorithm \ref{alg:anm_general}.
 
 In order to show that such a procedure is consistent\footnote{By consistent we mean that the probability of
 predicting the true causal direction goes to 1 as the number of samples $n \rightarrow \infty$.
@@ -221,7 +221,7 @@ $$
     \textbf{Input}:
 
     \begin{enumerate}
-        \item I.i.d samples $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
+        \item i.i.d samples $\mathcal{D}_N = \{ (x_i, y_i )\}_{i \in [N]}$ of $X$ and $Y$
         \item Regression method
         \item Score estimator $\hat{C}: \R^n \times \R^n \rightarrow \R$
     \end{enumerate}

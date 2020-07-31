@@ -41,7 +41,7 @@ between random variables.
 \newpage
 \section{Reproducing Kernel Hilbert Space}
 
-Kernels are an important component of the RKHS, and we will begin by defining them:
+Kernels are an important component of the RKHS, and we will begin by defining them.
 
 \subsection{Kernels}
 
@@ -122,7 +122,7 @@ $$
 
 The power of this setup --- which is known as the kernel trick --- is that inner products between
 features (which can live in infinite spaces) are simple function evaluations; 
-indeed by letting $f(x) = k(x, x\prime)$ we get
+indeed by letting $f(x) = k(x, x^\prime)$ we get
 
 $$
     \inp*{k(x^\prime, \cdot)}{k(x, \cdot)} = k(x, x^\prime)
@@ -156,8 +156,8 @@ expect some independent additive noise.
 We can estimate $f$ as follows
 \footnote{Note that it is not obvious how to implement the optimization as $\mathcal{H}$ may be infinite. However,
 this setup with a Gaussian kernel is in fact equivalent to a Gaussian Processes, which can be easily
-implemented in practice (see \cite{JordanNotes}).}
-, pick an RHKS $\mathcal{H}$ with a Gaussian kernel:
+implemented in practice (see \cite{JordanNotes}).}, pick an RHKS $\mathcal{H}$ with a Gaussian kernel, and some 
+$\Omega > 0$:
 
 \begin{equation}
     f^{*}=\arg \min _{f \in \mathcal{H}}\left(
@@ -172,9 +172,10 @@ form:
 \[
     f^{*} = \sum_{i=1}^{n} \alpha_{i} \phi\left(x_{i}\right)
 \]
-where $\alpha_{i} \in \mathbb{R}$ for all $1 \leq i \leq n$
+where $\alpha_{i} \in \mathbb{R}$ for all $1 \leq i \leq n$.
 
-This is known as the Representer Theorem (\cite{scholkopf2001generalized}); all it requires is that we be in the usual RHKS setup, and that
+This is known as the Representer Theorem (\cite{scholkopf2001generalized}); all it requires is 
+that we be in the usual RHKS setup, and that
 the regularization be a strictly increasing\footnote{In our case regularization is linear,
 we thus simply need to pick $\Omega \geq 0$.} real valued function.
 If we wish to approximate a prediction for some new sample $x$, we can do so as follows:
@@ -201,7 +202,7 @@ matrices\footnote{Recall that our Kernel $k$ is a generalization of a positive-s
 \begin{theorem}[Mercer's] 
 
 Suppose $k$ is a continuous positive semi-definite kernel on a compact set $\mathcal{X}$, then if
-, $\forall f \in L_{2}(\mathcal{X})$
+, for all $f \in L_{2}(\mathcal{X})$
 
 \[
 \int_{\mathcal{X}} k(u, v) f(u) f(v) d u d v \geq 0
@@ -213,10 +214,10 @@ then $k$ has the following decomposition
     k(u, v)=\sum_{i=1}^{\infty} \lambda_{i} \psi_{i}(u) \psi_{i}(v)
 \end{equation}
 
-Where $\{\psi_i\}$ forms an orthonormal basis of $L_2(\mathcal{X})$, 
+where $\{\psi_i\}$ forms an orthonormal basis of $L_2(\mathcal{X})$, 
 such that the corresponding sequence of eigenvalues $\{\lambda_i\}$ are non-negative.
 
-Where the convergence is absolute and uniform, that is,
+The convergence is absolute and uniform, that is,
 \[
 \lim _{n \rightarrow \infty} \sup _{u, v}\left|k(u, v)-\sum_{i=1}^{n} \lambda_{i} \psi_{i}(u) \psi_{i}(v)\right|=0
 \]
@@ -242,7 +243,7 @@ $$
 $$
 
 Note that due to the $\Omega \norm{f}_{\mathcal{H}}^{2}$ penalty, $f^{*}_i$ must decay for higher values of $i$. Note that
-for example in the Fourier Transform
+for example for the Fourier Transform
 , in the basis $\{\psi_i\}$, higher values of $i$ correspond to higher 
 frequency functions; similarly, for the Gaussian Kernel, higher indices basis functions correspond to 
 higher frequencies\footnote{In the fourier space, we have the following
@@ -277,7 +278,7 @@ $$
 $$
 
 for any continuous and bounded function $g : \R \rightarrow \R$. 
-It turns out that the reciprocal statement holds. (See \cite{TwoSampleTestGrettonBernhard})
+It turns out that the reciprocal statement holds as well. (See \cite{TwoSampleTestGrettonBernhard})
 
 This motivates the following construction
 
@@ -303,7 +304,7 @@ reliable guarantees of the empirical estimate of the IPM (\cite{TwoSampleTestGre
 \subsection{MMD}
 
 Consider $\mathcal{F}=\left\{f:\|f\|_{\mathcal{H}} \leq 1\right\}$, this is known
-as the maximum mean discrepancy (MMD). Where $\mathcal{H}$, is a reproducing kernel Hilbert space 
+as the maximum mean discrepancy (MMD); where $\mathcal{H}$, is a reproducing kernel Hilbert space 
 (RHKS) with $k$ as its reproducing kernel. 
 
 We will next extend the notion of the feature map to the \textbf{embedding of probability distributions}. 
@@ -413,7 +414,7 @@ that the inverse Fourier transform of a Gaussian is supported everywhere.
 condition, and it therefore generates an injective embedding $\mu_P$.
 
 We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence (in the 
-sense that they measure the distance between the joint and product distributions to test for independence).
+sense that they measure the distance between the joint and product of the marginal distributions to test for independence).
 
 In practice the Gaussian kernel is very popular, it is used in the HSIC test when used as a
 score function by \cite{Mooij2016jmlr}; but how do we find the parameter --- sometimes referred to 
@@ -430,7 +431,7 @@ $$
 In their study, \cite{sriperumbudur2009integral}) argue that the "IPM is much
 simpler than estimating f-divergences, and that the estimators
 are strongly consistent while exhibiting good rates of convergence. IPMs also account for the properties of
-the underlying space M through the Kernel in case of MMD. This is especially
+the underlying space $\mathcal{M}$ through the Kernel in case of MMD. This is especially
 useful when considering disjoint supports between P and Q"
 
 Another argument for the MMD, is that we only need to choose a kernel; in contrast, 

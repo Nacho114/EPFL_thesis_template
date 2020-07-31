@@ -59,7 +59,7 @@ question one might ask is the following: how many intervals? We will clarify all
 $D_2$. To be more precise, $\mathcal{D}_1 = \{(x_i, y_i) : x_i < 0\}$ and $\mathcal{D}_2 = \mathcal{D} 
 \backslash \mathcal{D}_1$. We also do the same procedure for the reverse set up, i.e. we reverse the roles of x and y
 , $\mathcal{\tilde{D}} = \{y_i, x_i\}_{i \in [n]}$ and by the same procedure we obtain $\mathcal{\tilde{D}}_1$
-and $\mathcal{\tilde{D}}_2$. We can visualize this parition bellow in Figure \ref{fig:colo_code}.
+and $\mathcal{\tilde{D}}_2$. We can visualize this partition bellow in Figure \ref{fig:colo_code}.
  
 \begin{figure}[H]
     \captionsetup[subfigure]{labelformat=empty}
@@ -92,7 +92,7 @@ histograms from the residuals.
     % \quad
     \subfloat{{\includegraphics[width=6.5cm]{algo_res_reverse.png} }}%
 
-    \caption{  We show the the estimated fits $\hat{f}$ for each parition in black. Bellow each 
+    \caption{  We show the the estimated fits $\hat{f}$ for each partition in black. Below each 
     partition we plot the histograms of the residuals ---  in the same color. }
     \label{fig:algo_fit}
 \end{figure}
@@ -100,11 +100,11 @@ histograms from the residuals.
 Note that for the reverse model, the noise in $\mathcal{\tilde{D}}_1$ appears to be very different from 
 that of $\mathcal{\tilde{D}}_2$; this is not a coincidence ---  intuitively, it seems very unlikely that 
 regressing in the other direction will also result in independence noise. Further, as we briefly 
-mentioned in the early chapters, as \cite{hoyer2009nonlinear} show, it is unlikely that for a non-linear 
+mentioned in the early chapters, as \cite{hoyer2009nonlinear} show, it is unlikely that for a non-linear $f$
 we might not have identifiability. 
 
 One simple idea is then to quantify these observations; from $\mathcal{D}_1$ and $\mathcal{D}_2$ we 
-compute $\hat{e}_1$, $\hat{e}_1$, and so we can define as a score for these sets:
+compute $\hat{e}_1$, $\hat{e}_2$, and so we can define as a score for these sets:
 
 $$
      \mathcal{C}(\mathcal{D}_1, \mathcal{D}_2) = \norm{p_1 - p_2}_1
@@ -149,10 +149,8 @@ We will next describe in more detail the core parts of the algorithm.
 
 \subsection{Partition}
 
-Say that we partition\footnote{
-    A partition is said disjoint if:
-    $\mathcal{D} = \bigcup_i \mathcal{D}_i $ and $\mathcal{D}_i \cap \mathcal{D}_j = \emptyset \quad \forall i \neq j$}
-$\mathcal{D}$ into disjoint sets $\mathcal{D}_1, ..., \mathcal{D}_k$; then these 
+Say that we partition
+$\mathcal{D}$ into disjoint sets $\mathcal{D}_1, ..., \mathcal{D}_k$; then partition 
 partitions need to satisfy two requirements:
 
 \begin{enumerate}
@@ -173,11 +171,11 @@ partitions need to satisfy two requirements:
 
 The first condition ---  that of dense partitions ---  is to avoid getting trivial large deviations between residuals 
 in the subsets; the second reason is that if they are dense, then we can give asymptotic guarantees about each subset.
-The second conditions simply ensure that we are not mixing data and that it is coherent to make regression
+The second condition simply ensure that we are not mixing data and that it is coherent to make regression
 in each subset. 
 
 If we use K-means (perhaps the most popular clustering algorithm), then condition 2 are met. The only 
-questions is in regards to conditions 1. K-means starts by randomly initializing two or n centers (depending 
+doubt is in regards to condition 1. K-means starts by randomly initializing two or n centers (depending 
 on the number of clusters that we want), and the updates the centers that they locally 
 minimizes within-cluster variances. If our data is infinite support, and we re-run K-means if there is some cluster
 $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and for some $\rho$ we can be quite 
@@ -294,7 +292,7 @@ to compute residuals and to compute some scores between them.
 To simplify the proof, we will \textbf{skip the partition procedure} and assume that
 we are directly given $\mathcal{D}_1$ and $\mathcal{D}_2$, each with 
 $n$ samples (Note that, if $p_x$ is uniform, then having these sets be of equal size would happen exponentially 
-fast; indeed, in general, we will have dense partitions). 
+fast; indeed, in general, we will have dense partitions as $n$ becomes arbitrarily large). 
 
 Next, we will assume that on each interval, the data is linear with slope $a_1$ and $a_2$ resp. 
 
@@ -313,8 +311,8 @@ Next, we will assume that on each interval, the data is linear with slope $a_1$ 
       \caption{Slopes $a_1$ and $a_2$ in blue and red respectively.}
 \end{figure}
 
-Thus our problem can be seen as getting data from two difference \textbf{ANM}, both with identical noise, but with 
-a different truncation of $X$:
+Thus our problem can be seen as getting data from two different \textbf{ANM}, both with identical noise, but with 
+a different scaling of $X$:
 
 $\mathcal{D}_1$ is sampled from 
 
@@ -332,7 +330,6 @@ and $\mathcal{D}_2$ is sampled from
  \end{cases}
 \]
 
-Without loss of generality we can assume $X_1 \thicksim X_2 \thicksim X \thicksim P_X$.
 
 We will call this scenario the \textbf{simplified Twin Test scenario}. 
 
@@ -362,7 +359,7 @@ As we have seen, $\hat{C}_{Y \rightarrow X} > 0$ holds in general except in very
 to prove that our algorithm is consistent, we need to show that:
 
 $$
-    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty
+    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty \qquad \text{in probability}
 $$
 
 This is precisely what we will show:
@@ -371,7 +368,7 @@ This is precisely what we will show:
     The \textbf{simplified Twin Test scenario} is consistent, i.e. 
 
 $$
-    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty
+    \hat{C}_{X \rightarrow Y} \rightarrow 0 \qquad \text{as }  \qquad n \rightarrow \infty \qquad \text{in probability}
 $$
 
 Assuming that the noise distribution satisfies the following: 
@@ -384,7 +381,8 @@ normal, exponential, ...
 The idea of the proof is to observe the following:
 
 If we have enough data, i.e. when $n$ is large enough then assuming the regression is 
-\textbf{suitable}, we can chose any $\alpha$ such that
+\textbf{suitable}, we can choose any $\alpha$ such that (for the linear regression, one can show that 
+the events below happen in probability), 
 
 $$
     \abs{a_1 - \hat{a}_1} \leq \alpha \qquad \text{and} \qquad \abs{a_2 - \hat{a}_2} \leq \alpha
@@ -430,14 +428,15 @@ $$
 $$
 
 cannot happen. The game plan will be to find a bound on the $R(\alpha)$; once we have one, we are done, we 
-will simply pick an $\alpha$ s.t. $R(\alpha) < \epsilon$. Recall that $\alpha$ is the error in of our $\hat{a}$
+will simply pick an $\alpha$ s.t. $R(\alpha) < \epsilon$, where $R(\alpha) = \norm{P_{Z}- P_{\alpha X + Z}}_{1}$
+. Recall that $\alpha$ is the error in of our $\hat{a}$
 estimate, which we can get arbitrarily small with enough samples. 
 
 We begin by proving lemmas to find bounds for the radius $R(\alpha)$.
 
 \begin{lemma} 
     
-    Given $\alpha > 0$, random variables $Z$ and $X$ , with $X \bigCI Z$, 
+    Given $\alpha > 0$, random variables $Z$ and $X$, with $X \bigCI Z$, 
 $X \thicksim P_X$, $Z \thicksim P_Z$, such that\footnote{
     we remark that this 
     condition holds for most distributions such as the uniform, exponential and Gaussian.} there is 
@@ -630,7 +629,7 @@ Note that $\hat{p}_1 \rightarrow P^*_{Z + \Delta_1 X}$ as $n \rightarrow \infty$
 $P^*_{Z + \Delta_1 X}$ is the discretized distribution of $P_{Z + \Delta_1 X}$; recall that 
 we form $\hat{p}_1$ by creating a discretized histogram from the residuals. 
 
-Then, by combing lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation} we have that:
+Then, by combining lemma \ref{lemma:conv_bound} and \ref{lemma:quantisation} we have that:
 
 For any $\alpha$, there is some $L > 0$ s.t.
 $$
@@ -907,7 +906,7 @@ $$
     \Gamma_\tau = \{ \pi \in  \Delta_m : \norm{\pi - U}_{L_1} \leq \tau \}
 $$
 
-Where the $\Delta_m$ is the $m$ dimensional simple and $U$ the uniform vector as before.
+Where the $\Delta_m$ is the $m$ dimensional simplex and $U$ the uniform vector as before.
 
 Observe that: 
 
