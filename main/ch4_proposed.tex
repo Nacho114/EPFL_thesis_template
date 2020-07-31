@@ -2,8 +2,8 @@
 \chapter{First principle methods}
 
 
-In this section we will present our proposed methods for causal inference in the 
-bivariate setting : The twin test and the residual method. We will introduce each method, 
+In this section we present our proposed methods for causal inference in the 
+bivariate setting: The twin test and the residual method. We will introduce each method, 
 provide a detailed algorithmic description and end by giving a proof of correctness. 
 
 
@@ -31,7 +31,7 @@ then estimate the residuals for each partition, and we then test if the i.i.d no
 the residuals of each partition. We can apply this procedure to both directions and then we will call the 
 direction causal if its residuals are more similar. 
 
-We will explain this idea in more detail by following an example: we are given samples 
+We explain this idea in more detail by following an example: we are given samples 
 $\mathcal{D} = \{x_i, y_i\}_{i \in [n]}$ from an ANM $X \rightarrow Y$; 
 We first visualize the data $\{x_i, y_i\}_{i \in [n]}$, by plotting
 X to Y, and vice versa (see Figure \ref{fig:algo_data}). 
@@ -181,18 +181,18 @@ minimizes within-cluster variances. If our data is infinite support, and we re-r
 $i$ s.t. $|\mathcal{D}_i| < \rho |\mathcal{D}|$; then if we have enough data and for some $\rho$ we can be quite 
 certain that the algorithm will eventually terminate. 
 
-In practice this has always been the case (for $\rho = .3$); so we conjecture that one can prove the above statement 
-(or some variant) rigorously. More formally, given $n$ samples $ \mathcal{D} = x_1, ..., x_n$ from some random variable $X$ 
-that is "well behaved"\footnote{By well behaved it would relate to concentration, if the data has enough spread, then 
-partitioning should occur --- versus being concentrated at one point.}, by running k-means once we get two partitions, 
+In practice this has always been the case; we conjecture that the following statement or a slight variant holds true, 
+given $n$ samples $ \mathcal{D} = x_1, ..., x_n$ from some random variable $X$ 
+that is "well behaved"\footnote{By well behaved we mean that the data should have enough spread, if it is too
+concentrated then partitioning will be hard.}, by running k-means once we get two partitions, 
 $\mathcal{D}_1$ and $\mathcal{D}_2$; we can
 restart k-means $r$  times with a different initialization to obtain $\mathcal{D}_1(1), ...\mathcal{D}_1(r)$ and 
-$\mathcal{D}_2(1), ...\mathcal{D}_2(r)$. Let $s_j = \operatorname{min} (\mathcal{D}_1(j), \mathcal{D}_2(j))$
+$\mathcal{D}_2(1), ...\mathcal{D}_2(r)$. Let $s_j = \operatorname{min} \left(\mathcal{D}_1(j), \mathcal{D}_2(j)\right)$
 
 then there is some $\rho > 0$ s.t.
 
 $$
-    \Prob \left( \operatorname{min}_j s_j \geq \rho n \right) \rightarrow 1
+    \Prob \left( \operatorname{max}_j s_j \geq \rho n \right) \rightarrow 1
 $$
 
 as $n \rightarrow \infty$, with $r = \log(n)$. 
@@ -201,8 +201,8 @@ The last question is, "How many clusters do we want?". Obviously for the small d
 with only two clusters; but what if we have a lot of data? Experimentally we observed that if we 
 we choose the number of partition as an increasing function w.r.t. sample size, then we can get better performance.
 
-One crucial aspect is that we work in the 1-D setting, where clustering is of reasonable difficulty; in higher dimensions 
-clustering will not be so easy. 
+One crucial aspect is that the benchmark is in the 1-D setting, where clustering is of reasonable difficulty; 
+in higher dimensions clustering is a much harder problem. 
 
 
 \subsection{Regression}
@@ -273,7 +273,7 @@ gives the best performance.
 
 \subsection{Proof of consistency}
 
-We will show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
+We show consistency for a simple set up of the twin test ---  but we note that generalizing it to the more 
 general case should follow with little effort from our proof. We leave it as an exercise for the reader. 
 
 
@@ -331,7 +331,7 @@ and $\mathcal{D}_2$ is sampled from
 \]
 
 
-We will call this scenario the \textbf{simplified Twin Test scenario}. 
+We call this scenario the \textbf{simplified Twin Test scenario}. 
 
 We next describe the steps of the algorithm after partitioning:
 
@@ -669,7 +669,7 @@ $$
 
 \begin{algorithm}[H]
 
-    \caption{\textbf{Twin method}: General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
+    \caption{\textbf{Twin Test (TT)}: General procedure to decide whether $P_{X, Y}$ satisfies and ANM $X \rightarrow Y$
         or $Y \rightarrow X$}
   
     \textbf{Input}:

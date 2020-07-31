@@ -223,7 +223,7 @@ shall call it \textbf{identifiable}.
 % the interventional and observational conditions. Then, assuming that we get both interventional and observational data it suffices to check to which of the 6 
 % possible structure the data corresponds to (at least in theory). 
 
-We will restrict ourselves also to the bivariate case; one big difference worth noting is that in the
+We restrict ourselves also to the bivariate case; one big difference worth noting is that in the
 multivariate setting we can test conditional independence. Using conditional independence tests 
 is a very powerful method for causal inference. Suppose 
 we have random variables $X$, $Y$ and $Z$, then if we can estimate that $X \bigCI Y | Z$, then it must be 
@@ -274,12 +274,12 @@ it is not possible to distinguish causality in the general bivariate setting whe
 observational data; we will thus need to restrict 
 the class of such models. The underlying structure behind such causal models is what is known as 
 Structural Equation Models (SEM) (\cite{Peters2017}). Essentially 
-it is a model specification; and the key insight is that it should not be reversible. 
+it is a model specification; and the key insight is that it should not be reversible.
 
 
 \section{Proposed Methods}
 
-We will propose a new type of inference method which exploits the i.i.d 
+We propose a new type of inference method which exploits the i.i.d 
 noise assumption; the idea is to split the data in different intervals, and then to regress each 
 interval separately. In the causal direction one would expect that the residuals of each 
 interval will be more homogenous\footnote{By homogenous residuals we mean that the residuals will be similar 
@@ -294,7 +294,7 @@ noise distribution, which is not a good assumption in practice.
 
 \section{Outline}
 
-We will begin by formalizing further the causal framework that we will explore; we will then present an overview of 
+We begin by formalizing further the causal framework that we will explore; we will then present an overview of 
 popular methods for inference on the bivariate causal setting. Next, we will overview some notions in statistical distance 
 --- as these play a central role in causal inference --- such as maximum mean discrepancy (MMD) and f-divergences. 
 For the convenience of the reader we will also review some background material that will help gain a better 

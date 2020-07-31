@@ -77,6 +77,9 @@ a triplet $(P_X, P_Z, f)$ to generate a non-identifiable ANM, it needs to satisf
 differential equation. Loosely speaking this cannot happen in the generic case: in other words the forward 
 model $X \rightarrow Y$ cannot be inverted. 
 
+
+
+\newpage
 If $f$ is linear, then one can give a much more precise statement about identifiability:
 
 \begin{theorem} Let $X$ and $Y$ be random variables, such that
@@ -94,7 +97,7 @@ if and only if $X, Y, Z, \tilde{Z}$ are Gaussian distributed.
 The proof is a simple application of the Darmois-Skitovich Theorem\footnote{ The theorem also plays an important role
 in independent component analysis (ICA), in short it deals with source separation. It turns out that if we have the 
 linear multivariate causal setting, then we can cast it as a source separation problem and use ICA to solve it. 
-Note that there too Gaussianty makes or breaks the method.}; it states the following:
+Note that there too Gaussianty makes or breaks the method.} (\cite{darmois}); which we state without proof:
 
 \begin{theorem}[Darmois-Skitovich] Let $X_i$, $i \in [n]$ be independent random variables, and let
     $\alpha_i$, $\beta_j$ be non zero constants. Then, if the random variables
@@ -132,7 +135,7 @@ For the "only if" part, note that by simple manipulation, we have the following:
 
 If $\tilde{a} \neq 0$ and $1 - \tilde{a}a \neq 0$ then by Darmois-Skitovich, the result follows.
 
-We will next show that both of these conditions must be true for the process to be reversible:
+We next show that both of these conditions must be true for the process to be reversible:
 
 \begin{enumerate}
     \item If $\tilde{a} = 0$ then $\tilde{Z} = X$, but then $X \bigCI Y$, a contradiction\footnote{
@@ -196,7 +199,7 @@ predicting the true causal direction goes to 1 as the number of samples $n \righ
 \end{enumerate}
 
 
-We will take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
+We take point 1 as an assumption as there is currently no theoretical result that allows for a consistent 
 test to check if $P_{X, Y}$ satisfies an ANM $X \rightarrow Y$. 
 
 In point 2, we will say that a regression is \textbf{suitable} if the following holds:
@@ -269,7 +272,7 @@ $$
 
 
   We will now overview some score functions, note that the list is far from exhaustive and other methods can be found 
-  in \cite{Mooij2016jmlr}. We will end the chapter by presenting some alternative methods. 
+  in \cite{Mooij2016jmlr}. We end the chapter by presenting some alternative methods. 
 
 \subsection{HSIC score}
 
