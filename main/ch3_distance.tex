@@ -31,7 +31,7 @@ The Integral Probability Metric (IPM) and f-divergence are two very rich and wel
 families of measures of "distance" between probability measures.
 
 We start by introducing the Reproducing Kernel Hilbert Spaces (RKHS), which will serve as a 
-building block for the maximum mean discrepancy, an important instance of IPM.
+building block for the maximum mean discrepancy (\cite{TwoSampleTestGrettonBernhard}), an important instance of IPM.
 
 As we saw in the previous chapter, to understand causality, it is crucial to be able to 
 measure statistical dependence between random variables; therefore our ability of 
@@ -41,7 +41,7 @@ between random variables.
 \newpage
 \section{Reproducing Kernel Hilbert Space}
 
-We will begin by defining the kernel,
+Kernels are an important component of the RKHS, and we will begin by defining them:
 
 \subsection{Kernels}
 
@@ -192,7 +192,7 @@ the solution will be a linear combination of scaled Gaussians centered at the da
 \footnote{In fact this will always be the case when we can write $k\left(x, y\right) = \tilde{k}\left(x - y\right)$}. 
 
 As a final remark we will explain the role of the penalty $\Omega \norm{f}_{\mathcal{H}}^{2}$; from 
-statistical models, we now that this kind of term is known as regularization and is supposed to help 
+statistical models, we know that this kind of term is known as regularization and is supposed to help 
 choose a "simpler" model. As we will now show, this is also the case here.
 
 To see this, we will use Mercer's Theorem (as stated in the lecture notes of \cite{BartlettNotes}) --- a Generalization of the spectral theorem for positive-semidefinite
@@ -295,7 +295,7 @@ integral probability metrics (IPMs) (see \cite{muller1997integral}). Depending
 on how we choose $\mathcal{F}$ we may end up with different popular distance measures, such as
 the Wasserstein distance or the Total variation distance to name a few. 
 
-The goal is to craft an $\mathcal{F}$ that is "expressive" enough so that the IPM vanishes iff $P = Q$,
+The goal is to design an $\mathcal{F}$ that is "expressive" enough so that the IPM goes to zero iff $P = Q$,
 and on the other hand, we need $\mathcal{F}$ to be "restrictive" enough so as to have fast and 
 reliable guarantees of the empirical estimate of the IPM (\cite{TwoSampleTestGrettonBernhard}.)
 
@@ -329,6 +329,10 @@ $\mathop{\E}_{X} g(X) = \inp*{g}{\mu_P}$. We will now show under which condition
     \E_{X} \norm{g}_{\mathcal{H}} \norm{\phi(X)}_{\mathcal{H}} \\
     &= \norm{g}_{\mathcal{H}} \E_{X} \sqrt{k(X, X)}
 \end{align*}
+
+The first inequality follows from the triangle inequality, and the following equality by using 
+the feature map representation; we conclude by applying Cauchy-Schwartz.
+
 Thus $E_{X} g(X)$ is a bounded linear operator $\forall g \in \mathcal{F}$, and by the
 Riesz representer theorem it follows that there exists a $\mu_P \in \mathcal{H}$
 s.t. $\mathop{\E}_{X} g(X) = \inp*{g}{\mu_P}$. 
@@ -409,7 +413,7 @@ that the inverse Fourier transform of a Gaussian is supported everywhere.
 condition, and it therefore generates an injective embedding $\mu_P$.
 
 We note that HSIC is to MMD, what the Mutual Information is to the Kullback–Leibler divergence (in the 
-sense that measure the distance between the joint and product distributions to test for independence).
+sense that they measure the distance between the joint and product distributions to test for independence).
 
 In practice the Gaussian kernel is very popular, it is used in the HSIC test when used as a
 score function by \cite{Mooij2016jmlr}; but how do we find the parameter --- sometimes referred to 
@@ -542,6 +546,6 @@ $$
     \operatorname{MMD}\left( P_{X, Y}, P_X \otimes P_Y  \right)^2 = \operatorname{HSIC}(P_{X, Y})
 $$
 
-The HSIC is thd MMD distance between the joint and product distribution. 
+The HSIC is the MMD distance between the joint and product distribution. 
 
 
